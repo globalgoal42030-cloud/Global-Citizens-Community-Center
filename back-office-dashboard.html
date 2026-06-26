@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GCCC Back Office</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --teal-50: #E1F5EE; --teal-200: #5DCAA5; --teal-600: #0F6E56; --teal-800: #085041;
+    --amber-50: #FAEEDA; --amber-200: #EF9F27; --amber-600: #854F0B;
+    --coral-50: #FAECE7; --coral-200: #F0997B; --coral-600: #993C1D;
+    --purple-50: #EEEDFE; --purple-200: #AFA9EC; --purple-600: #534AB7;
+    --blue-50: #E6F1FB; --blue-200: #85B7EB; --blue-600: #185FA5; --blue-800: #0C447C;
+    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-600: #5F5E5A; --gray-800: #444441;
+    --bg: #F7F6F2; --surface: #FFFFFF;
+    --text: #2C2B27; --text-muted: #5F5E5A;
+    --border: rgba(0,0,0,0.1);
+    --radius: 14px; --radius-sm: 8px;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+  .sidebar { width: 240px; min-height: 100vh; background: var(--teal-800); display: flex; flex-direction: column; padding: 0; flex-shrink: 0; position: sticky; top: 0; height: 100vh; }
+  .sidebar-brand { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .brand-initials { width: 40px; height: 40px; border-radius: 10px; background: var(--teal-200); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--teal-800); margin-bottom: 10px; }
+  .brand-name { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.3; }
+  .brand-sub { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .sidebar-nav { padding: 16px 12px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); padding: 12px 8px 6px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius-sm); color: rgba(255,255,255,0.7); font-size: 13.5px; font-weight: 400; cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 500; }
+  .nav-item svg { flex-shrink: 0; opacity: 0.9; }
+  .sidebar-user { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
+  .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--amber-200); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--amber-600); flex-shrink: 0; }
+  .user-name { font-size: 12.5px; font-weight: 500; color: #fff; }
+  .user-role { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .topbar-title { font-size: 16px; font-weight: 500; color: var(--text); }
+  .topbar-date { font-size: 13px; color: var(--text-muted); }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .btn { padding: 7px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text); transition: background 0.15s; }
+  .btn:hover { background: var(--gray-50); }
+  .btn-primary { background: var(--teal-600); color: #fff; border-color: var(--teal-600); }
+  .btn-primary:hover { background: var(--teal-800); border-color: var(--teal-800); }
+  .btn-blue { background: var(--blue-600); color: #fff; border-color: var(--blue-600); }
+  .btn-blue:hover { background: var(--blue-800); border-color: var(--blue-800); }
+  .content { flex: 1; overflow-y: auto; padding: 28px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .card-title span { font-weight: 400; font-size: 12px; color: var(--text-muted); }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .schedule-header { display: grid; grid-template-columns: 80px repeat(5, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius-sm); overflow: hidden; font-size: 12px; }
+  .sch-cell { background: var(--surface); padding: 10px 12px; font-weight: 500; color: var(--text-muted); text-align: center; }
+  .sch-time { background: var(--gray-50); color: var(--text-muted); font-size: 11px; display: flex; align-items: center; justify-content: center; }
+  .sch-block { border-radius: 6px; padding: 5px 8px; font-size: 11px; font-weight: 500; margin: 2px; }
+  .sch-teal { background: var(--teal-50); color: var(--teal-600); }
+  .sch-amber { background: var(--amber-50); color: var(--amber-600); }
+  .sch-coral { background: var(--coral-50); color: var(--coral-600); }
+  .sch-purple { background: var(--purple-50); color: var(--purple-600); }
+  .training-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; background: var(--surface); }
+  .training-card:hover { border-color: var(--teal-200); }
+  .training-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+  .training-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .training-meta { font-size: 12px; color: var(--text-muted); }
+  .training-progress { margin-top: 10px; }
+  .progress-bar-bg { height: 4px; background: var(--gray-100); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 2px; background: var(--teal-200); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .badge-done { background: var(--teal-50); color: var(--teal-600); }
+  .badge-new { background: var(--purple-50); color: var(--purple-600); }
+  .badge-req { background: var(--amber-50); color: var(--amber-600); }
+  .badge-blue { background: var(--blue-50); color: var(--blue-600); }
+  .lounge-post { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .lounge-post:last-child { border-bottom: none; }
+  .poster-av { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .lounge-msg { font-size: 13.5px; line-height: 1.55; }
+  .lounge-who { font-size: 12px; font-weight: 500; margin-bottom: 3px; color: var(--text); }
+  .lounge-time { font-size: 11px; color: var(--text-muted); }
+  .lounge-input-row { display: flex; gap: 10px; margin-top: 16px; }
+  .lounge-input { flex: 1; padding: 9px 14px; border-radius: 20px; border: 1px solid var(--border); font-size: 13.5px; font-family: 'Inter', sans-serif; outline: none; background: var(--gray-50); color: var(--text); }
+  .lounge-input:focus { border-color: var(--teal-200); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 0 0 10px; border-bottom: 1px solid var(--border); }
+  td { padding: 12px 0; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .staff-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; margin-right: 8px; flex-shrink: 0; }
+  .staff-name { display: flex; align-items: center; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .announcement { background: var(--teal-50); border: 1px solid var(--teal-200); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .announcement-icon { font-size: 18px; flex-shrink: 0; }
+  .announcement-text { font-size: 13.5px; color: var(--teal-800); line-height: 1.5; }
+  .announcement-text strong { font-weight: 600; }
+
+  /* ROOM STYLES */
+  .room-page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .room-page-header h2 { font-size: 15px; font-weight: 600; }
+  .room-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .room-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; transition: border-color 0.15s; }
+  .room-card:hover { border-color: var(--blue-200); }
+  .room-card.occupied { border-left: 3px solid var(--teal-600); }
+  .room-card.available { border-left: 3px solid var(--gray-100); }
+  .room-card.reserved { border-left: 3px solid var(--amber-200); }
+  .room-card.maintenance { border-left: 3px solid var(--coral-200); }
+  .room-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .room-type { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+  .room-status-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .room-status { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; }
+  .room-cap { font-size: 11px; color: var(--text-muted); }
+  .room-current { background: var(--gray-50); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 12px; }
+  .room-current-label { color: var(--text-muted); margin-bottom: 3px; }
+  .room-current-val { font-weight: 500; color: var(--text); }
+  .room-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .room-actions .btn { font-size: 12px; padding: 5px 10px; flex: 1; }
+  .room-detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; margin-bottom: 18px; }
+  .room-schedule-row { display: flex; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .room-schedule-row:last-child { border-bottom: none; }
+  .room-sched-time { width: 80px; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+  .room-sched-event { flex: 1; font-weight: 500; }
+  .room-sched-who { font-size: 12px; color: var(--text-muted); }
+  .equip-tag { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; background: var(--blue-50); color: var(--blue-800); margin: 3px 3px 3px 0; }
+  .issue-row { display: flex; align-items: start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .issue-row:last-child { border-bottom: none; }
+  .issue-icon { font-size: 16px; flex-shrink: 0; }
+  .issue-desc { flex: 1; }
+  .issue-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .tab-row { display: flex; gap: 4px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .tab-btn { padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; }
+  .tab-btn.active { color: var(--blue-600); border-bottom-color: var(--blue-600); }
+  .tab-btn:hover { color: var(--text); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-initials">GC</div>
+    <div class="brand-name">Global Citizens</div>
+    <div class="brand-sub">Community Center</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <button class="nav-item active" onclick="showPage('dashboard', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" onclick="showPage('schedule', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Schedule
+    </button>
+    <button class="nav-item" onclick="showPage('staff', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Staff & Employers
+    </button>
+    <div class="nav-section-label">Spaces</div>
+    <button class="nav-item" onclick="showPage('rooms', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Rooms
+    </button>
+    <div class="nav-section-label">Growth</div>
+    <button class="nav-item" onclick="showPage('training', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Training Hub
+    </button>
+    <div class="nav-section-label">Community</div>
+    <button class="nav-item" onclick="showPage('lounge', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Staff Lounge
+    </button>
+    <button class="nav-item" onclick="showPage('announcements', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Announcements
+    </button>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="staff-avatar-initials">AD</div>
+    <div>
+      <div class="user-name" id="staff-display-name">Admin</div>
+      <div class="user-role">Back Office Manager</div>
+    </div>
+  </div>
+  <div style="padding:10px 14px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:2px;">
+    <a href="index.html" style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;padding:5px 6px;border-radius:4px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Main Site
+    </a>
+    <a href="gccc-pages.html" style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;padding:5px 6px;border-radius:4px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Member Portal
+    </a>
+    <a href="community-center.html" style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;padding:5px 6px;border-radius:4px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+      Community Center
+    </a>
+    <a href="fundraiser.html" style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;padding:5px 6px;border-radius:4px;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Fundraiser
+    </a>
+    <button onclick="gcccSignOut()" style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,100,100,0.7);background:none;border:none;cursor:pointer;padding:5px 6px;border-radius:4px;width:100%;text-align:left;" onmouseover="this.style.color='#ff6b6b'" onmouseout="this.style.color='rgba(255,100,100,0.7)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </button>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-date" id="topbar-date"></div>
+    <div class="topbar-actions">
+      <button class="btn">Export</button>
+      <button class="btn btn-primary">+ New Event</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="announcement">
+        <div class="announcement-icon">📢</div>
+        <div class="announcement-text"><strong>Staff meeting this Friday at 10am</strong> — All coordinators and program leads, please attend. Room 3B. Light refreshments provided.</div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Staff on shift today</div>
+          <div class="stat-value">12</div>
+          <div class="stat-sub"><span class="stat-dot" style="background:#0F6E56"></span>4 full-time · 8 part-time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Programs running</div>
+          <div class="stat-value">7</div>
+          <div class="stat-sub"><span class="stat-dot" style="background:#EF9F27"></span>2 starting this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Training completions</div>
+          <div class="stat-value">34</div>
+          <div class="stat-sub"><span class="stat-dot" style="background:#AFA9EC"></span>this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Open shifts</div>
+          <div class="stat-value">3</div>
+          <div class="stat-sub"><span class="stat-dot" style="background:#F0997B"></span>needs coverage</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Today's schedule highlights <span>Mon, June 23</span></div>
+          <table>
+            <thead><tr><th>Time</th><th>Program</th><th>Staff</th><th>Room</th></tr></thead>
+            <tbody>
+              <tr><td>9:00 AM</td><td>ESL Beginner</td><td>M. Owusu</td><td>A1</td></tr>
+              <tr><td>10:30 AM</td><td>Job Readiness</td><td>L. Chen</td><td>B2</td></tr>
+              <tr><td>1:00 PM</td><td>Youth After School</td><td>R. Diaz</td><td>Gym</td></tr>
+              <tr><td>3:00 PM</td><td>Citizenship Prep</td><td>A. Nkosi</td><td>C3</td></tr>
+              <tr><td>5:30 PM</td><td>Community Dinner</td><td>Staff team</td><td>Hall</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Staff lounge — latest</div>
+          <div class="lounge-post" style="border-bottom:none; padding-top:0;">
+            <div class="poster-av" style="background:var(--teal-50);color:var(--teal-600);">MO</div>
+            <div>
+              <div class="lounge-who">Mariama Owusu <span style="font-weight:400;color:var(--text-muted)">· 8m ago</span></div>
+              <div class="lounge-msg">Reminder: ESL room A1 needs the projector set up before 8:45.</div>
+            </div>
+          </div>
+          <div class="lounge-post" style="border-bottom:none;">
+            <div class="poster-av" style="background:var(--amber-50);color:var(--amber-600);">LC</div>
+            <div>
+              <div class="lounge-who">Leo Chen <span style="font-weight:400;color:var(--text-muted)">· 22m ago</span></div>
+              <div class="lounge-msg">Coffee machine is back on! ☕ Someone fixed it this morning.</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn" style="font-size:12px;" onclick="showPage('lounge', document.querySelectorAll('.nav-item')[7])">Go to lounge →</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Training progress this month</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+          <div>
+            <div style="font-size:13px;margin-bottom:8px;">Safeguarding & Child Protection</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:88%"></div></div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">88% staff certified</div>
+          </div>
+          <div>
+            <div style="font-size:13px;margin-bottom:8px;">DEI Foundations</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:62%"></div></div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">62% completed</div>
+          </div>
+          <div>
+            <div style="font-size:13px;margin-bottom:8px;">First Aid Recertification</div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%;background:var(--amber-200)"></div></div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">45% — due Aug 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE PAGE -->
+    <div class="page" id="page-schedule">
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title">Weekly schedule — June 23–27, 2025</div>
+        <div class="schedule-header" style="margin-bottom:1px;">
+          <div class="sch-cell"></div>
+          <div class="sch-cell">Monday</div>
+          <div class="sch-cell">Tuesday</div>
+          <div class="sch-cell">Wednesday</div>
+          <div class="sch-cell">Thursday</div>
+          <div class="sch-cell">Friday</div>
+        </div>
+        <div style="display:grid;grid-template-columns:80px repeat(5,1fr);gap:1px;background:var(--border);">
+          <div class="sch-cell sch-time">9:00</div>
+          <div class="sch-cell"><div class="sch-block sch-teal">ESL Beginner<br><small>A1 · Owusu</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-teal">ESL Beginner<br><small>A1 · Owusu</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-teal">ESL Advanced<br><small>A2 · Chen</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-teal">ESL Beginner<br><small>A1 · Owusu</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-purple">Staff Meeting<br><small>3B · All</small></div></div>
+          <div class="sch-cell sch-time">10:30</div>
+          <div class="sch-cell"><div class="sch-block sch-amber">Job Readiness<br><small>B2 · Chen</small></div></div>
+          <div class="sch-cell"></div>
+          <div class="sch-cell"><div class="sch-block sch-amber">Resume Workshop<br><small>B2 · Diaz</small></div></div>
+          <div class="sch-cell"></div>
+          <div class="sch-cell"><div class="sch-block sch-amber">Job Readiness<br><small>B2 · Chen</small></div></div>
+          <div class="sch-cell sch-time">1:00</div>
+          <div class="sch-cell"><div class="sch-block sch-coral">Youth Program<br><small>Gym · Diaz</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-coral">Youth Program<br><small>Gym · Diaz</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-coral">Youth Program<br><small>Gym · Diaz</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-coral">Youth Program<br><small>Gym · Diaz</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-coral">Youth Program<br><small>Gym · Diaz</small></div></div>
+          <div class="sch-cell sch-time">3:00</div>
+          <div class="sch-cell"><div class="sch-block sch-purple">Citizenship Prep<br><small>C3 · Nkosi</small></div></div>
+          <div class="sch-cell"><div class="sch-block sch-purple">Citizenship Prep<br><small>C3 · Nkosi</small></div></div>
+          <div class="sch-cell"></div>
+          <div class="sch-cell"><div class="sch-block sch-purple">Citizenship Prep<br><small>C3 · Nkosi</small></div></div>
+          <div class="sch-cell"></div>
+          <div class="sch-cell sch-time">5:30</div>
+          <div class="sch-cell"><div class="sch-block sch-teal">Comm. Dinner<br><small>Hall · All</small></div></div>
+          <div class="sch-cell"></div><div class="sch-cell"></div><div class="sch-cell"></div><div class="sch-cell"></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span class="sch-block sch-teal" style="margin:0;padding:3px 8px;">ESL / Language</span></span>
+          <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span class="sch-block sch-amber" style="margin:0;padding:3px 8px;">Employment</span></span>
+          <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span class="sch-block sch-coral" style="margin:0;padding:3px 8px;">Youth</span></span>
+          <span style="font-size:12px;display:flex;align-items:center;gap:5px;"><span class="sch-block sch-purple" style="margin:0;padding:3px 8px;">Civic / Community</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF PAGE -->
+    <div class="page" id="page-staff">
+      <div class="card">
+        <div class="card-title">Staff & employers directory</div>
+        <table>
+          <thead><tr><th>Name</th><th>Role</th><th>Program</th><th>Status</th><th>Training</th></tr></thead>
+          <tbody>
+            <tr><td><div class="staff-name"><div class="staff-av" style="background:var(--teal-50);color:var(--teal-600);">MO</div>Mariama Owusu</div></td><td>Program Lead</td><td>ESL</td><td><span class="status-dot" style="background:#0F6E56"></span>On shift</td><td><span class="badge badge-done">Up to date</span></td></tr>
+            <tr><td><div class="staff-name"><div class="staff-av" style="background:var(--amber-50);color:var(--amber-600);">LC</div>Leo Chen</div></td><td>Coordinator</td><td>Employment</td><td><span class="status-dot" style="background:#0F6E56"></span>On shift</td><td><span class="badge badge-done">Up to date</span></td></tr>
+            <tr><td><div class="staff-name"><div class="staff-av" style="background:var(--coral-50);color:var(--coral-600);">RD</div>Rosa Diaz</div></td><td>Youth Worker</td><td>After School</td><td><span class="status-dot" style="background:#0F6E56"></span>On shift</td><td><span class="badge badge-req">Due Aug 1</span></td></tr>
+            <tr><td><div class="staff-name"><div class="staff-av" style="background:var(--purple-50);color:var(--purple-600);">AN</div>Ama Nkosi</div></td><td>Civic Educator</td><td>Citizenship</td><td><span class="status-dot" style="background:#888780"></span>Off today</td><td><span class="badge badge-done">Up to date</span></td></tr>
+            <tr><td><div class="staff-name"><div class="staff-av" style="background:var(--teal-50);color:var(--teal-600);">JB</div>Jerome Baptiste</div></td><td>Employer Partner</td><td>Job Placement</td><td><span class="status-dot" style="background:#888780"></span>Remote</td><td><span class="badge badge-new">New module</span></td></tr>
+            <tr><td><div class="staff-name"><div class="staff-av" style="background:var(--amber-50);color:var(--amber-600);">SK</div>Sara Kim</div></td><td>Volunteer Lead</td><td>Community</td><td><span class="status-dot" style="background:#0F6E56"></span>On shift</td><td><span class="badge badge-req">Due Aug 1</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ROOMS PAGE -->
+    <div class="page" id="page-rooms">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">All rooms · today</div>
+          <div style="display:flex;gap:16px;font-size:12px;">
+            <span><span class="status-dot" style="background:#0F6E56;display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;"></span>5 occupied</span>
+            <span><span class="status-dot" style="background:var(--gray-100);display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;"></span>3 available</span>
+            <span><span class="status-dot" style="background:var(--amber-200);display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;"></span>1 reserved</span>
+            <span><span class="status-dot" style="background:var(--coral-200);display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;"></span>1 maintenance</span>
+          </div>
+        </div>
+        <button class="btn btn-blue" onclick="showRoomDetail('employment')">+ Book a room</button>
+      </div>
+
+      <div class="room-grid">
+        <!-- B2 Employment Dept Room — highlighted -->
+        <div class="room-card occupied" style="border:2px solid var(--blue-600);border-left:4px solid var(--blue-600);position:relative;">
+          <div style="position:absolute;top:12px;right:12px;"><span class="badge badge-blue">Employment Dept</span></div>
+          <div class="room-name">Room B2</div>
+          <div class="room-type">Employment Services · Capacity 20</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:#0F6E56;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>In use now</div>
+          </div>
+          <div class="room-current">
+            <div class="room-current-label">Current session</div>
+            <div class="room-current-val">Job Readiness Workshop</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Leo Chen · 10:30 AM – 12:00 PM · 14 participants</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn" onclick="showRoomDetail('employment')">View details</button>
+            <button class="btn btn-blue" onclick="showRoomDetail('employment')">Book</button>
+          </div>
+        </div>
+
+        <div class="room-card occupied">
+          <div class="room-name">Room A1</div>
+          <div class="room-type">ESL / Language · Capacity 18</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:#0F6E56;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>In use now</div>
+          </div>
+          <div class="room-current">
+            <div class="room-current-label">Current session</div>
+            <div class="room-current-val">ESL Beginner</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">M. Owusu · 9:00 – 10:15 AM · 12 participants</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn">View details</button>
+            <button class="btn">Book</button>
+          </div>
+        </div>
+
+        <div class="room-card available">
+          <div class="room-name">Room A2</div>
+          <div class="room-type">ESL / Language · Capacity 18</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:var(--gray-100);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Available</div>
+          </div>
+          <div class="room-current" style="background:var(--teal-50);">
+            <div class="room-current-label">Next booking</div>
+            <div class="room-current-val">ESL Advanced — 1:00 PM</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">L. Chen · 2.5 hrs until session</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn">View details</button>
+            <button class="btn btn-primary">Book now</button>
+          </div>
+        </div>
+
+        <div class="room-card occupied">
+          <div class="room-name">Room C3</div>
+          <div class="room-type">Civic Programs · Capacity 25</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:#0F6E56;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>In use now</div>
+          </div>
+          <div class="room-current">
+            <div class="room-current-label">Current session</div>
+            <div class="room-current-val">Citizenship Prep</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">A. Nkosi · 3:00 – 4:30 PM · 18 participants</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn">View details</button>
+            <button class="btn">Book</button>
+          </div>
+        </div>
+
+        <div class="room-card reserved">
+          <div class="room-name">Room 3B</div>
+          <div class="room-type">Conference / Meeting · Capacity 30</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:var(--amber-200);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Reserved</div>
+          </div>
+          <div class="room-current" style="background:var(--amber-50);">
+            <div class="room-current-label">Upcoming reservation</div>
+            <div class="room-current-val">All-staff meeting — Friday 10am</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Admin · June 27 · All coordinators</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn">View details</button>
+            <button class="btn">Book</button>
+          </div>
+        </div>
+
+        <div class="room-card available">
+          <div class="room-name">Gym</div>
+          <div class="room-type">Recreation · Capacity 60</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:#0F6E56;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>In use now</div>
+          </div>
+          <div class="room-current">
+            <div class="room-current-label">Current session</div>
+            <div class="room-current-val">Youth After School Program</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">R. Diaz · 1:00 – 5:00 PM · 32 participants</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn">View details</button>
+            <button class="btn">Book</button>
+          </div>
+        </div>
+
+        <div class="room-card maintenance">
+          <div class="room-name">Community Hall</div>
+          <div class="room-type">Large events · Capacity 120</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:var(--coral-200);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Maintenance</div>
+          </div>
+          <div class="room-current" style="background:var(--coral-50);">
+            <div class="room-current-label">Issue reported</div>
+            <div class="room-current-val">AV system repair — in progress</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Expected clear by 4:00 PM · Community Dinner at 5:30</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn">View details</button>
+            <button class="btn" disabled style="opacity:0.5;cursor:not-allowed;">Unavailable</button>
+          </div>
+        </div>
+
+        <div class="room-card available">
+          <div class="room-name">Room D1</div>
+          <div class="room-type">Small meeting · Capacity 8</div>
+          <div class="room-status-row">
+            <div class="room-status"><span class="status-dot" style="background:var(--gray-100);width:8px;height:8px;border-radius:50%;display:inline-block;"></span>Available all day</div>
+          </div>
+          <div class="room-current" style="background:var(--teal-50);">
+            <div class="room-current-label">Status</div>
+            <div class="room-current-val">Open for walk-in bookings</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">No reservations today</div>
+          </div>
+          <div class="room-actions">
+            <button class="btn">View details</button>
+            <button class="btn btn-primary">Book now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPLOYMENT DEPT ROOM DETAIL -->
+      <div id="room-detail-employment" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+          <button class="btn" onclick="document.getElementById('room-detail-employment').style.display='none';document.querySelector('.room-grid').style.display='grid';" style="font-size:12px;">← Back to all rooms</button>
+          <span style="font-size:15px;font-weight:600;">Room B2 — Employment Department</span>
+          <span class="badge badge-blue">Employment Dept</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;">
+          <div>
+            <div class="tab-row">
+              <button class="tab-btn active" onclick="switchTab('schedule')">Today's schedule</button>
+              <button class="tab-btn" onclick="switchTab('equipment')">Equipment & setup</button>
+              <button class="tab-btn" onclick="switchTab('issues')">Issues & notes</button>
+            </div>
+
+            <div class="tab-content active" id="tab-schedule">
+              <div class="card" style="padding:0 22px;">
+                <div style="padding:14px 0 10px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Monday June 23</div>
+                <div class="room-schedule-row">
+                  <div class="room-sched-time">9:00 – 10:00</div>
+                  <div>
+                    <div class="room-sched-event">Staff prep / setup</div>
+                    <div class="room-sched-who">Leo Chen · Employment team</div>
+                  </div>
+                  <span class="badge" style="background:var(--gray-50);color:var(--gray-600);">Internal</span>
+                </div>
+                <div class="room-schedule-row" style="background:var(--blue-50);margin:0 -22px;padding-left:22px;padding-right:22px;border-radius:0;">
+                  <div class="room-sched-time" style="color:var(--blue-800);">10:30 – 12:00</div>
+                  <div>
+                    <div class="room-sched-event" style="color:var(--blue-800);">Job Readiness Workshop</div>
+                    <div class="room-sched-who">Leo Chen · 14 participants enrolled</div>
+                  </div>
+                  <span class="badge badge-blue">Now</span>
+                </div>
+                <div class="room-schedule-row">
+                  <div class="room-sched-time">1:00 – 2:30</div>
+                  <div>
+                    <div class="room-sched-event">Employer partner meeting</div>
+                    <div class="room-sched-who">Jerome Baptiste + 3 employer reps</div>
+                  </div>
+                  <span class="badge badge-req">Reserved</span>
+                </div>
+                <div class="room-schedule-row">
+                  <div class="room-sched-time">3:00 – 4:30</div>
+                  <div>
+                    <div class="room-sched-event">Resume Writing Workshop</div>
+                    <div class="room-sched-who">Rosa Diaz · 8 participants enrolled</div>
+                  </div>
+                  <span class="badge badge-req">Reserved</span>
+                </div>
+                <div class="room-schedule-row" style="opacity:0.5;">
+                  <div class="room-sched-time">4:30 – close</div>
+                  <div>
+                    <div class="room-sched-event">Open / available</div>
+                    <div class="room-sched-who">No bookings</div>
+                  </div>
+                  <span class="badge" style="background:var(--teal-50);color:var(--teal-600);">Free</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-content" id="tab-equipment">
+              <div class="card">
+                <div style="font-size:13px;font-weight:500;margin-bottom:10px;">Standard equipment</div>
+                <div style="margin-bottom:14px;">
+                  <span class="equip-tag">Projector</span>
+                  <span class="equip-tag">Whiteboard (x2)</span>
+                  <span class="equip-tag">Laptop cart</span>
+                  <span class="equip-tag">Printer access</span>
+                  <span class="equip-tag">Video conferencing</span>
+                  <span class="equip-tag">Resume paper stock</span>
+                  <span class="equip-tag">Job boards display</span>
+                  <span class="equip-tag">Wi-Fi (staff + guest)</span>
+                </div>
+                <div style="font-size:13px;font-weight:500;margin-bottom:8px;">Room layout</div>
+                <div style="font-size:13px;color:var(--text-muted);line-height:1.6;">Default layout is workshop style — 5 tables of 4. Can be reconfigured to classroom (rows), boardroom (single table), or open floor. Notify operations 24hrs in advance for layout changes.</div>
+                <div style="margin-top:14px;padding:12px;background:var(--amber-50);border-radius:var(--radius-sm);font-size:12.5px;color:var(--amber-600);">⚠ Laptop cart key is with Leo Chen. Sign out via the equipment log before removing laptops.</div>
+              </div>
+            </div>
+
+            <div class="tab-content" id="tab-issues">
+              <div class="card" style="padding:0 22px;">
+                <div style="padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Active notes</span>
+                  <button class="btn" style="font-size:11px;padding:4px 10px;">+ Log issue</button>
+                </div>
+                <div class="issue-row">
+                  <div class="issue-icon">🖨️</div>
+                  <div class="issue-desc">
+                    <div style="font-weight:500;">Printer paper jam — intermittent</div>
+                    <div class="issue-meta">Reported by L. Chen · June 21 · Ops notified</div>
+                  </div>
+                  <span class="badge badge-req">Open</span>
+                </div>
+                <div class="issue-row">
+                  <div class="issue-icon">🌡️</div>
+                  <div class="issue-desc">
+                    <div style="font-weight:500;">AC unit running warm in afternoon</div>
+                    <div class="issue-meta">Reported by R. Diaz · June 19 · Facilities ticket #204</div>
+                  </div>
+                  <span class="badge badge-req">In progress</span>
+                </div>
+                <div class="issue-row" style="opacity:0.5;">
+                  <div class="issue-icon">💡</div>
+                  <div class="issue-desc">
+                    <div style="font-weight:500;">Flickering light (rear left) — resolved</div>
+                    <div class="issue-meta">June 14 · Fixed by facilities</div>
+                  </div>
+                  <span class="badge badge-done">Resolved</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="card">
+              <div class="card-title">Room info</div>
+              <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Room</span><span style="font-weight:500;">B2</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Floor</span><span>Ground · East wing</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Capacity</span><span>20 seated</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Primary dept</span><span style="font-weight:500;color:var(--blue-600);">Employment</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Room lead</span><span>Leo Chen</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Bookable by</span><span>All staff</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Upcoming this week</div>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><div style="font-weight:500;">Job Readiness</div><div style="color:var(--text-muted);">Tue – Thu · 10:30 AM</div></div>
+                  <span class="badge" style="background:var(--amber-50);color:var(--amber-600);">Recurring</span>
+                </div>
+                <div style="height:1px;background:var(--border);"></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><div style="font-weight:500;">Employer fair prep</div><div style="color:var(--text-muted);">Wed · 2:00 PM</div></div>
+                  <span class="badge badge-new">New</span>
+                </div>
+                <div style="height:1px;background:var(--border);"></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><div style="font-weight:500;">Resume Workshop</div><div style="color:var(--text-muted);">Mon & Thu · 3:00 PM</div></div>
+                  <span class="badge" style="background:var(--amber-50);color:var(--amber-600);">Recurring</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-blue" style="width:100%;">Book Room B2</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRAINING PAGE -->
+    <div class="page" id="page-training">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+        <div class="training-card">
+          <div class="training-icon" style="background:var(--teal-50);">🛡️</div>
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:start;"><div class="training-title">Safeguarding & Child Protection</div><span class="badge badge-req">Required</span></div>
+            <div class="training-meta">45 min · Certificate on completion</div>
+            <div class="training-progress">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-muted)">Your progress</span><span style="font-weight:500;">100%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%"></div></div>
+            </div>
+            <div style="margin-top:8px;"><span class="badge badge-done">✓ Completed</span></div>
+          </div>
+        </div>
+        <div class="training-card">
+          <div class="training-icon" style="background:var(--purple-50);">🌍</div>
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:start;"><div class="training-title">DEI Foundations</div><span class="badge badge-req">Required</span></div>
+            <div class="training-meta">60 min · 4 modules</div>
+            <div class="training-progress">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-muted)">Your progress</span><span style="font-weight:500;">75%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:75%;background:var(--purple-200)"></div></div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:8px;padding:5px 12px;font-size:12px;">Continue →</button>
+          </div>
+        </div>
+        <div class="training-card">
+          <div class="training-icon" style="background:var(--amber-50);">🩺</div>
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:start;"><div class="training-title">First Aid Recertification</div><span class="badge badge-req">Due Aug 1</span></div>
+            <div class="training-meta">90 min · Hands-on component required</div>
+            <div class="training-progress">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-muted)">Your progress</span><span style="font-weight:500;">0%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn" style="margin-top:8px;padding:5px 12px;font-size:12px;">Start module →</button>
+          </div>
+        </div>
+        <div class="training-card">
+          <div class="training-icon" style="background:var(--teal-50);">💬</div>
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:start;"><div class="training-title">Trauma-Informed Communication</div><span class="badge badge-new">New</span></div>
+            <div class="training-meta">30 min · Optional</div>
+            <div class="training-progress">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-muted)">Your progress</span><span style="font-weight:500;">0%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn" style="margin-top:8px;padding:5px 12px;font-size:12px;">Start module →</button>
+          </div>
+        </div>
+        <div class="training-card">
+          <div class="training-icon" style="background:var(--coral-50);">📋</div>
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:start;"><div class="training-title">Grant Reporting Basics</div><span class="badge badge-new">New</span></div>
+            <div class="training-meta">20 min · For coordinators</div>
+            <div class="training-progress">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-muted)">Your progress</span><span style="font-weight:500;">0%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn" style="margin-top:8px;padding:5px 12px;font-size:12px;">Start module →</button>
+          </div>
+        </div>
+        <div class="training-card">
+          <div class="training-icon" style="background:var(--amber-50);">🔒</div>
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:start;"><div class="training-title">Data Privacy & HIPAA Overview</div><span class="badge badge-done">Completed</span></div>
+            <div class="training-meta">25 min · Annual requirement</div>
+            <div class="training-progress">
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;"><span style="color:var(--text-muted)">Your progress</span><span style="font-weight:500;">100%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%"></div></div>
+            </div>
+            <div style="margin-top:8px;"><span class="badge badge-done">✓ Completed</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOUNGE PAGE -->
+    <div class="page" id="page-lounge">
+      <div class="two-col" style="align-items:start;">
+        <div class="card">
+          <div class="card-title">Staff lounge 💬</div>
+          <div id="lounge-feed">
+            <div class="lounge-post">
+              <div class="poster-av" style="background:var(--teal-50);color:var(--teal-600);">MO</div>
+              <div><div class="lounge-who">Mariama Owusu <span class="lounge-time">· 8 min ago</span></div><div class="lounge-msg">Reminder: ESL room A1 needs the projector set up before 8:45. Who can help?</div></div>
+            </div>
+            <div class="lounge-post">
+              <div class="poster-av" style="background:var(--amber-50);color:var(--amber-600);">LC</div>
+              <div><div class="lounge-who">Leo Chen <span class="lounge-time">· 22 min ago</span></div><div class="lounge-msg">Coffee machine is back on! ☕ Someone fixed it this morning. You're welcome, everyone.</div></div>
+            </div>
+            <div class="lounge-post">
+              <div class="poster-av" style="background:var(--coral-50);color:var(--coral-600);">RD</div>
+              <div><div class="lounge-who">Rosa Diaz <span class="lounge-time">· 1 hr ago</span></div><div class="lounge-msg">Youth group made a mural in the gym — it looks incredible. Come see it before tonight's dinner!</div></div>
+            </div>
+            <div class="lounge-post">
+              <div class="poster-av" style="background:var(--purple-50);color:var(--purple-600);">AN</div>
+              <div><div class="lounge-who">Ama Nkosi <span class="lounge-time">· 2 hrs ago</span></div><div class="lounge-msg">Out today but if anyone needs the citizenship prep materials, they're in the shared folder under /Programs/Civic.</div></div>
+            </div>
+          </div>
+          <div class="lounge-input-row">
+            <input class="lounge-input" id="lounge-msg-input" type="text" placeholder="Say something to the team…" onkeydown="handleLoungePost(event)" />
+            <button class="btn btn-primary" onclick="postLounge()">Send</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="card">
+            <div class="card-title">Quick links</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <button class="btn" style="text-align:left;width:100%;">📂 Shared drive</button>
+              <button class="btn" style="text-align:left;width:100%;">📅 Request time off</button>
+              <button class="btn" style="text-align:left;width:100%;">📝 Incident report form</button>
+              <button class="btn" style="text-align:left;width:100%;">🏥 Benefits & HR portal</button>
+              <button class="btn" style="text-align:left;width:100%;">📞 Emergency contacts</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Who's in today</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div class="staff-av" style="background:var(--teal-50);color:var(--teal-600);width:28px;height:28px;font-size:11px;">MO</div>Mariama Owusu<span class="status-dot" style="background:#0F6E56;margin-left:auto;margin-right:4px;"></span><span style="font-size:11px;color:var(--text-muted)">On shift</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div class="staff-av" style="background:var(--amber-50);color:var(--amber-600);width:28px;height:28px;font-size:11px;">LC</div>Leo Chen<span class="status-dot" style="background:#0F6E56;margin-left:auto;margin-right:4px;"></span><span style="font-size:11px;color:var(--text-muted)">On shift</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div class="staff-av" style="background:var(--coral-50);color:var(--coral-600);width:28px;height:28px;font-size:11px;">RD</div>Rosa Diaz<span class="status-dot" style="background:#0F6E56;margin-left:auto;margin-right:4px;"></span><span style="font-size:11px;color:var(--text-muted)">On shift</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div class="staff-av" style="background:var(--purple-50);color:var(--purple-600);width:28px;height:28px;font-size:11px;">SK</div>Sara Kim<span class="status-dot" style="background:#0F6E56;margin-left:auto;margin-right:4px;"></span><span style="font-size:11px;color:var(--text-muted)">On shift</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS PAGE -->
+    <div class="page" id="page-announcements">
+      <div class="card">
+        <div class="card-title">All announcements</div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;"><div style="font-size:14px;font-weight:500;">Staff meeting — this Friday at 10am</div><span class="badge badge-req">Today</span></div>
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Posted by: Admin · June 23</div>
+            <div style="font-size:13.5px;line-height:1.6;">All coordinators and program leads, please attend Friday's all-staff meeting in Room 3B. Starts at 10am sharp. Light refreshments provided. We'll be reviewing Q2 outcomes and planning for the fall programming season.</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;"><div style="font-size:14px;font-weight:500;">New training module: Trauma-Informed Communication</div><span class="badge badge-new">New</span></div>
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Posted by: HR · June 20</div>
+            <div style="font-size:13.5px;line-height:1.6;">A new optional training module is now available in the Training Hub. It covers communication strategies for working with community members who have experienced trauma. Highly recommended for all front-line staff.</div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;"><div style="font-size:14px;font-weight:500;">First aid recertification — sign up now</div><span class="badge badge-req">Deadline Aug 1</span></div>
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">Posted by: Admin · June 18</div>
+            <div style="font-size:13.5px;line-height:1.6;">All full-time staff must complete first aid recertification before August 1. The online portion is in the Training Hub. The in-person component will be held July 19 — sign up via the HR portal to reserve your spot.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const pages = { dashboard:'Dashboard', schedule:'Schedule', staff:'Staff & Employers', rooms:'Rooms', training:'Training Hub', lounge:'Staff Lounge', announcements:'Announcements' };
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = pages[id] || id;
+  if (id === 'rooms') {
+    document.getElementById('room-detail-employment').style.display = 'none';
+    document.querySelector('.room-grid').style.display = 'grid';
+  }
+}
+
+function showRoomDetail(room) {
+  document.querySelector('.room-grid').style.display = 'none';
+  document.getElementById('room-detail-' + room).style.display = 'block';
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function postLounge() {
+  const input = document.getElementById('lounge-msg-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const feed = document.getElementById('lounge-feed');
+  const post = document.createElement('div');
+  post.className = 'lounge-post';
+  post.innerHTML = `<div class="poster-av" style="background:var(--teal-200);color:var(--teal-800);">AD</div><div><div class="lounge-who">You <span class="lounge-time">· just now</span></div><div class="lounge-msg">${msg.replace(/</g,'&lt;')}</div></div>`;
+  feed.appendChild(post);
+  input.value = '';
+  post.scrollIntoView({ behavior: 'smooth' });
+}
+
+function handleLoungePost(e) { if (e.key === 'Enter') postLounge(); }
+
+const now = new Date();
+document.getElementById('topbar-date').textContent = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+
+// --- Session guard: redirect to login if no active staff session ---
+(function gcccGuardDashboard() {
+  const session = sessionStorage.getItem('gccc_staff');
+  if (!session) {
+    window.location.href = 'back-office-login.html';
+    return;
+  }
+  // Show staff ID initials in sidebar
+  try {
+    const { id } = JSON.parse(session);
+    const initials = id.split(/[\s@.]+/).map(w => w[0]?.toUpperCase()).filter(Boolean).slice(0,2).join('');
+    if (initials) {
+      document.getElementById('staff-avatar-initials').textContent = initials;
+      document.getElementById('staff-display-name').textContent = id.split('@')[0];
+    }
+  } catch(e) {}
+})();
+
+function gcccSignOut() {
+  sessionStorage.removeItem('gccc_staff');
+  window.location.href = 'back-office-login.html';
+}
+</script>
+</body>
+</html>

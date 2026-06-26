@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Start Your Fundraiser — GCCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#050D1A;--navy2:#0A1628;--slate:#122040;
+  --teal:#00D4B4;--gold:#FFD166;--chalk:#F0F4FF;
+  --mist:#8A9BBE;--coral:#FF6B6B;
+}
+body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--chalk);line-height:1.6;}
+a{text-decoration:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(5,13,26,0.92);backdrop-filter:blur(14px);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.08em;color:var(--teal);}
+.nav-back{padding:9px 22px;border-radius:4px;background:transparent;border:1px solid rgba(240,244,255,0.25);color:var(--chalk);font-size:13px;font-weight:600;}
+.nav-back:hover{border-color:var(--teal);color:var(--teal);}
+
+/* HERO */
+.fr-hero{min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,212,180,0.12),transparent),var(--navy);}
+.fr-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,96px);letter-spacing:0.03em;line-height:0.95;color:var(--chalk);margin-bottom:20px;}
+.fr-hero h1 em{font-style:normal;color:var(--gold);}
+.fr-hero p{font-size:clamp(15px,2vw,19px);color:var(--mist);max-width:560px;margin:0 auto 48px;font-weight:300;}
+
+/* TYPES GRID */
+.section{padding:80px 48px;}
+.inner{max-width:1100px;margin:0 auto;}
+.label{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);margin-bottom:14px;}
+.title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);letter-spacing:0.03em;color:var(--chalk);margin-bottom:12px;}
+.sub{font-size:16px;color:var(--mist);max-width:600px;margin-bottom:48px;line-height:1.75;}
+.divider{width:48px;height:3px;background:var(--teal);margin:16px 0 24px;}
+
+.types-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+.type-card{background:var(--slate);border-radius:12px;padding:32px;border:1px solid rgba(255,255,255,0.05);transition:border-color 0.2s,transform 0.2s;}
+.type-card:hover{border-color:rgba(0,212,180,0.3);transform:translateY(-3px);}
+.type-icon{font-size:36px;margin-bottom:16px;}
+.type-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--chalk);margin-bottom:8px;}
+.type-desc{font-size:14px;color:var(--mist);line-height:1.65;margin-bottom:20px;}
+.type-btn{display:inline-block;padding:10px 24px;border-radius:4px;background:var(--teal);color:var(--navy);font-size:13px;font-weight:700;letter-spacing:0.04em;transition:background 0.2s;}
+.type-btn:hover{background:#00FFDF;}
+.type-btn.gold{background:var(--gold);}
+.type-btn.gold:hover{background:#ffe08a;}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;background:rgba(255,255,255,0.04);margin-top:48px;}
+.step{background:var(--navy2);padding:40px 32px;text-align:center;}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--teal);line-height:1;}
+.step-title{font-weight:600;color:var(--chalk);margin:8px 0 6px;}
+.step-desc{font-size:14px;color:var(--mist);}
+
+/* FORM */
+.form-section{background:var(--slate);border-radius:16px;padding:48px;max-width:680px;margin:0 auto;}
+.form-section h3{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--chalk);letter-spacing:0.04em;margin-bottom:8px;}
+.form-section p{font-size:14px;color:var(--mist);margin-bottom:32px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-row.full{grid-template-columns:1fr;}
+label{display:block;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mist);margin-bottom:6px;}
+input,select,textarea{width:100%;padding:12px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:var(--chalk);font-size:14px;font-family:'Inter',sans-serif;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal);}
+textarea{resize:vertical;min-height:100px;}
+select option{background:var(--navy2);}
+.submit-btn{width:100%;padding:16px;border-radius:6px;background:var(--teal);color:var(--navy);font-weight:700;font-size:16px;letter-spacing:0.04em;border:none;cursor:pointer;margin-top:8px;transition:background 0.2s;}
+.submit-btn:hover{background:#00FFDF;}
+
+/* FOOTER */
+footer{background:var(--navy2);border-top:1px solid rgba(255,255,255,0.06);padding:40px 48px;text-align:center;color:var(--mist);font-size:13px;}
+footer a{color:var(--teal);}
+
+@media(max-width:768px){
+  nav{padding:16px 20px;}
+  .section{padding:60px 20px;}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">🌍 GCCC</a>
+  <a class="nav-back" href="index.html">← Back to Home</a>
+</nav>
+
+<!-- HERO -->
+<div class="fr-hero">
+  <div>
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;border:1px solid rgba(255,209,102,0.3);background:rgba(255,209,102,0.08);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);"></span>
+      Global Fundraising Network
+    </div>
+    <h1>Start Your<br><em>Fundraiser</em></h1>
+    <p>Every campaign is a mission. Whether you're raising for hunger relief, education, or community programs — GCCC gives you the platform, the network, and the purpose.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="#start" class="type-btn gold" style="padding:15px 36px;font-size:15px;">Start Now →</a>
+      <a href="#types" style="padding:15px 36px;border-radius:4px;border:1px solid rgba(240,244,255,0.25);color:var(--chalk);font-size:15px;font-weight:500;">See Fundraiser Types</a>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:var(--navy2);">
+  <div class="inner">
+    <div class="label">How It Works</div>
+    <h2 class="title">Three Steps to Launch</h2>
+    <div class="divider"></div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Choose Your Cause</div>
+        <div class="step-desc">Pick from one of 17 SDG-aligned categories or create your own mission-driven campaign.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Set Your Goal</div>
+        <div class="step-desc">Name your fundraising target, timeline, and beneficiary. We help you write a compelling story.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Share & Mobilize</div>
+        <div class="step-desc">Your campaign page goes live across the GCCC network instantly. Share it everywhere.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Collect & Impact</div>
+        <div class="step-desc">Funds are collected securely and disbursed directly to your cause. We track every dollar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPES -->
+<section id="types" class="section">
+  <div class="inner">
+    <div class="label">Fundraiser Types</div>
+    <h2 class="title">Find Your Campaign</h2>
+    <div class="divider"></div>
+    <p class="sub">Every mission deserves a platform. Choose the format that fits your cause.</p>
+    <div class="types-grid">
+      <div class="type-card">
+        <div class="type-icon">🍽️</div>
+        <div class="type-title">Global Bake Sale</div>
+        <div class="type-desc">Our signature fundraiser. Vegan, no-bake, gluten-free. Partner with No Kid Hungry and raise funds for Zero Hunger (SDG 2). Virtual or in-person.</div>
+        <a href="#start" class="type-btn">Start Bake Sale</a>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">🏃</div>
+        <div class="type-title">Community Walk / Run</div>
+        <div class="type-desc">Rally your neighborhood for a sponsored walk or run. Every mile = dollars toward SDG goals. Includes route planning tools and donor tracking.</div>
+        <a href="#start" class="type-btn">Plan Your Event</a>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">🎟️</div>
+        <div class="type-title">Raffle Campaign</div>
+        <div class="type-desc">Run a community raffle for prizes, experiences, or gift cards. Linked directly to the GCCC raffle platform at amazonraffles.univer.se.</div>
+        <a href="https://amazonraffles.univer.se/" target="_blank" class="type-btn">Open Raffle Platform</a>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">🎤</div>
+        <div class="type-title">Live Stream Drive</div>
+        <div class="type-desc">Host a donation drive on the GCCC Live Network. Collect pledges in real-time while broadcasting to the global community.</div>
+        <a href="index.html#live" class="type-btn">Go to Live Network</a>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">💼</div>
+        <div class="type-title">Corporate Match</div>
+        <div class="type-desc">Bring your employer into the mission. GCCC provides documentation for corporate matching programs and CSR partnership packages.</div>
+        <a href="#start" class="type-btn gold">Get Match Package</a>
+      </div>
+      <div class="type-card">
+        <div class="type-icon">📅</div>
+        <div class="type-title">Monthly Subscription</div>
+        <div class="type-desc">Launch a recurring giving campaign. $25/month or $40/year — the research-backed amounts needed to help end extreme poverty for good.</div>
+        <a href="index.html#donate" class="type-btn gold">See Subscription Tiers</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- START FORM -->
+<section id="start" class="section" style="background:var(--navy2);">
+  <div class="inner">
+    <div class="label">Launch Your Campaign</div>
+    <h2 class="title">Start Your Fundraiser</h2>
+    <div class="divider"></div>
+    <div class="form-section">
+      <h3>Campaign Details</h3>
+      <p>Fill out the form below and a GCCC team member will help you launch within 48 hours.</p>
+      <form onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div>
+            <label>First Name</label>
+            <input type="text" placeholder="Rose" required/>
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input type="text" placeholder="Williams" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Email</label>
+            <input type="email" placeholder="you@email.com" required/>
+          </div>
+          <div>
+            <label>Phone</label>
+            <input type="tel" placeholder="+1 (555) 000-0000"/>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div>
+            <label>Campaign Name</label>
+            <input type="text" placeholder="e.g. GCCC Brooklyn Bake Sale 2026" required/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Fundraiser Type</label>
+            <select required>
+              <option value="">Select a type...</option>
+              <option>Global Bake Sale</option>
+              <option>Community Walk / Run</option>
+              <option>Raffle Campaign</option>
+              <option>Live Stream Drive</option>
+              <option>Corporate Match</option>
+              <option>Monthly Subscription Drive</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label>Fundraising Goal ($)</label>
+            <input type="number" placeholder="e.g. 5000" min="100"/>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div>
+            <label>SDG Alignment</label>
+            <select>
+              <option value="">Select an SDG...</option>
+              <option>SDG 1 — No Poverty</option>
+              <option>SDG 2 — Zero Hunger</option>
+              <option>SDG 3 — Good Health</option>
+              <option>SDG 4 — Quality Education</option>
+              <option>SDG 5 — Gender Equality</option>
+              <option>SDG 6 — Clean Water</option>
+              <option>SDG 7 — Clean Energy</option>
+              <option>SDG 8 — Decent Work</option>
+              <option>SDG 10 — Reduced Inequalities</option>
+              <option>SDG 11 — Sustainable Cities</option>
+              <option>SDG 13 — Climate Action</option>
+              <option>SDG 16 — Peace & Justice</option>
+              <option>SDG 17 — Partnerships</option>
+              <option>Multiple / General</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div>
+            <label>Tell Us About Your Campaign</label>
+            <textarea placeholder="Describe your cause, who it helps, and why now..."></textarea>
+          </div>
+        </div>
+        <button class="submit-btn" type="submit">Submit Campaign →</button>
+        <p style="font-size:12px;color:var(--mist);margin-top:12px;text-align:center;">You'll hear from our team within 48 hours. No commitment required.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Global Citizens Community Center · <a href="index.html">Home</a> · <a href="gccc-pages.html">Sign In</a> · <a href="community-center.html">Community Center</a> · <a href="back-office-login.html">Back Office</a> · <a href="https://globalcitizencommunitycenter.univer.se" target="_blank">Live Site</a></p>
+  <p style="margin-top:8px;">Aligned with the UN 2030 Agenda · 17 Sustainable Development Goals</p>
+</footer>
+
+<script>
+function handleSubmit(e){
+  e.preventDefault();
+  const btn = e.target.querySelector('.submit-btn');
+  btn.textContent = '✅ Submitted! We\'ll be in touch within 48 hours.';
+  btn.style.background = '#16a34a';
+  btn.disabled = true;
+}
+</script>
+</body>
+</html>
