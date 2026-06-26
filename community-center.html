@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlobalHive — Community Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D0F14;
+    --surface: #161920;
+    --surface2: #1E2130;
+    --border: rgba(255,255,255,0.07);
+    --accent: #6EE7B7;
+    --accent2: #818CF8;
+    --accent3: #FB923C;
+    --accent4: #F472B6;
+    --text: #E2E8F0;
+    --muted: #64748B;
+    --white: #FFFFFF;
+    --doom-red: #EF4444;
+    --doom-orange: #F97316;
+    --sdg-safe: #22C55E;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 72px 220px 1fr 300px;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  .icon-rail {
+    grid-row: 1 / -1;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    gap: 0.25rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .rail-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    letter-spacing: 0.05em;
+  }
+
+  .rail-btn {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    position: relative;
+  }
+
+  .rail-btn:hover, .rail-btn.active {
+    background: rgba(110,231,183,0.12);
+    color: var(--accent);
+  }
+
+  .rail-btn .badge {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--accent3);
+    border-radius: 50%;
+  }
+
+  .rail-divider { width: 28px; height: 1px; background: var(--border); margin: 0.5rem 0; }
+
+  .channel-list {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    grid-row: 1 / -1;
+  }
+
+  .channel-list::-webkit-scrollbar { width: 4px; }
+  .channel-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .channel-header { padding: 1.25rem 1rem 1rem; border-bottom: 1px solid var(--border); }
+
+  .server-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+  }
+
+  .online-pill {
+    font-size: 0.7rem;
+    background: rgba(110,231,183,0.15);
+    color: var(--accent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .channel-group-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 1rem 1rem 0.5rem;
+  }
+
+  .channel-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 0 0.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+  }
+
+  .channel-item:hover { background: var(--surface2); color: var(--text); }
+  .channel-item.active { background: rgba(110,231,183,0.12); color: var(--accent); }
+  .channel-item .ch-icon { font-size: 0.85rem; }
+  .channel-unread { margin-left: auto; background: var(--accent2); color: var(--white); font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 10px; font-family: 'JetBrains Mono', monospace; }
+  .channel-item .ch-voice { color: var(--accent3); font-size: 0.7rem; margin-left: auto; }
+
+  .live-badge {
+    margin-left: auto;
+    background: #EF4444;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    animation: livePulse 2s infinite;
+  }
+
+  @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  .user-bar {
+    margin-top: auto;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent2), var(--accent4)); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .user-name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+  .user-tag { font-size: 0.7rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+  }
+
+  .chat-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg);
+  }
+
+  .chat-channel-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--white); }
+  .chat-channel-desc { font-size: 0.8rem; color: var(--muted); }
+
+  .chat-actions { margin-left: auto; display: flex; gap: 0.5rem; }
+
+  .hdr-btn {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .hdr-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content::-webkit-scrollbar { width: 4px; }
+  .main-content::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .panel { display: none; flex-direction: column; flex: 1; }
+  .panel.active { display: flex; }
+
+  /* ===== DOOMSDAY CLOCK PANEL ===== */
+  .doom-panel {
+    padding: 2rem;
+    align-items: center;
+    background: radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.06) 0%, transparent 70%);
+  }
+
+  .doom-header { text-align: center; margin-bottom: 2rem; }
+  .doom-title { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--white); margin-bottom: 0.4rem; }
+  .doom-subtitle { font-size: 0.85rem; color: var(--muted); max-width: 500px; margin: 0 auto; line-height: 1.6; }
+
+  .doom-clock-wrap { position: relative; width: 260px; height: 260px; margin: 0 auto 2rem; }
+  .doom-clock-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .doom-clock-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 14; }
+  .doom-clock-arc { fill: none; stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 1s ease, stroke 0.5s ease; }
+  .doom-clock-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .doom-seconds { font-family: 'JetBrains Mono', monospace; font-size: 2.2rem; font-weight: 500; color: var(--white); line-height: 1; }
+  .doom-unit { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 0.2rem; }
+  .doom-to-midnight { font-size: 0.75rem; color: var(--doom-red); margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; animation: flickerRed 3s infinite; }
+  @keyframes flickerRed { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+  .doom-progress-wrap { width: 100%; max-width: 500px; margin-bottom: 1.5rem; }
+  .doom-progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .doom-progress-bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .doom-progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), #3B82F6); transition: width 0.8s ease; }
+
+  .sdg-actions-grid { width: 100%; max-width: 560px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1.5rem; }
+  .sdg-action-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.5rem; text-align: center; cursor: pointer; transition: all 0.2s; font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+  .sdg-action-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--accent); transform: translateY(-1px); }
+  .sdg-action-btn .sab-icon { font-size: 1.2rem; display: block; margin-bottom: 0.25rem; }
+  .sdg-action-btn .sab-reward { font-size: 0.65rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; margin-top: 0.2rem; }
+
+  .doom-log { width: 100%; max-width: 500px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+  .doom-log-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; margin-bottom: 0.75rem; }
+  .doom-log-entry { font-size: 0.8rem; color: var(--text); padding: 0.3rem 0; border-bottom: 1px solid var(--border); display: flex; gap: 0.5rem; align-items: center; animation: logIn 0.4s ease both; }
+  @keyframes logIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:none} }
+  .doom-log-entry:last-child { border-bottom: none; }
+  .doom-log-entry .log-time { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; flex-shrink: 0; }
+  .doom-log-entry .log-delta { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; margin-left: auto; flex-shrink: 0; }
+
+  /* ===== TAMAGOTCHI / PLANET EARTH PANEL ===== */
+  .tama-panel {
+    padding: 1.5rem 2rem;
+    align-items: center;
+    background: radial-gradient(ellipse at 50% 0%, rgba(129,140,248,0.06) 0%, transparent 70%);
+  }
+
+  .tama-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--white); text-align: center; margin-bottom: 0.3rem; }
+  .tama-sub { font-size: 0.82rem; color: var(--muted); text-align: center; margin-bottom: 1.5rem; }
+
+  .tama-device { background: var(--surface); border: 2px solid rgba(129,140,248,0.3); border-radius: 28px; padding: 1.5rem; width: 320px; box-shadow: 0 0 40px rgba(129,140,248,0.1); margin-bottom: 1.5rem; position: relative; }
+
+  .tama-screen { background: #0a0c10; border-radius: 16px; border: 2px solid rgba(255,255,255,0.08); height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 1rem; position: relative; overflow: hidden; }
+
+  .tama-bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(129,140,248,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(129,140,248,0.04) 1px, transparent 1px); background-size: 20px 20px; }
+
+  .tama-creature { font-size: 4rem; position: relative; z-index: 2; animation: tamaFloat 3s ease-in-out infinite; transition: filter 0.5s ease; line-height: 1; }
+  @keyframes tamaFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .tama-name-display { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent2); position: relative; z-index: 2; margin-top: 0.4rem; letter-spacing: 0.1em; }
+  .tama-mood { font-size: 0.75rem; color: var(--muted); position: relative; z-index: 2; margin-top: 0.2rem; font-style: italic; }
+
+  .tama-alert { position: absolute; top: 8px; right: 8px; font-size: 1rem; animation: alertPop 0.5s ease both; z-index: 3; }
+  @keyframes alertPop { from{transform:scale(0)} to{transform:scale(1)} }
+
+  .tama-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+  .tama-stat { background: var(--surface2); border-radius: 8px; padding: 0.5rem 0.6rem; }
+  .tama-stat-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+  .tama-stat-bar { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .tama-stat-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease, background 0.5s ease; }
+  .tama-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text); margin-top: 0.25rem; }
+
+  .tama-doom-link { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.78rem; color: #FCA5A5; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+
+  .tama-tasks { width: 100%; max-width: 560px; }
+  .tama-tasks-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 700; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; }
+  .tama-tasks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+  .tama-task { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem; cursor: pointer; transition: all 0.2s; display: flex; gap: 0.6rem; align-items: flex-start; }
+  .tama-task:hover { background: var(--surface2); border-color: var(--accent2); transform: translateY(-1px); }
+  .tama-task.done { border-color: var(--accent); opacity: 0.6; pointer-events: none; }
+  .tama-task-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 1px; }
+  .tama-task-info { flex: 1; min-width: 0; }
+  .tama-task-name { font-size: 0.82rem; font-weight: 600; color: var(--white); margin-bottom: 0.2rem; line-height: 1.3; }
+  .tama-task-desc { font-size: 0.7rem; color: var(--muted); line-height: 1.4; }
+  .tama-task-reward { font-size: 0.68rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; margin-top: 0.25rem; }
+
+  /* ===== COMMUNITY ROOMS PANEL ===== */
+  .rooms-panel {
+    padding: 1.5rem;
+    flex-direction: column;
+    overflow-y: auto;
+    background: radial-gradient(ellipse at 50% 0%, rgba(110,231,183,0.04) 0%, transparent 70%);
+  }
+
+  .rooms-header { text-align: center; margin-bottom: 1.5rem; }
+  .rooms-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--white); margin-bottom: 0.3rem; }
+  .rooms-sub { font-size: 0.82rem; color: var(--muted); }
+
+  .rooms-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; max-width: 700px; margin: 0 auto; }
+
+  .room-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .room-card:hover { background: var(--surface2); transform: translateY(-2px); border-color: rgba(110,231,183,0.3); }
+  .room-card:hover .room-arrow { opacity: 1; }
+
+  .room-icon { font-size: 2rem; }
+  .room-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+  .room-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+  .room-online { font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; color: var(--accent); margin-top: 0.25rem; }
+  .room-arrow { position: absolute; top: 1rem; right: 1rem; font-size: 0.9rem; color: var(--accent); opacity: 0; transition: opacity 0.2s; }
+
+  /* ===== BROADCAST PANEL ===== */
+  .broadcast-panel { padding: 0; flex-direction: column; }
+  .broadcast-header { padding: 1.25rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .broadcast-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); margin-bottom: 0.2rem; }
+  .broadcast-sub { font-size: 0.78rem; color: var(--muted); }
+  .broadcast-live-count { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 20px; padding: 0.3rem 0.75rem; font-size: 0.75rem; color: #FCA5A5; display: flex; align-items: center; gap: 0.35rem; font-family: 'JetBrains Mono', monospace; }
+  .bc-live-dot { width: 7px; height: 7px; background: #EF4444; border-radius: 50%; animation: livePulse 1.5s infinite; }
+
+  .sdg-channels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; padding: 1.25rem; overflow-y: auto; flex: 1; }
+  .sdg-channel-card { border-radius: 12px; padding: 1rem; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s; position: relative; overflow: hidden; }
+  .sdg-channel-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.2s; }
+  .sdg-channel-card:hover::before { opacity: 1; }
+  .sdg-channel-card:hover { transform: translateY(-2px); border-color: transparent; }
+  .sdg-ch-num { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; margin-bottom: 0.3rem; letter-spacing: 0.08em; }
+  .sdg-ch-icon { font-size: 1.6rem; margin-bottom: 0.4rem; display: block; position: relative; z-index: 1; }
+  .sdg-ch-name { font-size: 0.78rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; line-height: 1.3; position: relative; z-index: 1; }
+  .sdg-ch-viewers { font-size: 0.68rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 0.3rem; position: relative; z-index: 1; }
+  .sdg-ch-viewers .live-dot { width: 5px; height: 5px; border-radius: 50%; animation: livePulse 1.5s infinite; }
+
+  .stream-viewer { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+  .stream-viewer.open { display: flex; }
+  .stream-grid.open .sdg-channels-grid { display: none; }
+  .stream-grid { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .stream-grid.open .stream-viewer { display: flex; }
+  .stream-video-wrap { background: #000; aspect-ratio: 16/9; flex-shrink: 0; position: relative; overflow: hidden; max-height: 260px; }
+  .stream-video-bg { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; }
+  .stream-video-icon { font-size: 3rem; }
+  .stream-video-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--white); text-align: center; }
+  .stream-video-sub { font-size: 0.8rem; color: rgba(255,255,255,0.5); text-align: center; }
+  .stream-live-tag { position: absolute; top: 10px; left: 10px; background: #EF4444; color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 3px; letter-spacing: 0.1em; }
+  .stream-viewer-count { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; font-size: 0.72rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+  .stream-controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.75rem; }
+  .stream-back { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.6rem; color: var(--muted); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+  .stream-back:hover { color: var(--text); border-color: var(--accent); }
+  .stream-channel-info { flex: 1; }
+  .stream-ch-name { font-size: 0.9rem; font-weight: 700; color: var(--white); }
+  .stream-ch-goal { font-size: 0.72rem; color: var(--muted); }
+  .stream-chat { flex: 1; overflow-y: auto; padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.3rem; min-height: 0; }
+  .stream-chat::-webkit-scrollbar { width: 3px; }
+  .stream-chat::-webkit-scrollbar-thumb { background: var(--border); }
+  .stream-msg { font-size: 0.8rem; color: var(--text); line-height: 1.5; animation: msgIn 0.3s ease both; }
+  .stream-msg .sm-author { font-weight: 700; margin-right: 0.4rem; }
+  .stream-input-row { padding: 0.75rem 1rem; background: var(--bg); border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
+  .stream-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.45rem 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text); outline: none; }
+  .stream-input:focus { border-color: var(--accent); }
+  .stream-send { background: var(--accent); color: var(--bg); border: none; border-radius: 6px; padding: 0.45rem 0.75rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+  .stream-send:hover { background: #4ade80; }
+
+  /* MESSAGES */
+  .messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); }
+  .msg-group { display: flex; gap: 0.75rem; padding: 0.3rem 0; animation: msgIn 0.3s ease both; }
+  @keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .msg-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; margin-top: 2px; }
+  .msg-body { flex: 1; }
+  .msg-meta { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.2rem; }
+  .msg-author { font-size: 0.9rem; font-weight: 700; color: var(--white); }
+  .msg-time { font-size: 0.7rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .msg-role { font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; letter-spacing: 0.05em; }
+  .msg-content { font-size: 0.92rem; line-height: 1.6; color: var(--text); }
+  .msg-content a { color: var(--accent); text-decoration: none; }
+  .msg-content code { font-family: 'JetBrains Mono', monospace; background: var(--surface2); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.85em; color: var(--accent3); }
+  .msg-reactions { display: flex; gap: 0.35rem; margin-top: 0.4rem; flex-wrap: wrap; }
+  .reaction { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 0.2rem 0.5rem; font-size: 0.8rem; cursor: pointer; transition: background 0.2s, border-color 0.2s; display: flex; align-items: center; gap: 0.25rem; }
+  .reaction:hover, .reaction.mine { background: rgba(110,231,183,0.12); border-color: var(--accent); }
+  .reaction span { font-size: 0.7rem; color: var(--text); }
+  .day-divider { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; color: var(--muted); font-size: 0.75rem; font-weight: 600; }
+  .day-divider::before,.day-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  .msg-embed { background: var(--surface); border-left: 3px solid var(--accent2); border-radius: 4px; padding: 0.75rem 1rem; margin-top: 0.5rem; max-width: 400px; }
+  .embed-title { font-weight: 700; font-size: 0.9rem; color: var(--accent2); margin-bottom: 0.25rem; }
+  .embed-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  .channel-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--bg); padding: 0 1.5rem; overflow-x: auto; flex-shrink: 0; }
+  .tab { padding: 0.6rem 1rem; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .chat-input-area { padding: 1rem 1.5rem; background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0; }
+  .input-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; gap: 0.5rem; padding: 0 0.75rem; transition: border-color 0.2s; }
+  .input-box:focus-within { border-color: var(--accent); }
+  .input-prefix { font-size: 1rem; color: var(--muted); flex-shrink: 0; }
+  .chat-input { flex: 1; background: transparent; border: none; outline: none; padding: 0.75rem 0.25rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; color: var(--text); }
+  .chat-input::placeholder { color: var(--muted); }
+  .input-actions { display: flex; gap: 0.25rem; }
+  .inp-btn { width: 28px; height: 28px; border-radius: 6px; border: none; background: transparent; color: var(--muted); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: color 0.2s, background 0.2s; }
+  .inp-btn:hover { color: var(--accent); background: rgba(110,231,183,0.1); }
+  .send-btn { background: var(--accent); color: var(--bg) !important; border-radius: 6px !important; }
+  .send-btn:hover { background: #4ade80 !important; color: var(--bg) !important; }
+  .typing-indicator { font-size: 0.75rem; color: var(--muted); padding: 0.25rem 1.5rem; min-height: 1.5rem; display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
+  .typing-dots { display: flex; gap: 2px; }
+  .typing-dots span { width: 4px; height: 4px; background: var(--muted); border-radius: 50%; animation: blink 1.2s infinite; }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+
+  .right-sidebar { background: var(--surface); border-left: 1px solid var(--border); height: 100vh; overflow-y: auto; grid-row: 1 / -1; display: flex; flex-direction: column; }
+  .right-sidebar::-webkit-scrollbar { width: 4px; }
+  .right-sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+  .rside-section { padding: 1.25rem 1rem; border-bottom: 1px solid var(--border); }
+  .rside-title { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; }
+  .rside-title .count { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; background: var(--surface2); padding: 0.1rem 0.4rem; border-radius: 10px; color: var(--text); }
+
+  .mini-doom-wrap { background: var(--surface2); border-radius: 12px; padding: 1rem; margin-bottom: 0.5rem; text-align: center; border: 1px solid rgba(239,68,68,0.15); cursor: pointer; transition: border-color 0.2s; }
+  .mini-doom-wrap:hover { border-color: rgba(239,68,68,0.4); }
+  .mini-doom-time { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 500; color: var(--doom-red); margin-bottom: 0.2rem; letter-spacing: 0.05em; }
+  .mini-doom-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .mini-doom-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-bottom: 0.5rem; }
+  .mini-doom-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,var(--accent),#3B82F6); transition: width 0.8s ease; }
+  .mini-doom-cta { font-size: 0.72rem; color: var(--accent); cursor: pointer; }
+
+  .mini-tama-wrap { background: var(--surface2); border-radius: 12px; padding: 0.75rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; border: 1px solid var(--border); transition: border-color 0.2s; }
+  .mini-tama-wrap:hover { border-color: var(--accent2); }
+  .mini-tama-creature { font-size: 2rem; }
+  .mini-tama-info { flex: 1; }
+  .mini-tama-name { font-size: 0.82rem; font-weight: 600; color: var(--white); }
+  .mini-tama-status { font-size: 0.7rem; color: var(--muted); }
+  .mini-tama-hp { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-top: 0.3rem; }
+  .mini-tama-hp-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.5s ease; }
+
+  .member-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.35rem 0.5rem; margin: 0 -0.5rem; cursor: pointer; border-radius: 6px; transition: background 0.15s; }
+  .member-item:hover { background: var(--surface2); }
+  .member-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; position: relative; }
+  .status-dot { position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--surface); }
+  .status-dot.online { background: var(--accent); }
+  .status-dot.idle { background: var(--accent3); }
+  .status-dot.dnd { background: #EF4444; }
+  .status-dot.offline { background: var(--muted); }
+  .member-info { flex: 1; min-width: 0; }
+  .member-name { font-size: 0.82rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .member-status { font-size: 0.7rem; color: var(--muted); }
+
+  .poll-card { background: var(--surface2); border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem; }
+  .poll-q { font-size: 0.88rem; font-weight: 600; color: var(--white); margin-bottom: 0.75rem; }
+  .poll-opt { position: relative; margin-bottom: 0.4rem; }
+  .poll-bar { height: 28px; border-radius: 4px; background: var(--surface); overflow: hidden; cursor: pointer; }
+  .poll-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+  .poll-label { position: absolute; top: 50%; left: 0.5rem; transform: translateY(-50%); font-size: 0.78rem; font-weight: 500; color: var(--text); white-space: nowrap; }
+  .poll-pct { position: absolute; top: 50%; right: 0.5rem; transform: translateY(-50%); font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+  .poll-votes { font-size: 0.7rem; color: var(--muted); text-align: right; margin-top: 0.25rem; }
+
+  .event-pill { background: var(--surface2); border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; border: 1px solid transparent; transition: border-color 0.2s; }
+  .event-pill:hover { border-color: var(--accent2); }
+  .event-pill-date { background: rgba(129,140,248,0.15); border-radius: 6px; padding: 0.4rem 0.5rem; text-align: center; flex-shrink: 0; min-width: 36px; }
+  .epd-month { font-size: 0.6rem; text-transform: uppercase; color: var(--accent2); font-weight: 700; }
+  .epd-day { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--white); }
+  .event-pill-name { font-size: 0.82rem; font-weight: 600; color: var(--white); margin-bottom: 0.1rem; }
+  .event-pill-sub { font-size: 0.72rem; color: var(--muted); }
+
+  .search-bar { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+  .search-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text); outline: none; }
+  .search-input::placeholder { color: var(--muted); }
+  .search-input:focus { border-color: var(--accent); }
+
+  .voice-status { background: rgba(110,231,183,0.08); border: 1px solid rgba(110,231,183,0.2); border-radius: 8px; padding: 0.5rem 0.75rem; margin: 0.75rem 0.5rem; font-size: 0.78rem; display: flex; align-items: center; gap: 0.5rem; color: var(--accent); cursor: pointer; }
+  .voice-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--accent); border-radius: 10px; padding: 0.75rem 1.5rem; font-size: 0.85rem; color: var(--text); z-index: 999; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s; opacity: 0; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  .emoji-picker { position: absolute; bottom: 100%; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem; display: none; gap: 0.4rem; flex-wrap: wrap; width: 200px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 50; }
+  .emoji-picker.open { display: flex; }
+  .ep-emoji { font-size: 1.3rem; cursor: pointer; padding: 0.2rem; border-radius: 4px; transition: background 0.15s; }
+  .ep-emoji:hover { background: var(--surface); }
+  .input-relative { position: relative; }
+
+  @media (max-width: 1100px) { .app { grid-template-columns: 72px 220px 1fr; } .right-sidebar { display: none; } }
+  @media (max-width: 768px) { .app { grid-template-columns: 1fr; } .icon-rail, .channel-list { display: none; } }
+
+  /* MEMBERSHIP GATE */
+  #gccc-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    background: radial-gradient(circle at 30% 20%, #1b2030 0%, #0D0F14 60%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #gccc-gate .gate-card {
+    width: 380px; max-width: 90vw; background: #161920; border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 36px 32px; color: #E2E8F0; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #gccc-gate .gate-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:#6EE7B7; margin-bottom:6px; }
+  #gccc-gate p.gate-sub { color:#64748B; font-size:0.85rem; margin-bottom:22px; }
+  #gccc-gate input { width:100%; padding:11px 14px; margin-bottom:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0D0F14; color:#E2E8F0; font-size:0.9rem; }
+  #gccc-gate input:focus { outline:2px solid #6EE7B7; }
+  #gccc-gate button.gate-btn { width:100%; padding:12px; border:none; border-radius:8px; background:#6EE7B7; color:#0D0F14; font-weight:700; cursor:pointer; font-size:0.9rem; margin-top:6px; }
+  #gccc-gate button.gate-btn:hover { background:#5fd6a5; }
+  #gccc-gate .gate-toggle { margin-top:16px; font-size:0.8rem; color:#818CF8; cursor:pointer; }
+  #gccc-gate .gate-error { color:#F472B6; font-size:0.8rem; margin-top:8px; min-height:14px; }
+  #gccc-gate .gate-back { display:block; margin-top:18px; font-size:0.78rem; color:#64748B; text-decoration:none; }
+  .app[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- MEMBERSHIP GATE: GCCC Community Center requires (free) membership login -->
+<div id="gccc-gate">
+  <div class="gate-card">
+    <div class="gate-logo">🌍 GCCC Community Center</div>
+    <p class="gate-sub" id="gate-sub-text">Membership required. Sign in or join free to enter.</p>
+    <input type="text" id="gate-name" placeholder="Your name" />
+    <input type="email" id="gate-email" placeholder="Email address" />
+    <button class="gate-btn" onclick="gcccEnterCommunity()">Enter as Member</button>
+    <div class="gate-error" id="gate-error"></div>
+    <a class="gate-back" href="index.html">← Back to main site</a>
+  </div>
+</div>
+
+<div class="app" hidden id="gccc-app">
+  <!-- ICON RAIL -->
+  <div class="icon-rail">
+    <div class="rail-logo">GH</div>
+    <button class="rail-btn active" title="Home">🏠</button>
+    <button class="rail-btn" title="Explore">🔍</button>
+    <button class="rail-btn" title="Notifications" onclick="showToast('🔔 You have 3 new notifications')">
+      🔔<span class="badge"></span>
+    </button>
+    <div class="rail-divider"></div>
+    <button class="rail-btn" title="Tech Hub">💻</button>
+    <button class="rail-btn" title="Art Collective">🎨</button>
+    <button class="rail-btn" title="Music World">🎵</button>
+    <button class="rail-btn" title="Science Forum">🔬</button>
+    <button class="rail-btn" title="Language Exchange">🌐</button>
+    <div class="rail-divider"></div>
+    <button class="rail-btn" style="margin-top:auto" title="Settings" onclick="showToast('⚙️ Settings coming soon')">⚙️</button>
+    <button class="rail-btn" title="Profile" onclick="showToast('👤 Profile page opening...')">👤</button>
+  </div>
+
+  <!-- CHANNEL LIST -->
+  <div class="channel-list">
+    <div class="channel-header">
+      <div class="server-name">GlobalHive <span class="online-pill">🟢 2,847</span></div>
+    </div>
+    <div class="search-bar">
+      <input class="search-input" type="text" placeholder="🔍 Search channels...">
+    </div>
+
+    <div class="channel-group-label">📣 Announcements</div>
+    <div class="channel-item" onclick="switchChannel(this,'#announcements','Official updates from the team','chat')">
+      <span class="ch-icon">📢</span> announcements
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'#news','Global news roundup','chat')">
+      <span class="ch-icon">#</span> global-news <span class="channel-unread">5</span>
+    </div>
+
+    <div class="channel-group-label">💬 General</div>
+    <div class="channel-item active" onclick="switchChannel(this,'#general','The main gathering place for everyone','chat')">
+      <span class="ch-icon">#</span> general
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'#introductions','Say hello to the community','chat')">
+      <span class="ch-icon">#</span> introductions <span class="channel-unread">12</span>
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'#memes','For the culture','chat')">
+      <span class="ch-icon">#</span> memes
+    </div>
+
+    <div class="channel-group-label">🏛️ Community Rooms</div>
+    <div class="channel-item" onclick="switchChannel(this,'lobby','Welcome hub — meet members & get oriented','rooms')">
+      <span class="ch-icon">🚪</span> Lobby
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'gallery','SDG art, photos & member showcases','rooms')">
+      <span class="ch-icon">🖼️</span> Gallery
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'auditorium','Live talks, summits & keynotes','rooms')">
+      <span class="ch-icon">🎭</span> Auditorium
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'gym','Wellness, fitness & health challenges','rooms')">
+      <span class="ch-icon">💪</span> Gym
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'workshop','Skill-building, dev dojo & SDG hackathons','rooms')">
+      <span class="ch-icon">🔧</span> Workshop
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'cafe','Casual hangout, chat & coffee chats','rooms')">
+      <span class="ch-icon">☕</span> Café
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'market','GloMart — global goods & SDG marketplace','rooms')">
+      <span class="ch-icon">🛒</span> Market <span class="channel-unread">new</span>
+    </div>
+
+    <div class="channel-group-label">🌍 SDG Mission Control</div>
+    <div class="channel-item" onclick="switchChannel(this,'doomsday-clock','Race against time — turn back the clock with SDG actions','doom')">
+      <span class="ch-icon">⏰</span> doomsday-clock
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'sdg-tamagotchi','Raise your SDG companion — complete goals to keep it alive!','tama')">
+      <span class="ch-icon">🌍</span> sdg-tamagotchi
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'live-broadcasts','17 live SDG action channels — tune in & take action','broadcast')">
+      <span class="ch-icon">📺</span> live-broadcasts <span class="live-badge">LIVE</span>
+    </div>
+
+    <div class="channel-group-label">🛠 Tech & Code</div>
+    <div class="channel-item" onclick="switchChannel(this,'#dev-talk','Developer discussions','chat')">
+      <span class="ch-icon">#</span> dev-talk
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'#help-desk','Get help with your code','chat')">
+      <span class="ch-icon">#</span> help-desk
+    </div>
+    <div class="channel-item" onclick="switchChannel(this,'#projects','Share your projects','chat')">
+      <span class="ch-icon">#</span> projects <span class="channel-unread">3</span>
+    </div>
+
+    <div class="channel-group-label">🎤 Voice Channels</div>
+    <div class="channel-item" onclick="joinVoice(this,'Lounge')">
+      <span class="ch-icon">🔊</span> Lounge <span class="ch-voice">● 4</span>
+    </div>
+    <div class="channel-item" onclick="joinVoice(this,'Study Room')">
+      <span class="ch-icon">🔊</span> Study Room <span class="ch-voice">● 2</span>
+    </div>
+    <div class="channel-item" onclick="joinVoice(this,'Gaming')">
+      <span class="ch-icon">🔊</span> Gaming <span class="ch-voice">● 8</span>
+    </div>
+
+    <div id="voice-status" style="display:none">
+      <div class="voice-status">
+        <div class="voice-dot"></div>
+        <span id="voice-name">Lounge</span> — Connected
+        <button style="margin-left:auto;background:none;border:none;color:#EF4444;cursor:pointer" onclick="leaveVoice()">✕</button>
+      </div>
+    </div>
+
+    <div class="user-bar">
+      <div class="user-avatar">YO</div>
+      <div>
+        <div class="user-name">you</div>
+        <div class="user-tag">#4821</div>
+      </div>
+      <button style="margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem" title="Mute" onclick="showToast('🎤 Microphone muted')">🎤</button>
+    </div>
+  </div>
+
+  <!-- MAIN CHAT AREA -->
+  <div class="chat-area">
+    <div class="chat-header">
+      <span style="color:var(--muted)" id="chat-channel-prefix">#</span>
+      <div>
+        <div class="chat-channel-name" id="chat-channel-name">general</div>
+        <div class="chat-channel-desc" id="chat-channel-desc">The main gathering place for everyone</div>
+      </div>
+      <div class="chat-actions">
+        <button class="hdr-btn" onclick="showToast('🔔 Notifications configured')" title="Notifications">🔔</button>
+        <button class="hdr-btn" onclick="showToast('📌 Pinned messages loading...')" title="Pinned">📌</button>
+        <button class="hdr-btn" onclick="showToast('👥 Members panel toggled')" title="Members">👥</button>
+        <button class="hdr-btn" onclick="showToast('🔍 Search opened')" title="Search">🔍</button>
+      </div>
+    </div>
+
+    <div class="channel-tabs" id="main-tabs">
+      <div class="tab active" onclick="setTab(this,'chat-panel')">💬 Chat</div>
+      <div class="tab" onclick="setTab(this,'doom-panel');switchToDoom()">⏰ Doomsday Clock</div>
+      <div class="tab" onclick="setTab(this,'tama-panel');switchToTama()">🌍 SDG Tamagotchi</div>
+      <div class="tab" onclick="setTab(this,'rooms-panel');switchToRooms()">🏛️ Rooms</div>
+      <div class="tab" onclick="setTab(this,'broadcast-panel');switchToBroadcast()">📺 Live Broadcasts</div>
+    </div>
+
+    <div class="main-content" id="main-content">
+
+      <!-- CHAT PANEL -->
+      <div class="panel active" id="chat-panel" style="flex-direction:column">
+        <div class="messages" id="messages">
+          <div class="day-divider">Today</div>
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#6EE7B7,#3B82F6)">SA</div>
+            <div class="msg-body">
+              <div class="msg-meta">
+                <span class="msg-author">Sakura_A</span>
+                <span class="msg-role" style="background:rgba(110,231,183,0.15);color:var(--accent)">MOD</span>
+                <span class="msg-time">9:14 AM</span>
+              </div>
+              <div class="msg-content">Good morning GlobalHive! 🌅 We just crossed <strong>50,000 members</strong> — that's incredible. Thank you all for making this such a welcoming space. And reminder — every SDG action in <strong>#doomsday-clock</strong> helps turn back the clock. We're at 89 seconds to midnight. Let's push it back!</div>
+              <div class="msg-reactions">
+                <div class="reaction mine" onclick="toggleReaction(this)">🎉 <span>248</span></div>
+                <div class="reaction" onclick="toggleReaction(this)">❤️ <span>192</span></div>
+                <div class="reaction" onclick="toggleReaction(this)">🌟 <span>87</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#818CF8,#EC4899)">RK</div>
+            <div class="msg-body">
+              <div class="msg-meta">
+                <span class="msg-author">ravi_k</span>
+                <span class="msg-time">9:22 AM</span>
+              </div>
+              <div class="msg-content">Just completed the "Zero Hunger" goal in <strong>#sdg-tamagotchi</strong> and got +4s back on the clock 🔥 The Goal 2 live channel is absolutely popping right now too</div>
+              <div class="msg-reactions">
+                <div class="reaction" onclick="toggleReaction(this)">🌾 <span>41</span></div>
+                <div class="reaction" onclick="toggleReaction(this)">😂 <span>12</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#FB923C,#F472B6)">ML</div>
+            <div class="msg-body">
+              <div class="msg-meta">
+                <span class="msg-author">mia_l</span>
+                <span class="msg-time">9:31 AM</span>
+              </div>
+              <div class="msg-content">My SDG planet 🌍 is named Hopebug and she is THRIVING. I've completed 6 SDG tasks today. The climate action broadcast is incredible — live from COP negotiations!</div>
+              <div class="msg-embed">
+                <div class="embed-title">📺 SDG Goal 13 — Climate Action (LIVE)</div>
+                <div class="embed-desc">12,400 viewers · Live from COP Climate Negotiations · Join the conversation</div>
+              </div>
+              <div class="msg-reactions">
+                <div class="reaction" onclick="toggleReaction(this)">🌍 <span>77</span></div>
+                <div class="reaction" onclick="toggleReaction(this)">🌍 <span>55</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="msg-group">
+            <div class="msg-avatar" style="background:linear-gradient(135deg,#34D399,#059669)">DX</div>
+            <div class="msg-body">
+              <div class="msg-meta">
+                <span class="msg-author">dev_xander</span>
+                <span class="msg-role" style="background:rgba(129,140,248,0.15);color:var(--accent2)">DEV</span>
+                <span class="msg-time">9:44 AM</span>
+              </div>
+              <div class="msg-content">Community milestone: we've collectively turned the clock back by <code>12 seconds</code> this week through SDG actions. If we hit 50 seconds total by 2030 we end extreme poverty. Keep going everyone 🚀</div>
+              <div class="msg-reactions">
+                <div class="reaction" onclick="toggleReaction(this)">🚀 <span>55</span></div>
+                <div class="reaction" onclick="toggleReaction(this)">🙏 <span>30</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="typing-indicator" id="typing-indicator"></div>
+        <div class="chat-input-area">
+          <div class="input-box">
+            <span class="input-prefix">➕</span>
+            <input class="chat-input" id="chat-input" type="text" placeholder="Message #general..." onkeydown="handleInput(event)">
+            <div class="input-actions">
+              <button class="inp-btn" onclick="toggleEmoji()" title="Emoji">😊</button>
+              <button class="inp-btn" title="GIF" onclick="showToast('🎬 GIF picker opening...')">GIF</button>
+              <button class="inp-btn" title="Attach" onclick="showToast('📎 File upload ready')">📎</button>
+              <div class="input-relative">
+                <div class="emoji-picker" id="emoji-picker">
+                  <span class="ep-emoji" onclick="insertEmoji('😂')">😂</span>
+                  <span class="ep-emoji" onclick="insertEmoji('🔥')">🔥</span>
+                  <span class="ep-emoji" onclick="insertEmoji('💯')">💯</span>
+                  <span class="ep-emoji" onclick="insertEmoji('🚀')">🚀</span>
+                  <span class="ep-emoji" onclick="insertEmoji('❤️')">❤️</span>
+                  <span class="ep-emoji" onclick="insertEmoji('👀')">👀</span>
+                  <span class="ep-emoji" onclick="insertEmoji('🎉')">🎉</span>
+                  <span class="ep-emoji" onclick="insertEmoji('👍')">👍</span>
+                  <span class="ep-emoji" onclick="insertEmoji('🌍')">🌍</span>
+                  <span class="ep-emoji" onclick="insertEmoji('🌱')">🌱</span>
+                  <span class="ep-emoji" onclick="insertEmoji('⏰')">⏰</span>
+                  <span class="ep-emoji" onclick="insertEmoji('🌍')">🌍</span>
+                </div>
+              </div>
+              <button class="inp-btn send-btn" onclick="sendMessage()" title="Send">↑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOOMSDAY CLOCK PANEL -->
+      <div class="panel" id="doom-panel" style="flex-direction:column;overflow-y:auto">
+        <div class="doom-panel" style="display:flex;flex-direction:column;align-items:center;padding:2rem">
+          <div class="doom-header">
+            <div class="doom-title">⏰ Doomsday Clock</div>
+            <div class="doom-subtitle">The clock stands at <strong id="doom-seconds-text">89 seconds</strong> to midnight — representing global catastrophe. Every SDG action our community takes pushes it back. End extreme poverty by 2030.</div>
+          </div>
+
+          <div class="doom-clock-wrap">
+            <svg class="doom-clock-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+              <circle class="doom-clock-track" cx="120" cy="120" r="100"/>
+              <circle class="doom-clock-arc" id="doom-arc" cx="120" cy="120" r="100"
+                stroke="#EF4444"
+                stroke-dasharray="628.3"
+                stroke-dashoffset="628.3"/>
+            </svg>
+            <div class="doom-clock-center">
+              <div class="doom-seconds" id="doom-display">89</div>
+              <div class="doom-unit">seconds</div>
+              <div class="doom-to-midnight">to midnight</div>
+            </div>
+          </div>
+
+          <div class="doom-progress-wrap">
+            <div class="doom-progress-label">
+              <span>🌍 Community SDG Progress</span>
+              <span id="doom-pct-text">0% to 2030 goal</span>
+            </div>
+            <div class="doom-progress-bar">
+              <div class="doom-progress-fill" id="doom-progress" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="sdg-actions-grid">
+            <div class="sdg-action-btn" onclick="doomAction(this,'No Poverty',4,'🏠')">
+              <span class="sab-icon">🏠</span>No Poverty<div class="sab-reward">−4s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Zero Hunger',4,'🌾')">
+              <span class="sab-icon">🌾</span>Zero Hunger<div class="sab-reward">−4s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Good Health',3,'❤️')">
+              <span class="sab-icon">❤️</span>Good Health<div class="sab-reward">−3s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Quality Education',5,'📚')">
+              <span class="sab-icon">📚</span>Quality Education<div class="sab-reward">−5s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Gender Equality',3,'⚖️')">
+              <span class="sab-icon">⚖️</span>Gender Equality<div class="sab-reward">−3s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Clean Water',4,'💧')">
+              <span class="sab-icon">💧</span>Clean Water<div class="sab-reward">−4s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Clean Energy',5,'⚡')">
+              <span class="sab-icon">⚡</span>Clean Energy<div class="sab-reward">−5s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Climate Action',6,'🌿')">
+              <span class="sab-icon">🌿</span>Climate Action<div class="sab-reward">−6s</div>
+            </div>
+            <div class="sdg-action-btn" onclick="doomAction(this,'Life on Land',5,'🦋')">
+              <span class="sab-icon">🦋</span>Life on Land<div class="sab-reward">−5s</div>
+            </div>
+          </div>
+
+          <div class="doom-log" id="doom-log">
+            <div class="doom-log-title">📋 Action Log — Global Community</div>
+            <div class="doom-log-entry">
+              <span class="log-time">09:41</span>
+              <span>mia_l completed Climate Action pledge</span>
+              <span class="log-delta">−6s</span>
+            </div>
+            <div class="doom-log-entry">
+              <span class="log-time">09:38</span>
+              <span>dev_xander completed Quality Education</span>
+              <span class="log-delta">−5s</span>
+            </div>
+            <div class="doom-log-entry">
+              <span class="log-time">09:31</span>
+              <span>ravi_k completed Zero Hunger</span>
+              <span class="log-delta">−4s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SDG TAMAGOTCHI PANEL — planet earth replaces egg -->
+      <div class="panel" id="tama-panel" style="flex-direction:column;overflow-y:auto">
+        <div class="tama-panel" style="display:flex;flex-direction:column;align-items:center">
+          <div class="tama-title">🌍 SDG Tamagotchi</div>
+          <div class="tama-sub">Raise your planet by completing SDG goals. Keep it thriving — or the doomsday clock ticks forward.</div>
+
+          <div class="tama-device">
+            <div class="tama-screen">
+              <div class="tama-bg-grid"></div>
+              <div class="tama-creature" id="tama-creature">🌍</div>
+              <div class="tama-name-display" id="tama-name">PLANET EARTH</div>
+              <div class="tama-mood" id="tama-mood">"Curious and hopeful..."</div>
+              <div class="tama-alert" id="tama-alert" style="display:none"></div>
+            </div>
+            <div class="tama-stats">
+              <div class="tama-stat">
+                <div class="tama-stat-label">Health</div>
+                <div class="tama-stat-bar"><div class="tama-stat-fill" id="tama-health-bar" style="width:70%;background:#6EE7B7"></div></div>
+                <div class="tama-stat-val" id="tama-health-val">70/100</div>
+              </div>
+              <div class="tama-stat">
+                <div class="tama-stat-label">Happiness</div>
+                <div class="tama-stat-bar"><div class="tama-stat-fill" id="tama-happy-bar" style="width:60%;background:#818CF8"></div></div>
+                <div class="tama-stat-val" id="tama-happy-val">60/100</div>
+              </div>
+              <div class="tama-stat">
+                <div class="tama-stat-label">Impact</div>
+                <div class="tama-stat-bar"><div class="tama-stat-fill" id="tama-impact-bar" style="width:20%;background:#FB923C"></div></div>
+                <div class="tama-stat-val" id="tama-impact-val">20/100</div>
+              </div>
+              <div class="tama-stat">
+                <div class="tama-stat-label">Evolution</div>
+                <div class="tama-stat-bar"><div class="tama-stat-fill" id="tama-evo-bar" style="width:10%;background:#F472B6"></div></div>
+                <div class="tama-stat-val" id="tama-evo-val">Seedling</div>
+              </div>
+            </div>
+            <div class="tama-doom-link" id="tama-doom-link">
+              ⏰ Your planet affects the doomsday clock — neglect = +3s!
+            </div>
+          </div>
+
+          <div class="tama-tasks">
+            <div class="tama-tasks-title">
+              <span>SDG Tasks — Complete to heal your planet</span>
+              <span id="tama-tasks-count" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--accent)">0/8 done</span>
+            </div>
+            <div class="tama-tasks-grid" id="tama-tasks-grid">
+              <div class="tama-task" onclick="completeTask(this,12,8,10,'⭐',2)">
+                <div class="tama-task-icon">🏠</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">No Poverty Pledge</div>
+                  <div class="tama-task-desc">Donate to a poverty relief organization today</div>
+                  <div class="tama-task-reward">+12 Health · +8 Happy · −2s clock</div>
+                </div>
+              </div>
+              <div class="tama-task" onclick="completeTask(this,8,12,15,'🍀',4)">
+                <div class="tama-task-icon">🌾</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">Zero Hunger Action</div>
+                  <div class="tama-task-desc">Volunteer or donate to a food bank</div>
+                  <div class="tama-task-reward">+8 Health · +12 Happy · −4s clock</div>
+                </div>
+              </div>
+              <div class="tama-task" onclick="completeTask(this,15,10,20,'🌿',6)">
+                <div class="tama-task-icon">🌿</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">Climate Champion</div>
+                  <div class="tama-task-desc">Reduce your carbon footprint this week</div>
+                  <div class="tama-task-reward">+15 Health · +10 Happy · −6s clock</div>
+                </div>
+              </div>
+              <div class="tama-task" onclick="completeTask(this,10,15,18,'📖',5)">
+                <div class="tama-task-icon">📚</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">Education Access</div>
+                  <div class="tama-task-desc">Support a student's learning journey</div>
+                  <div class="tama-task-reward">+10 Health · +15 Happy · −5s clock</div>
+                </div>
+              </div>
+              <div class="tama-task" onclick="completeTask(this,8,8,12,'💧',4)">
+                <div class="tama-task-icon">💧</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">Clean Water Pledge</div>
+                  <div class="tama-task-desc">Support clean water access initiatives</div>
+                  <div class="tama-task-reward">+8 Health · +8 Happy · −4s clock</div>
+                </div>
+              </div>
+              <div class="tama-task" onclick="completeTask(this,6,10,8,'⚡',5)">
+                <div class="tama-task-icon">⚡</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">Clean Energy Switch</div>
+                  <div class="tama-task-desc">Switch one appliance to renewable energy</div>
+                  <div class="tama-task-reward">+6 Health · +10 Happy · −5s clock</div>
+                </div>
+              </div>
+              <div class="tama-task" onclick="completeTask(this,5,12,10,'🤝',3)">
+                <div class="tama-task-icon">⚖️</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">Gender Equality</div>
+                  <div class="tama-task-desc">Amplify a woman-led organization</div>
+                  <div class="tama-task-reward">+5 Health · +12 Happy · −3s clock</div>
+                </div>
+              </div>
+              <div class="tama-task" onclick="completeTask(this,10,8,15,'🌊',5)">
+                <div class="tama-task-icon">🌊</div>
+                <div class="tama-task-info">
+                  <div class="tama-task-name">Life Below Water</div>
+                  <div class="tama-task-desc">Join an ocean conservation effort</div>
+                  <div class="tama-task-reward">+10 Health · +8 Happy · −5s clock</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMMUNITY ROOMS PANEL -->
+      <div class="panel" id="rooms-panel" style="flex-direction:column;overflow-y:auto">
+        <div class="rooms-panel" style="display:flex;flex-direction:column;align-items:center;padding:2rem">
+          <div class="rooms-header">
+            <div class="rooms-title">🏛️ Community Rooms</div>
+            <div class="rooms-sub">Seven spaces — one global home. Choose your room.</div>
+          </div>
+          <div class="rooms-grid">
+
+            <div class="room-card" onclick="showToast('🚪 Welcome to the Lobby! Get oriented and meet members.')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">🚪</div>
+              <div class="room-name">Lobby</div>
+              <div class="room-desc">Welcome hub for new and returning members. Orientation guides, announcements, and community introductions.</div>
+              <div class="room-online">🟢 312 members here</div>
+            </div>
+
+            <div class="room-card" onclick="showToast('🖼️ Gallery — SDG art & member showcases loading...')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">🖼️</div>
+              <div class="room-name">Gallery</div>
+              <div class="room-desc">SDG-inspired art, photography, and member creative showcases. Submit your work and inspire the world.</div>
+              <div class="room-online">🟢 88 members here</div>
+            </div>
+
+            <div class="room-card" onclick="showToast('🎭 Auditorium — Live talks & keynotes opening...')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">🎭</div>
+              <div class="room-name">Auditorium</div>
+              <div class="room-desc">Live summits, keynote speakers, SDG panels, and the Global Goals Empowerment Summit stage.</div>
+              <div class="room-online">🔴 Live now · 1,240 watching</div>
+            </div>
+
+            <div class="room-card" onclick="showToast('💪 Gym — Wellness challenges & fitness sessions opening...')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">💪</div>
+              <div class="room-name">Gym</div>
+              <div class="room-desc">Weekly fitness for Global Citizens, wellness workshops, mental health support, and health spa access.</div>
+              <div class="room-online">🟢 74 members active</div>
+            </div>
+
+            <div class="room-card" onclick="showToast('🔧 Workshop — Dev Dojo & SDG hackathons loading...')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">🔧</div>
+              <div class="room-name">Workshop</div>
+              <div class="room-desc">Dev Dojo, SDG Hackathon 2030, skill-building sessions, resume labs, and the weekly webinar series.</div>
+              <div class="room-online">🟢 156 members building</div>
+            </div>
+
+            <div class="room-card" onclick="showToast('☕ Welcome to the Global Café — hang out & connect!')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">☕</div>
+              <div class="room-name">Café</div>
+              <div class="room-desc">Casual hangouts, coffee chats, language exchange, and the Freedom Cove chill zone. Relax and connect.</div>
+              <div class="room-online">🟢 203 members chatting</div>
+            </div>
+
+            <div class="room-card" onclick="showToast('🛒 GloMart — Global Citizens Marketplace opening...')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">🛒</div>
+              <div class="room-name">Market</div>
+              <div class="room-desc">GloMart global goods, SDG-aligned products, raffle tickets, fundraising, and the Global Exchange.</div>
+              <div class="room-online">🟢 429 members browsing</div>
+            </div>
+
+            <div class="room-card" onclick="showToast('🌐 Business Lounge — GCCC resources & funding tools opening...')">
+              <span class="room-arrow">→</span>
+              <div class="room-icon">🌐</div>
+              <div class="room-name">Business Lounge</div>
+              <div class="room-desc">Start, run, and grow your business. Staffing, funding, operations, legal resources, and GCCC partner tools.</div>
+              <div class="room-online">🟢 91 members working</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- BROADCAST PANEL -->
+      <div class="panel" id="broadcast-panel" style="flex-direction:column;overflow:hidden">
+        <div class="broadcast-header">
+          <div class="broadcast-title-group">
+            <div class="broadcast-title">📺 SDG Live Broadcasts</div>
+            <div class="broadcast-sub">17 channels · 17 global goals · Real-time action from around the world</div>
+          </div>
+          <div class="broadcast-live-count">
+            <div class="bc-live-dot"></div>
+            <span id="total-viewers">47,291</span> watching
+          </div>
+        </div>
+
+        <div class="stream-grid" id="stream-grid">
+          <div class="sdg-channels-grid" id="sdg-channels-grid"></div>
+          <div class="stream-viewer" id="stream-viewer">
+            <div class="stream-video-wrap" id="stream-video-wrap">
+              <div class="stream-video-bg" id="stream-video-bg">
+                <div class="stream-video-icon" id="stream-video-icon">🌍</div>
+                <div class="stream-video-title" id="stream-video-title">SDG Channel</div>
+                <div class="stream-video-sub" id="stream-video-sub">Live from around the world</div>
+              </div>
+              <div class="stream-live-tag">● LIVE</div>
+              <div class="stream-viewer-count" id="stream-viewer-count">0 watching</div>
+            </div>
+            <div class="stream-controls">
+              <button class="stream-back" onclick="closeStream()">← All Channels</button>
+              <div class="stream-channel-info">
+                <div class="stream-ch-name" id="stream-ch-name">Channel Name</div>
+                <div class="stream-ch-goal" id="stream-ch-goal">SDG Goal</div>
+              </div>
+              <button class="inp-btn" onclick="showToast('❤️ Added to favourites!')" style="width:auto;padding:0.3rem 0.6rem;font-size:0.75rem;color:var(--accent4)">♥ Follow</button>
+            </div>
+            <div class="stream-chat" id="stream-chat"></div>
+            <div class="stream-input-row">
+              <input class="stream-input" id="stream-input" type="text" placeholder="Chat with the community..." onkeydown="if(event.key==='Enter')sendStreamMsg()">
+              <button class="stream-send" onclick="sendStreamMsg()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="right-sidebar">
+    <div class="rside-section">
+      <div class="rside-title">⏰ Doomsday Clock</div>
+      <div class="mini-doom-wrap" onclick="switchChannel(null,'doomsday-clock','Race against time','doom');setTabByName('doom-panel')">
+        <div class="mini-doom-time" id="mini-doom-time">89s</div>
+        <div class="mini-doom-label">to midnight · 2030 target</div>
+        <div class="mini-doom-bar"><div class="mini-doom-fill" id="mini-doom-fill" style="width:0%"></div></div>
+        <div class="mini-doom-cta">🌍 Take SDG action → push it back</div>
+      </div>
+    </div>
+
+    <div class="rside-section">
+      <div class="rside-title">🌍 Your SDG Planet</div>
+      <div class="mini-tama-wrap" onclick="setTabByName('tama-panel')">
+        <div class="mini-tama-creature" id="mini-tama-creature">🌍</div>
+        <div class="mini-tama-info">
+          <div class="mini-tama-name" id="mini-tama-name">Planet Earth</div>
+          <div class="mini-tama-status" id="mini-tama-status">Needs your attention!</div>
+          <div class="mini-tama-hp"><div class="mini-tama-hp-fill" id="mini-tama-hp-fill" style="width:70%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rside-section">
+      <div class="rside-title">🏛️ Rooms</div>
+      <div style="display:flex;flex-direction:column;gap:0.3rem">
+        <div class="member-item" onclick="switchChannel(null,'lobby','Welcome hub','rooms');setTabByName('rooms-panel')">
+          <span style="font-size:1.1rem">🚪</span>
+          <div class="member-info"><div class="member-name">Lobby</div><div class="member-status">312 inside</div></div>
+        </div>
+        <div class="member-item" onclick="switchChannel(null,'auditorium','Live talks & keynotes','rooms');setTabByName('rooms-panel')">
+          <span style="font-size:1.1rem">🎭</span>
+          <div class="member-info"><div class="member-name">Auditorium</div><div class="member-status" style="color:#EF4444">● Live now</div></div>
+        </div>
+        <div class="member-item" onclick="switchChannel(null,'cafe','Casual hangout','rooms');setTabByName('rooms-panel')">
+          <span style="font-size:1.1rem">☕</span>
+          <div class="member-info"><div class="member-name">Café</div><div class="member-status">203 chatting</div></div>
+        </div>
+        <div class="member-item" onclick="switchChannel(null,'market','GloMart marketplace','rooms');setTabByName('rooms-panel')">
+          <span style="font-size:1.1rem">🛒</span>
+          <div class="member-info"><div class="member-name">Market</div><div class="member-status">429 browsing</div></div>
+        </div>
+        <div class="member-item" onclick="switchChannel(null,'workshop','Dev Dojo & hackathons','rooms');setTabByName('rooms-panel')">
+          <span style="font-size:1.1rem">🔧</span>
+          <div class="member-info"><div class="member-name">Workshop</div><div class="member-status">156 building</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rside-section">
+      <div class="rside-title">Active Poll</div>
+      <div class="poll-card">
+        <div class="poll-q">📊 Which SDG should we focus on this month?</div>
+        <div class="poll-opt">
+          <div class="poll-bar" onclick="vote(this,0)">
+            <div class="poll-fill" style="width:38%;background:linear-gradient(90deg,#6EE7B7,#3B82F6)"></div>
+            <span class="poll-label">🌿 Climate Action</span>
+            <span class="poll-pct">38%</span>
+          </div>
+        </div>
+        <div class="poll-opt">
+          <div class="poll-bar" onclick="vote(this,1)">
+            <div class="poll-fill" style="width:27%;background:linear-gradient(90deg,#818CF8,#EC4899)"></div>
+            <span class="poll-label">🏠 No Poverty</span>
+            <span class="poll-pct">27%</span>
+          </div>
+        </div>
+        <div class="poll-opt">
+          <div class="poll-bar" onclick="vote(this,2)">
+            <div class="poll-fill" style="width:22%;background:linear-gradient(90deg,#FB923C,#F59E0B)"></div>
+            <span class="poll-label">📚 Education</span>
+            <span class="poll-pct">22%</span>
+          </div>
+        </div>
+        <div class="poll-opt">
+          <div class="poll-bar" onclick="vote(this,3)">
+            <div class="poll-fill" style="width:13%;background:linear-gradient(90deg,#F472B6,#818CF8)"></div>
+            <span class="poll-label">💧 Clean Water</span>
+            <span class="poll-pct">13%</span>
+          </div>
+        </div>
+        <div class="poll-votes">2,184 votes · 3 days left</div>
+      </div>
+    </div>
+
+    <div class="rside-section">
+      <div class="rside-title">Upcoming Events <span class="count">4</span></div>
+      <div class="event-pill" onclick="showToast('📅 RSVP confirmed for World Music Summit!')">
+        <div class="event-pill-date"><div class="epd-month">JAN</div><div class="epd-day">15</div></div>
+        <div><div class="event-pill-name">World Music Summit</div><div class="event-pill-sub">🎵 Live stream · 14 countries</div></div>
+      </div>
+      <div class="event-pill" onclick="showToast('📅 Added: SDG Hackathon 2030')">
+        <div class="event-pill-date"><div class="epd-month">JAN</div><div class="epd-day">18</div></div>
+        <div><div class="event-pill-name">SDG Hackathon 2030</div><div class="event-pill-sub">💻 Build solutions for the goals</div></div>
+      </div>
+      <div class="event-pill" onclick="showToast('📅 RSVP sent for Language Exchange')">
+        <div class="event-pill-date"><div class="epd-month">JAN</div><div class="epd-day">22</div></div>
+        <div><div class="event-pill-name">Language Exchange</div><div class="event-pill-sub">🌐 Practice 40+ languages</div></div>
+      </div>
+    </div>
+
+    <div class="rside-section">
+      <div class="rside-title">Online — 2,847 <span class="count">↑12%</span></div>
+      <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">Moderators</div>
+      <div class="member-item" onclick="showToast('💬 DM sent to Sakura_A')">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#6EE7B7,#3B82F6)">SA<div class="status-dot online"></div></div>
+        <div class="member-info"><div class="member-name">Sakura_A</div><div class="member-status">In voice: Lounge</div></div>
+      </div>
+      <div class="member-item" onclick="showToast('💬 DM sent to mod_carlos')">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#818CF8,#6EE7B7)">MC<div class="status-dot online"></div></div>
+        <div class="member-info"><div class="member-name">mod_carlos</div><div class="member-status">SDG Tamagotchi</div></div>
+      </div>
+      <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:0.75rem 0 0.5rem">Members</div>
+      <div class="member-item" onclick="showToast('💬 Opening DM with ravi_k...')">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#818CF8,#EC4899)">RK<div class="status-dot online"></div></div>
+        <div class="member-info"><div class="member-name">ravi_k</div><div class="member-status">Watching SDG Goal 2 🌾</div></div>
+      </div>
+      <div class="member-item" onclick="showToast('💬 Opening DM with mia_l...')">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#FB923C,#F472B6)">ML<div class="status-dot online"></div></div>
+        <div class="member-info"><div class="member-name">mia_l</div><div class="member-status">Live: Climate Action 🌿</div></div>
+      </div>
+      <div class="member-item" onclick="showToast('💬 Opening DM with dev_xander...')">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#34D399,#059669)">DX<div class="status-dot online"></div></div>
+        <div class="member-info"><div class="member-name">dev_xander</div><div class="member-status">Coding 💻</div></div>
+      </div>
+      <div class="member-item" onclick="showToast('💬 Opening DM with nina_p...')">
+        <div class="member-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">NP<div class="status-dot idle"></div></div>
+        <div class="member-info"><div class="member-name">nina_p</div><div class="member-status">Away · Back in 10m</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let doomSeconds = 89;
+const DOOM_MAX = 89;
+let doomSaved = 0;
+const doomGoal = 50;
+
+function updateDoomDisplay() {
+  const pct = Math.min(100, (doomSaved / doomGoal) * 100);
+  const arcPct = doomSeconds / DOOM_MAX;
+  const circumference = 628.3;
+  const offset = circumference - (arcPct * circumference);
+  document.getElementById('doom-display').textContent = doomSeconds;
+  document.getElementById('doom-seconds-text').textContent = doomSeconds + ' seconds';
+  document.getElementById('doom-arc').style.strokeDashoffset = offset;
+  let color = doomSeconds > 70 ? '#EF4444' : doomSeconds > 50 ? '#F97316' : doomSeconds > 30 ? '#EAB308' : '#22C55E';
+  document.getElementById('doom-arc').style.stroke = color;
+  if (document.getElementById('doom-progress')) {
+    document.getElementById('doom-progress').style.width = pct + '%';
+    document.getElementById('doom-pct-text').textContent = Math.round(pct) + '% to 2030 goal';
+  }
+  document.getElementById('mini-doom-time').textContent = doomSeconds + 's';
+  document.getElementById('mini-doom-fill').style.width = pct + '%';
+}
+
+function addDoomLog(action, delta) {
+  const log = document.getElementById('doom-log');
+  if (!log) return;
+  const now = new Date();
+  const time = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const entry = document.createElement('div');
+  entry.className = 'doom-log-entry';
+  entry.innerHTML = `<span class="log-time">${time}</span><span>you completed ${action}</span><span class="log-delta">−${delta}s</span>`;
+  const title = log.querySelector('.doom-log-title');
+  log.insertBefore(entry, title.nextSibling);
+  const entries = log.querySelectorAll('.doom-log-entry');
+  if (entries.length > 8) entries[entries.length-1].remove();
+}
+
+function doomAction(btn, action, delta, icon) {
+  btn.style.opacity = '0.5';
+  btn.style.pointerEvents = 'none';
+  btn.innerHTML = `<span class="sab-icon">✅</span>${action}<div class="sab-reward" style="color:var(--accent)">Done!</div>`;
+  doomSeconds = Math.max(0, doomSeconds - delta);
+  doomSaved += delta;
+  updateDoomDisplay();
+  addDoomLog(action, delta);
+  showToast(`${icon} ${action} complete! Clock pushed back ${delta}s ⏰`);
+  tamaHealth = Math.min(100, tamaHealth + 3);
+  tamaHappy = Math.min(100, tamaHappy + 3);
+  updateTamaDisplay();
+}
+
+// ===== TAMAGOTCHI / PLANET EARTH =====
+let tamaHealth = 70, tamaHappy = 60, tamaImpact = 20, tamaTasksDone = 0;
+const tamaTotalTasks = 8;
+
+const tamaStages = [
+  { min:0,  max:29,  creature:'🌑', name:'BARREN WORLD',   mood:'"...waiting for life to begin"' },
+  { min:30, max:49,  creature:'🌍', name:'PLANET EARTH',   mood:'"Curious and hopeful..."' },
+  { min:50, max:69,  creature:'🌍', name:'LIVING EARTH',   mood:'"Life is stirring!"' },
+  { min:70, max:84,  creature:'🌍', name:'THRIVING EARTH', mood:'"Making a real difference!"' },
+  { min:85, max:94,  creature:'🌟', name:'RADIANT WORLD',  mood:'"Fighting for all people!"' },
+  { min:95, max:100, creature:'✨', name:'HEALED PLANET',  mood:'"We changed the world! 🌍"' },
+];
+
+function getTamaStage(impact) {
+  return tamaStages.find(s => impact >= s.min && impact <= s.max) || tamaStages[0];
+}
+
+function updateTamaDisplay() {
+  const stage = getTamaStage(tamaImpact);
+  document.getElementById('tama-creature').textContent = stage.creature;
+  document.getElementById('tama-name').textContent = stage.name;
+  document.getElementById('tama-mood').textContent = stage.mood;
+  document.getElementById('tama-health-bar').style.width = tamaHealth + '%';
+  document.getElementById('tama-health-val').textContent = tamaHealth + '/100';
+  document.getElementById('tama-health-bar').style.background = tamaHealth > 50 ? '#6EE7B7' : tamaHealth > 25 ? '#FB923C' : '#EF4444';
+  document.getElementById('tama-happy-bar').style.width = tamaHappy + '%';
+  document.getElementById('tama-happy-val').textContent = tamaHappy + '/100';
+  document.getElementById('tama-impact-bar').style.width = tamaImpact + '%';
+  document.getElementById('tama-impact-val').textContent = Math.round(tamaImpact) + '/100';
+  document.getElementById('tama-evo-bar').style.width = tamaImpact + '%';
+  document.getElementById('tama-evo-val').textContent = stage.name;
+  document.getElementById('tama-tasks-count').textContent = tamaTasksDone + '/' + tamaTotalTasks + ' done';
+  document.getElementById('mini-tama-creature').textContent = stage.creature;
+  document.getElementById('mini-tama-name').textContent = stage.name;
+  document.getElementById('mini-tama-hp-fill').style.width = tamaHealth + '%';
+  document.getElementById('mini-tama-status').textContent = tamaHealth > 60 ? 'Thriving! Keep going 🌟' : tamaHealth > 30 ? 'Needs attention!' : '⚠️ Critical — do an SDG task!';
+  if (tamaHealth < 30) {
+    document.getElementById('tama-creature').style.filter = 'grayscale(0.7) brightness(0.7)';
+    document.getElementById('tama-alert').style.display = 'block';
+    document.getElementById('tama-alert').textContent = '⚠️';
+  } else {
+    document.getElementById('tama-creature').style.filter = 'none';
+    document.getElementById('tama-alert').style.display = 'none';
+  }
+}
+
+function completeTask(el, healthGain, happyGain, impactGain, alertEmoji, clockSave) {
+  el.classList.add('done');
+  tamaHealth = Math.min(100, tamaHealth + healthGain);
+  tamaHappy = Math.min(100, tamaHappy + happyGain);
+  tamaImpact = Math.min(100, tamaImpact + impactGain * 0.5);
+  tamaTasksDone++;
+  updateTamaDisplay();
+  doomSeconds = Math.max(0, doomSeconds - clockSave);
+  doomSaved += clockSave;
+  updateDoomDisplay();
+  const alert = document.getElementById('tama-alert');
+  alert.textContent = alertEmoji;
+  alert.style.display = 'block';
+  setTimeout(() => { if (tamaHealth >= 30) alert.style.display = 'none'; }, 2000);
+  const name = el.querySelector('.tama-task-name').textContent;
+  showToast(`✅ ${name} complete! Your planet grows stronger 🌍`);
+}
+
+setInterval(() => {
+  tamaHealth = Math.max(0, tamaHealth - 1);
+  if (tamaHealth < 20 && Math.random() < 0.3) {
+    doomSeconds = Math.min(DOOM_MAX, doomSeconds + 1);
+    updateDoomDisplay();
+  }
+  updateTamaDisplay();
+}, 30000);
+
+// ===== SDG BROADCAST CHANNELS =====
+const sdgChannels = [
+  { n:1,  icon:'🏠', name:'No Poverty',          color:'#E5243B', bg:'rgba(229,36,59,0.1)',   viewers:3240,  goal:'End poverty in all its forms everywhere' },
+  { n:2,  icon:'🌾', name:'Zero Hunger',           color:'#DDA63A', bg:'rgba(221,166,58,0.1)', viewers:4120,  goal:'End hunger and achieve food security' },
+  { n:3,  icon:'❤️', name:'Good Health',            color:'#4C9F38', bg:'rgba(76,159,56,0.1)',  viewers:5830,  goal:'Ensure healthy lives for all ages' },
+  { n:4,  icon:'📚', name:'Quality Education',      color:'#C5192D', bg:'rgba(197,25,45,0.1)',  viewers:4450,  goal:'Ensure inclusive and equitable education' },
+  { n:5,  icon:'⚖️', name:'Gender Equality',        color:'#FF3A21', bg:'rgba(255,58,33,0.1)',  viewers:3900,  goal:'Achieve gender equality and empower women' },
+  { n:6,  icon:'💧', name:'Clean Water',            color:'#26BDE2', bg:'rgba(38,189,226,0.1)', viewers:2870,  goal:'Ensure water and sanitation for all' },
+  { n:7,  icon:'⚡', name:'Clean Energy',           color:'#FCC30B', bg:'rgba(252,195,11,0.1)', viewers:3610,  goal:'Ensure affordable and clean energy' },
+  { n:8,  icon:'💼', name:'Decent Work',            color:'#A21942', bg:'rgba(162,25,66,0.1)',  viewers:2980,  goal:'Promote sustained, inclusive economic growth' },
+  { n:9,  icon:'🏗️', name:'Industry & Innovation',  color:'#FD6925', bg:'rgba(253,105,37,0.1)', viewers:2140,  goal:'Build resilient infrastructure and innovation' },
+  { n:10, icon:'🤝', name:'Reduced Inequalities',   color:'#DD1367', bg:'rgba(221,19,103,0.1)', viewers:3200,  goal:'Reduce inequality within and among countries' },
+  { n:11, icon:'🏙️', name:'Sustainable Cities',     color:'#FD9D24', bg:'rgba(253,157,36,0.1)', viewers:4660,  goal:'Make cities inclusive, safe and sustainable' },
+  { n:12, icon:'♻️', name:'Responsible Consumption', color:'#BF8B2E', bg:'rgba(191,139,46,0.1)', viewers:3100, goal:'Ensure sustainable consumption and production' },
+  { n:13, icon:'🌿', name:'Climate Action',          color:'#3F7E44', bg:'rgba(63,126,68,0.1)',  viewers:12400, goal:'Take urgent action to combat climate change' },
+  { n:14, icon:'🌊', name:'Life Below Water',        color:'#0A97D9', bg:'rgba(10,151,217,0.1)', viewers:2800,  goal:'Conserve and use oceans sustainably' },
+  { n:15, icon:'🦋', name:'Life on Land',            color:'#56C02B', bg:'rgba(86,192,43,0.1)',  viewers:3340,  goal:'Protect, restore and promote terrestrial ecosystems' },
+  { n:16, icon:'☮️', name:'Peace & Justice',         color:'#00689D', bg:'rgba(0,104,157,0.1)',  viewers:2600,  goal:'Promote peaceful and inclusive societies' },
+  { n:17, icon:'🌐', name:'Partnerships',            color:'#19486A', bg:'rgba(25,72,106,0.1)',  viewers:5060,  goal:'Strengthen means of implementation' },
+];
+
+function renderSDGChannels() {
+  const grid = document.getElementById('sdg-channels-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  sdgChannels.forEach(ch => {
+    const el = document.createElement('div');
+    el.className = 'sdg-channel-card';
+    el.style.background = ch.bg;
+    el.style.borderColor = ch.color + '44';
+    el.innerHTML = `<div class="sdg-ch-num" style="color:${ch.color}">SDG ${ch.n}</div><span class="sdg-ch-icon">${ch.icon}</span><div class="sdg-ch-name">${ch.name}</div><div class="sdg-ch-viewers"><span class="live-dot" style="background:${ch.color}"></span>${ch.viewers.toLocaleString()} watching</div>`;
+    el.addEventListener('click', () => openStream(ch));
+    grid.appendChild(el);
+  });
+}
+
+let currentStream = null;
+const genericStreamMsgs = ['This is incredible to watch live','Taking action right now because of this stream! 💪','The team behind this SDG is doing amazing work','Just shared this channel with my whole network 🌍','How can I get involved?','This is why GlobalHive exists ❤️'];
+const msgColors = ['#6EE7B7','#818CF8','#FB923C','#F472B6','#FCD34D','#34D399'];
+const msgAuthors = ['Sakura_A','ravi_k','mia_l','dev_xander','nina_p','tomás_j','aiko_i','carlos_m'];
+let streamChatInterval = null;
+
+function openStream(ch) {
+  currentStream = ch;
+  document.getElementById('stream-grid').classList.add('open');
+  document.getElementById('stream-viewer').classList.add('open');
+  document.getElementById('stream-video-bg').style.background = ch.bg.replace('0.1','0.3');
+  document.getElementById('stream-video-icon').textContent = ch.icon;
+  document.getElementById('stream-video-title').textContent = 'SDG ' + ch.n + ': ' + ch.name;
+  document.getElementById('stream-video-sub').textContent = ch.goal;
+  document.getElementById('stream-viewer-count').textContent = ch.viewers.toLocaleString() + ' watching';
+  document.getElementById('stream-ch-name').textContent = 'SDG ' + ch.n + ' · ' + ch.name;
+  document.getElementById('stream-ch-goal').textContent = ch.goal;
+  const chatEl = document.getElementById('stream-chat');
+  chatEl.innerHTML = '';
+  genericStreamMsgs.slice(0,3).forEach((text, i) => {
+    const color = msgColors[i % msgColors.length];
+    const el = document.createElement('div');
+    el.className = 'stream-msg';
+    el.innerHTML = `<span class="sm-author" style="color:${color}">${msgAuthors[i]}</span>${text}`;
+    chatEl.appendChild(el);
+  });
+  if (streamChatInterval) clearInterval(streamChatInterval);
+  streamChatInterval = setInterval(() => {
+    if (!currentStream) return;
+    const author = msgAuthors[Math.floor(Math.random() * msgAuthors.length)];
+    const text = genericStreamMsgs[Math.floor(Math.random() * genericStreamMsgs.length)];
+    const color = msgColors[Math.floor(Math.random() * msgColors.length)];
+    const el = document.createElement('div');
+    el.className = 'stream-msg';
+    el.innerHTML = `<span class="sm-author" style="color:${color}">${author}</span>${text}`;
+    chatEl.appendChild(el);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    while (chatEl.children.length > 30) chatEl.removeChild(chatEl.firstChild);
+  }, 3500 + Math.random() * 2000);
+}
+
+function closeStream() {
+  currentStream = null;
+  document.getElementById('stream-grid').classList.remove('open');
+  document.getElementById('stream-viewer').classList.remove('open');
+  if (streamChatInterval) { clearInterval(streamChatInterval); streamChatInterval = null; }
+}
+
+function sendStreamMsg() {
+  const input = document.getElementById('stream-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const chatEl = document.getElementById('stream-chat');
+  const el = document.createElement('div');
+  el.className = 'stream-msg';
+  el.innerHTML = `<span class="sm-author" style="color:var(--accent)">you</span>${text}`;
+  chatEl.appendChild(el);
+  chatEl.scrollTop = chatEl.scrollHeight;
+  input.value = '';
+}
+
+setInterval(() => {
+  sdgChannels.forEach(ch => { ch.viewers = Math.max(500, ch.viewers + Math.round((Math.random() - 0.48) * 50)); });
+  const total = sdgChannels.reduce((a,b) => a + b.viewers, 0);
+  const el = document.getElementById('total-viewers');
+  if (el) el.textContent = total.toLocaleString();
+  if (currentStream) {
+    const vEl = document.getElementById('stream-viewer-count');
+    if (vEl) vEl.textContent = currentStream.viewers.toLocaleString() + ' watching';
+  }
+}, 4000);
+
+// ===== NAVIGATION =====
+function setTab(el, panelId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  if (panelId === 'broadcast-panel') renderSDGChannels();
+}
+
+function setTabByName(panelId) {
+  const panels = ['chat-panel','doom-panel','tama-panel','rooms-panel','broadcast-panel'];
+  const tabs = document.querySelectorAll('.tab');
+  const idx = panels.indexOf(panelId);
+  if (idx >= 0 && tabs[idx]) {
+    tabs.forEach(t => t.classList.remove('active'));
+    tabs[idx].classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    if (panelId === 'broadcast-panel') renderSDGChannels();
+  }
+}
+
+function switchToDoom() { document.getElementById('chat-channel-name').textContent = 'doomsday-clock'; document.getElementById('chat-channel-desc').textContent = 'Race against time — turn back the clock with SDG actions'; }
+function switchToTama() { document.getElementById('chat-channel-name').textContent = 'sdg-tamagotchi'; document.getElementById('chat-channel-desc').textContent = 'Raise your SDG planet — complete goals to keep Earth thriving!'; }
+function switchToRooms() { document.getElementById('chat-channel-name').textContent = 'community-rooms'; document.getElementById('chat-channel-desc').textContent = 'Lobby · Gallery · Auditorium · Gym · Workshop · Café · Market'; }
+function switchToBroadcast() { document.getElementById('chat-channel-name').textContent = 'live-broadcasts'; document.getElementById('chat-channel-desc').textContent = '17 live SDG action channels — tune in & take action'; renderSDGChannels(); }
+
+function switchChannel(el, name, desc, view) {
+  if (el) { document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+  document.getElementById('chat-channel-name').textContent = name;
+  document.getElementById('chat-channel-desc').textContent = desc;
+  const panelMap = { chat:'chat-panel', doom:'doom-panel', tama:'tama-panel', rooms:'rooms-panel', broadcast:'broadcast-panel' };
+  setTabByName(panelMap[view] || 'chat-panel');
+  if (view !== 'chat') showToast(`📡 Switched to ${name}`);
+}
+
+// ===== CHAT =====
+const colors = ['linear-gradient(135deg,#6EE7B7,#3B82F6)','linear-gradient(135deg,#818CF8,#EC4899)','linear-gradient(135deg,#FB923C,#F472B6)','linear-gradient(135deg,#34D399,#059669)','linear-gradient(135deg,#F59E0B,#EF4444)','linear-gradient(135deg,#6366F1,#8B5CF6)'];
+const botReplies = ["Great point! Anyone else want to weigh in?","That's what I love about this community — always something interesting happening 🌟","Don't forget to check the doomsday clock — our SDG actions this week pushed it back 3 seconds! 💪","Has anyone visited the Workshop lately? SDG Hackathon prep is in full swing 🔧","The Goal 13 Climate Action broadcast is 🔥 right now — 12k viewers!","Every action counts. Even small ones. Keep going everyone 🌍","Stop by the Café for a chill chat anytime ☕","We're at 89 seconds to midnight. Let's work together to change that!"];
+const botNames = ['Sakura_A','ravi_k','mia_l','dev_xander','nina_p'];
+const botColors = [colors[0],colors[1],colors[2],colors[3],colors[4]];
+const botInitials = ['SA','RK','ML','DX','NP'];
+const botRoles = { 'Sakura_A':`<span class="msg-role" style="background:rgba(110,231,183,0.15);color:var(--accent)">MOD</span>`, 'dev_xander':`<span class="msg-role" style="background:rgba(129,140,248,0.15);color:var(--accent2)">DEV</span>` };
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  appendMessage('you','YO',colors[5],'',text,true);
+  input.value = '';
+  closeEmoji();
+  const typingEl = document.getElementById('typing-indicator');
+  const bot = botNames[Math.floor(Math.random() * botNames.length)];
+  typingEl.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div> <em>${bot} is typing...</em>`;
+  setTimeout(() => {
+    typingEl.innerHTML = '';
+    const reply = botReplies[Math.floor(Math.random() * botReplies.length)];
+    const i = botNames.indexOf(bot);
+    appendMessage(bot, botInitials[i], botColors[i], botRoles[bot]||'', reply, false);
+  }, 1500 + Math.random() * 1000);
+}
+
+function appendMessage(author, initials, color, roleHtml, text, isYou) {
+  const msgs = document.getElementById('messages');
+  const time = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const div = document.createElement('div');
+  div.className = 'msg-group';
+  div.innerHTML = `<div class="msg-avatar" style="background:${color}">${initials}</div><div class="msg-body"><div class="msg-meta"><span class="msg-author">${isYou ? 'you' : author}</span>${roleHtml}<span class="msg-time">${time}</span></div><div class="msg-content">${text}</div><div class="msg-reactions"></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function handleInput(e) { if (e.key === 'Enter') sendMessage(); }
+
+function toggleReaction(el) {
+  el.classList.toggle('mine');
+  const span = el.querySelector('span');
+  let n = parseInt(span.textContent);
+  span.textContent = el.classList.contains('mine') ? n+1 : n-1;
+}
+
+function joinVoice(el, name) { document.getElementById('voice-name').textContent = name; document.getElementById('voice-status').style.display = 'block'; showToast(`🎤 Connected to ${name} voice channel`); }
+function leaveVoice() { document.getElementById('voice-status').style.display = 'none'; showToast('🔇 Left voice channel'); }
+function toggleEmoji() { document.getElementById('emoji-picker').classList.toggle('open'); }
+function closeEmoji() { document.getElementById('emoji-picker').classList.remove('open'); }
+function insertEmoji(e) { const input = document.getElementById('chat-input'); input.value += e; input.focus(); closeEmoji(); }
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function vote(el) { document.querySelectorAll('.poll-bar').forEach(b => b.style.outline = 'none'); el.style.outline = '2px solid var(--accent)'; showToast('📊 Vote recorded! Thanks for participating.'); }
+
+document.addEventListener('click', e => { if (!e.target.closest('.inp-btn') && !e.target.closest('.emoji-picker')) closeEmoji(); });
+
+updateDoomDisplay();
+updateTamaDisplay();
+renderSDGChannels();
+</script>
+
+<script>
+// --- GCCC Membership Gate ---
+function gcccEnterCommunity() {
+  const name = document.getElementById('gate-name').value.trim();
+  const email = document.getElementById('gate-email').value.trim();
+  const err = document.getElementById('gate-error');
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!name || !emailOk) {
+    err.textContent = 'Enter your name and a valid email to join free.';
+    return;
+  }
+  err.textContent = '';
+  localStorage.setItem('gccc_member', JSON.stringify({ name, email, joined: Date.now() }));
+  document.getElementById('gccc-gate').style.display = 'none';
+  document.getElementById('gccc-app').hidden = false;
+}
+
+(function gcccCheckMembership() {
+  const existing = localStorage.getItem('gccc_member');
+  if (existing) {
+    try {
+      const m = JSON.parse(existing);
+      document.getElementById('gate-sub-text').textContent = `Welcome back, ${m.name}. Re-enter to continue.`;
+      document.getElementById('gate-name').value = m.name;
+      document.getElementById('gate-email').value = m.email;
+    } catch (e) {}
+  }
+})();
+</script>
+</body>
+</html>
