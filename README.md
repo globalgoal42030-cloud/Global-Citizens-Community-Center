@@ -7,7 +7,7 @@ A single-file, self-contained web application for the **Global Citizens Communit
 
 ## Overview
 
-`index.html` is a fully self-contained web build that bundles six originally separate HTML pages into one file. All original markup, styling, and script logic is preserved. The unified wrapper adds cross-page navigation and rewrites internal filename links (e.g. `back-office-login.html`) into dynamically generated blob URLs so links work seamlessly inside a single file.
+`index(6).html` is a fully self-contained web build that bundles six originally separate HTML pages into one file. All original markup, styling, and script logic is preserved. The unified wrapper adds cross-page navigation and rewrites internal filename links (e.g. `back-office-login.html`) into dynamically generated blob URLs so links work seamlessly inside a single file.
 
 The file loads each page as a base64-encoded payload and renders them inside an `<iframe>` — no server, no build step, no dependencies.
 
