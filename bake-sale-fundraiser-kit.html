@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Bake Sale Fundraiser Kit — GCCC × No Kid Hungry</title>
+<style>
+  .gccc-backbar{background:#050D1A;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;}
+  .gccc-backbar a{color:#F0F4FF;text-decoration:none;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  .gccc-backbar a:hover{color:#00D4B4;}
+  .gccc-backbar .gccc-logo{display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-weight:700;letter-spacing:.04em;}
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#faf9f6;color:#1a1a1a;min-height:100vh}
+
+  .hero{background:linear-gradient(135deg,#1a1040 0%,#2e1a6e 60%,#3d2080 100%);padding:3rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(201,168,76,0.12) 0%,transparent 60%)}
+  .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);color:#e8c96a;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.35rem 1rem;border-radius:2px;margin-bottom:1.25rem;position:relative}
+  .hero-badge::before{content:'';width:6px;height:6px;background:#e8c96a;border-radius:50%;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+  .hero h1{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:#fff;line-height:1.1;margin-bottom:0.5rem;position:relative}
+  .hero h1 em{color:#e8c96a;font-style:italic}
+  .hero p{color:rgba(255,255,255,0.65);font-size:0.9rem;font-weight:300;position:relative;margin-bottom:0.5rem}
+  .hero-stat{display:inline-block;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.25);color:#e8c96a;font-size:0.75rem;padding:0.3rem 0.75rem;border-radius:2px;margin-top:0.75rem;position:relative}
+
+  .page{max-width:960px;margin:0 auto;padding:2rem 1.25rem 4rem}
+
+  .section-label{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#c9a84c;font-weight:600;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+  .section-label::before{content:'';flex:0 0 24px;height:1px;background:#c9a84c;opacity:0.5}
+  h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#1a1040;margin-bottom:1.5rem;line-height:1.2}
+  h3.sec{font-family:'Playfair Display',serif;font-size:1.25rem;color:#1a1040;margin:2rem 0 1rem}
+
+  /* Nav tabs */
+  .tab-nav{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap}
+  .tab-btn{padding:0.55rem 1.25rem;font-size:0.78rem;font-weight:600;letter-spacing:0.05em;border-radius:3px;border:1.5px solid #e0dbd3;background:#fff;color:#6b6560;cursor:pointer;transition:all 0.2s}
+  .tab-btn.active{background:#1a1040;color:#e8c96a;border-color:#1a1040}
+  .tab-btn:hover:not(.active){border-color:#c9a84c;color:#1a1040}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  /* Kit cards */
+  .kit-grid{display:grid;gap:1rem;margin-bottom:2.5rem}
+  .kit-card{background:#fff;border:1px solid #e8e4dc;border-radius:4px;overflow:hidden;transition:box-shadow 0.2s,border-color 0.2s}
+  .kit-card:hover{box-shadow:0 4px 24px rgba(26,16,64,0.07);border-color:#c9a84c}
+  .kit-card-inner{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:1rem;padding:1rem 1.25rem}
+  .kit-icon{width:48px;height:48px;background:#f0ede6;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+  .kit-info h3{font-size:0.9rem;font-weight:600;color:#1a1040;margin-bottom:0.2rem}
+  .kit-info p{font-size:0.75rem;color:#6b6560;line-height:1.5}
+  .kit-source{font-size:0.65rem;color:#c9a84c;font-weight:500;letter-spacing:0.05em;margin-top:0.25rem}
+  .kit-price{text-align:right;flex-shrink:0}
+  .kit-price .amount{font-size:1.1rem;font-weight:600;color:#1a1040;display:block}
+  .kit-price .label{font-size:0.6rem;color:#9e9890;text-transform:uppercase;letter-spacing:0.08em}
+  .kit-price .required{font-size:0.6rem;color:#c0392b;font-weight:500}
+
+  /* Checklist styles */
+  .checklist-section{background:#fff;border:1px solid #e8e4dc;border-radius:4px;padding:1.5rem;margin-bottom:1.25rem}
+  .checklist-section h4{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#c9a84c;font-weight:600;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #f0ede6}
+  .check-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid #f7f5f2}
+  .check-item:last-child{border-bottom:none;padding-bottom:0}
+  .check-item input[type=checkbox]{margin-top:2px;accent-color:#1a1040;width:15px;height:15px;flex-shrink:0}
+  .check-item .ci-text{flex:1}
+  .check-item .ci-name{font-size:0.85rem;font-weight:500;color:#1a1040}
+  .check-item .ci-sub{font-size:0.72rem;color:#6b6560;line-height:1.5;margin-top:0.15rem}
+  .check-item .ci-cost{font-size:0.78rem;font-weight:600;color:#1a1040;flex-shrink:0;min-width:60px;text-align:right}
+  .req-badge{display:inline-block;font-size:0.55rem;letter-spacing:0.08em;background:#fdf0ef;color:#c0392b;border-radius:2px;padding:0.1rem 0.35rem;font-weight:600;text-transform:uppercase;vertical-align:middle;margin-left:0.35rem}
+  .new-badge{display:inline-block;font-size:0.55rem;letter-spacing:0.08em;background:#e8f4ec;color:#1a5c3a;border-radius:2px;padding:0.1rem 0.35rem;font-weight:600;text-transform:uppercase;vertical-align:middle;margin-left:0.35rem}
+
+  /* Recipe ingredient blocks */
+  .recipe-block{background:#faf9f6;border:1px solid #e8e4dc;border-radius:4px;padding:1.25rem;margin-bottom:1rem}
+  .recipe-block h5{font-size:0.8rem;font-weight:700;color:#1a1040;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+  .recipe-block h5 span{font-size:1rem}
+  .recipe-row{display:grid;grid-template-columns:1fr auto;gap:0.5rem;font-size:0.78rem;padding:0.3rem 0;border-bottom:1px solid #ede9e2;color:#3a3730}
+  .recipe-row:last-child{border-bottom:none}
+  .recipe-row .ingredient{color:#3a3730}
+  .recipe-row .ing-cost{color:#c9a84c;font-weight:500}
+  .recipe-note{font-size:0.7rem;color:#9e9890;margin-top:0.6rem;font-style:italic;line-height:1.5}
+
+  /* Script section */
+  .script-card{background:#fff;border:1px solid #e8e4dc;border-radius:4px;padding:1.5rem;margin-bottom:1.25rem}
+  .script-card h4{font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:#1a1040;font-weight:600;margin-bottom:0.2rem}
+  .script-card .script-sub{font-size:0.7rem;color:#c9a84c;margin-bottom:1rem}
+  .script-body{font-size:0.82rem;color:#3a3730;line-height:1.8;white-space:pre-wrap}
+  .script-tag{display:inline-block;background:#f0ede6;color:#6b6560;border-radius:2px;padding:0.15rem 0.5rem;font-size:0.65rem;font-weight:600;letter-spacing:0.08em;margin-bottom:0.75rem}
+  .tip-box{background:#fdf6e3;border:1px solid #e8c96a40;border-radius:3px;padding:0.75rem 1rem;margin-top:0.75rem;font-size:0.75rem;color:#6b5a1e;line-height:1.6}
+  .tip-box strong{color:#c9a84c}
+
+  /* Order form */
+  .partner-banner{background:linear-gradient(135deg,#1a1040,#2e1a6e);border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:2.5rem;display:flex;align-items:center;gap:1.25rem}
+  .partner-logo{width:48px;height:48px;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.3);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+  .partner-info h3{font-size:0.85rem;font-weight:600;color:#fff;margin-bottom:0.2rem}
+  .partner-info p{font-size:0.72rem;color:rgba(255,255,255,0.6);line-height:1.5}
+  .partner-info a{color:#e8c96a;text-decoration:none;font-weight:500}
+
+  .order-card{background:#fff;border:1px solid #e8e4dc;border-radius:4px;padding:1.75rem;margin-bottom:1rem}
+  .order-card h3{font-size:0.8rem;font-weight:600;color:#1a1040;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #f0ede6}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  .form-row.full{grid-template-columns:1fr}
+  .form-group{display:flex;flex-direction:column;gap:0.35rem}
+  .form-group label{font-size:0.7rem;font-weight:500;color:#6b6560;text-transform:uppercase;letter-spacing:0.08em}
+  .form-group input,.form-group select,.form-group textarea{border:1px solid #e0dbd3;border-radius:3px;padding:0.6rem 0.75rem;font-size:0.85rem;font-family:'Inter',sans-serif;color:#1a1040;background:#faf9f6;transition:border-color 0.2s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#c9a84c;background:#fff}
+  .qty-row{display:grid;grid-template-columns:1fr 80px 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem}
+  .qty-label{font-size:0.75rem;font-weight:500;color:#1a1040;padding-bottom:0.1rem}
+
+  .summary-card{background:#1a1040;border-radius:4px;padding:1.5rem;color:#fff;position:sticky;top:1rem}
+  .summary-card h3{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:1.25rem}
+  .summary-line{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.6rem}
+  .summary-line span:first-child{font-size:0.78rem;color:rgba(255,255,255,0.65)}
+  .summary-line span:last-child{font-size:0.85rem;font-weight:500;color:#fff}
+  .summary-divider{border:none;border-top:1px solid rgba(255,255,255,0.1);margin:1rem 0}
+  .summary-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.25rem}
+  .summary-total span:first-child{font-size:0.78rem;color:rgba(255,255,255,0.5)}
+  .summary-total .total-amt{font-family:'Playfair Display',serif;font-size:1.8rem;color:#e8c96a}
+  .summary-impact{background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.2);border-radius:3px;padding:0.75rem;margin-bottom:1.25rem;font-size:0.72rem;color:rgba(255,255,255,0.7);line-height:1.6}
+  .summary-impact strong{color:#e8c96a}
+  .btn-order{width:100%;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#1a1040;border:none;padding:0.85rem;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:3px;cursor:pointer;transition:opacity 0.2s}
+  .btn-order:hover{opacity:0.9}
+  .btn-secondary{width:100%;background:transparent;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.15);padding:0.6rem;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;border-radius:3px;cursor:pointer;margin-top:0.5rem;transition:all 0.2s}
+  .btn-secondary:hover{border-color:rgba(255,255,255,0.35);color:#fff}
+
+  .two-col{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start}
+  .nkh-banner{background:#e8f4ec;border:1px solid #b8ddc4;border-radius:4px;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:2rem}
+  .nkh-banner .nkh-icon{font-size:1.75rem;flex-shrink:0}
+  .nkh-banner p{font-size:0.78rem;color:#1a5c3a;line-height:1.6}
+  .nkh-banner strong{font-weight:600}
+
+  .cost-summary-table{width:100%;border-collapse:collapse;font-size:0.8rem;margin-top:1rem}
+  .cost-summary-table th{background:#1a1040;color:#e8c96a;padding:0.6rem 0.75rem;text-align:left;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase}
+  .cost-summary-table td{padding:0.55rem 0.75rem;border-bottom:1px solid #f0ede6;color:#3a3730}
+  .cost-summary-table tr:last-child td{font-weight:700;color:#1a1040;background:#fdf6e3;border-bottom:none}
+
+  @media(max-width:720px){
+    .two-col{grid-template-columns:1fr}
+    .form-row{grid-template-columns:1fr}
+    .qty-row{grid-template-columns:1fr 70px 70px}
+    .hero h1{font-size:1.9rem}
+    .kit-card-inner{grid-template-columns:44px 1fr auto}
+    .tab-nav{gap:0.35rem}
+    .tab-btn{padding:0.45rem 0.85rem;font-size:0.72rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="gccc-backbar">
+  <a href="index.html" class="gccc-logo"><span>🌍</span> GCCC</a>
+  <a href="index.html#rooms">← Back to Rooms</a>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">🍪 Official Fundraiser Kit · 2026</div>
+  <h1>Global Citizens Community Center × <em>No Kid Hungry</em></h1>
+  <p style="color:rgba(255,255,255,0.8);font-size:0.8rem;margin-bottom:0.25rem">In partnership with <strong style="color:#e8c96a">Nobel Prize</strong></p>
+  <p>Your complete bake sale fundraiser kit — classic or vegan & gluten-free. Everything to run your event.</p>
+  <div class="hero-stat">🌍 $1 raised = 10 meals · GCCC × No Kid Hungry × Nobel Prize · TikTok Partner</div>
+</div>
+
+<div class="page">
+
+  <div class="nkh-banner">
+    <div class="nkh-icon">🟠</div>
+    <p><strong>Registration with No Kid Hungry is 100% free</strong> — no signup fee, no fundraising minimum. This kit covers your physical supplies so your team can hit the ground running. All proceeds go directly to No Kid Hungry via your personal fundraising page at <strong>bakesale.nokidhungry.org</strong>. This fundraiser is proudly presented in partnership with <strong>Nobel Prize</strong>.</p>
+  </div>
+
+  <!-- Tab navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('kit')">📦 Kit Overview</button>
+    <button class="tab-btn" onclick="switchTab('classic')">🍪 Classic Checklist</button>
+    <button class="tab-btn" onclick="switchTab('vegan')">🌿 Vegan & GF Checklist</button>
+    <button class="tab-btn" onclick="switchTab('script')">🤝 Business Outreach Script</button>
+    <button class="tab-btn" onclick="switchTab('stickers')">🏷️ Stickers & Sponsors</button>
+    <button class="tab-btn" onclick="switchTab('guide')">📖 Event Guide</button>
+    <button class="tab-btn" onclick="switchTab('order')">🛒 Order Kit</button>
+  </div>
+
+  <!-- TAB 1: Kit Overview -->
+  <div id="tab-kit" class="tab-panel active">
+    <div class="section-label">What's included</div>
+    <h2>Your complete kit at a glance</h2>
+
+    <div class="kit-grid">
+
+      <div class="kit-card">
+        <div class="kit-card-inner">
+          <div class="kit-icon">🛒</div>
+          <div class="kit-info">
+            <h3>Global Citizens Community Center TikTok Partner Items</h3>
+            <p>Bake sale goods, branded packaging & featured products from Check @globalhive on TikTok for the current GCCC lineup and partner discount code.</p>
+            <div class="kit-source">Partner: @globalhive · TikTok Shop</div>
+          </div>
+          <div class="kit-price"><span class="amount">Varies</span><span class="label">by selection</span></div>
+        </div>
+      </div>
+
+      <div class="kit-card">
+        <div class="kit-card-inner">
+          <div class="kit-icon">🪑</div>
+          <div class="kit-info">
+            <h3>6 ft Folding Table — Mainstays (Walmart)</h3>
+            <p>Bi-fold plastic table with carry handle. Seats up to 8. Indoor & outdoor use. White or black.</p>
+            <div class="kit-source">Walmart · In-store or online pickup</div>
+          </div>
+          <div class="kit-price"><span class="amount">~$35</span><span class="label">per table</span><span class="required">★ Required</span></div>
+        </div>
+      </div>
+
+      <div class="kit-card">
+        <div class="kit-card-inner">
+          <div class="kit-icon">🪑</div>
+          <div class="kit-info">
+            <h3>2× Folding Chairs — Ozark Trail (Walmart)</h3>
+            <p>Lightweight, 225 lb capacity, includes carry bag. One of the most affordable event chair options.</p>
+            <div class="kit-source">Walmart · From $10/chair</div>
+          </div>
+          <div class="kit-price"><span class="amount">~$20</span><span class="label">set of 2</span><span class="required">★ Required</span></div>
+        </div>
+      </div>
+
+      <div class="kit-card">
+        <div class="kit-card-inner">
+          <div class="kit-icon">🖨️</div>
+          <div class="kit-info">
+            <h3>2× Custom Vinyl Banners / Signs</h3>
+            <p>2 ft × 4 ft full-color vinyl with grommets. Global Citizens Community Center + No Kid Hungry template included. Order from BannersOnTheCheap or Vistaprint.</p>
+            <div class="kit-source">BannersOnTheCheap.com · Vistaprint.com · 48HourPrint.com</div>
+          </div>
+          <div class="kit-price"><span class="amount">~$30–50</span><span class="label">for 2 banners</span></div>
+        </div>
+      </div>
+
+      <div class="kit-card" style="border-color:#b8ddc4">
+        <div class="kit-card-inner">
+          <div class="kit-icon">🖨️</div>
+          <div class="kit-info">
+            <h3>HP Printer + Paper + HP Instant Ink Subscription <span class="new-badge">NEW</span></h3>
+            <p>Print your checklists, recipe cards, allergy info cards, price tags, QR codes, and outreach flyers at home. HP DeskJet 2755e (or similar) recommended. HP Instant Ink subscription eliminates per-page ink cost — ideal for ongoing GCCC printing needs.</p>
+            <div class="kit-source">HP.com · Amazon · Best Buy · Walmart</div>
+          </div>
+          <div class="kit-price"><span class="amount">~$65–110</span><span class="label">one-time + sub</span></div>
+        </div>
+      </div>
+
+      <div class="kit-card">
+        <div class="kit-card-inner">
+          <div class="kit-icon">📦</div>
+          <div class="kit-info">
+            <h3>Packaging Supplies</h3>
+            <p>Clear treat bags, twist ties, branded stickers (Global Citizens Community Center + No Kid Hungry logo), donation envelopes, QR code card.</p>
+            <div class="kit-source">Provided in kit · Printed by GCCC</div>
+          </div>
+          <div class="kit-price"><span class="amount">Incl.</span><span class="label">in kit</span></div>
+        </div>
+      </div>
+
+      <div class="kit-card">
+        <div class="kit-card-inner">
+          <div class="kit-icon">📋</div>
+          <div class="kit-info">
+            <h3>Checklist + Instructions Guide (Both Versions)</h3>
+            <p>Classic and Vegan & Gluten-Free checklists. Includes event-day guide, outreach script, recipe cards, allergy cards, and price tag templates.</p>
+            <div class="kit-source">Printed & included · Download PDF via kit portal</div>
+          </div>
+          <div class="kit-price"><span class="amount">Incl.</span><span class="label">in kit</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Partner logos -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem">
+      <div class="partner-banner" style="margin-bottom:0">
+        <div class="partner-logo">🏅</div>
+        <div class="partner-info">
+          <h3>Nobel Prize Partnership</h3>
+          <p>Proudly aligned with the Nobel Prize mission — advancing knowledge, humanity, and global impact. Every meal funded moves us closer to a more just world.</p>
+        </div>
+      </div>
+      <div class="partner-banner" style="margin-bottom:0">
+        <div class="partner-logo">🟠</div>
+        <div class="partner-info">
+          <h3>No Kid Hungry Partnership</h3>
+          <p>Official 2026 bake sale partner. Register free at <a href="https://bakesale.nokidhungry.org" target="_blank">bakesale.nokidhungry.org</a>. Every $10 raised = 100 meals for a child in America.</p>
+        </div>
+      </div>
+    </div>
+
+    <table class="cost-summary-table">
+      <thead><tr><th>Item</th><th>Where to Buy</th><th>Est. Cost</th></tr></thead>
+      <tbody>
+        <tr><td>GCCC TikTok Partner Items</td><td>TikTok Shop / @globalhive</td><td>Varies</td></tr>
+        <tr><td>6 ft Folding Table (Mainstays)</td><td>Walmart</td><td>~$35</td></tr>
+        <tr><td>2× Folding Chairs (Ozark Trail)</td><td>Walmart</td><td>~$20</td></tr>
+        <tr><td>2× Custom Vinyl Banners</td><td>BannersOnTheCheap / Vistaprint</td><td>~$30–50</td></tr>
+        <tr><td>HP Printer (e.g. DeskJet 2755e)</td><td>HP.com / Amazon / Walmart</td><td>~$50–80</td></tr>
+        <tr><td>Printer Paper (500 sheets)</td><td>Walmart / Staples / Amazon</td><td>~$8–12</td></tr>
+        <tr><td>HP Instant Ink Subscription</td><td>HP.com (hp.com/go/instantink)</td><td>~$1–7/mo</td></tr>
+        <tr><td>Packaging Supplies</td><td>Dollar Tree / Amazon</td><td>~$10–15</td></tr>
+        <tr><td>Baking Ingredients (classic)</td><td>Your local grocery store</td><td>~$30–80</td></tr>
+        <tr><td>Vegan GF Ingredients</td><td>Whole Foods / Trader Joe's / Amazon</td><td>~$45–90</td></tr>
+        <tr><td>No Kid Hungry Registration</td><td>bakesale.nokidhungry.org</td><td>FREE</td></tr>
+        <tr><td>Kit: Guide, Stickers, QR, Envelopes</td><td>Provided by GCCC</td><td>Included</td></tr>
+        <tr><td colspan="2"><strong>ESTIMATED TOTAL (excl. partner items &amp; printer)</strong></td><td><strong>~$135–210</strong></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.72rem;color:#9e9890;margin-top:0.75rem">Every $1 raised = 10 meals. $200 raised = 2,000 meals. $1,000 raised = 10,000 meals.</p>
+    <p style="font-size:0.68rem;color:#b0aaa1;margin-top:0.5rem;line-height:1.6"><strong style="color:#8a8478">Please note:</strong> these meal/dollar figures are illustrative examples, not guarantees or projections. Based on national averages for No Kid Hungry bake sales, typical results are roughly <strong style="color:#8a8478">$300–$800</strong> for an in-person table alone, and roughly <strong style="color:#8a8478">$800–$1,500+</strong> when combined with online/social sharing (a personal fundraising link, texts, or social posts) — though some hosts raise less and a few raise significantly more. Actual amounts vary widely and depend on your community size, effort, promotion, and local demand; individual results are not typical or guaranteed.</p>
+  </div>
+
+  <!-- TAB 2: Classic Checklist -->
+  <div id="tab-classic" class="tab-panel">
+    <div class="section-label">Checklist A</div>
+    <h2>🍪 Classic Bake Sale Checklist</h2>
+
+    <div class="checklist-section">
+      <h4>🖨️ Printing Setup</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">HP Printer (e.g. DeskJet 2755e or HP Envy 6055e) <span class="new-badge">NEW</span></div><div class="ci-sub">For printing checklists, QR codes, recipe cards, price tags, allergy cards, and outreach flyers. One-time purchase.</div></div><div class="ci-cost">~$50–80</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Printer Paper — 500 sheets (Multipurpose 8.5×11) <span class="new-badge">NEW</span></div><div class="ci-sub">Standard white copy paper. Available at Walmart, Staples, or Amazon. One ream covers all your printables for the event.</div></div><div class="ci-cost">~$8–12</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">HP Instant Ink Subscription <span class="new-badge">NEW</span></div><div class="ci-sub">Sign up at hp.com/go/instantink. Plans start at ~$1/mo (10 pages) up to $7/mo (100 pages). Ink auto-ships before you run out — ideal for ongoing GCCC printing. Way cheaper than buying cartridges one at a time.</div></div><div class="ci-cost">$1–7/mo</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <h4>🛠️ Supplies</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Global Citizens Community Center TikTok Partner Items <span class="req-badge">Required</span></div><div class="ci-sub">Visit @globalhive on TikTok. Check DMs/link-in-bio for GCCC partner items and discount code.</div></div><div class="ci-cost">Varies</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">6 ft Folding Table — Mainstays (Walmart) <span class="req-badge">Required</span></div><div class="ci-sub">Bi-fold design with carry handle. White or black. Pick up in-store or order online.</div></div><div class="ci-cost">~$35</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">2× Folding Chairs — Ozark Trail (Walmart) <span class="req-badge">Required</span></div><div class="ci-sub">Lightweight quad chairs, 225 lb capacity, carry bag included.</div></div><div class="ci-cost">~$20</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">2× Custom Vinyl Banners (2 ft × 4 ft)</div><div class="ci-sub">Full-color vinyl with grommets. Order from BannersOnTheCheap.com or Vistaprint.com. Use the Global Citizens Community Center + No Kid Hungry template in your kit.</div></div><div class="ci-cost">~$30–50</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Table cover / tablecloth (optional)</div><div class="ci-sub">White or branded tablecloth. Dollar Tree or Walmart.</div></div><div class="ci-cost">~$5–10</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Donation jar or cash box</div><div class="ci-sub">A labeled jar or small lockbox. Label with your No Kid Hungry QR code.</div></div><div class="ci-cost">~$5–10</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Clear treat bags + twist ties</div><div class="ci-sub">Pack of 100 from Dollar Tree or Amazon.</div></div><div class="ci-cost">~$3–5</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">GCCC branded stickers</div><div class="ci-sub">Included in kit. Apply to all packaging.</div></div><div class="ci-cost">Included</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Price tags / signs (print from kit)</div><div class="ci-sub">Print tent cards via your HP printer. Template included in kit.</div></div><div class="ci-cost">Incl.</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Allergy info cards (print from kit)</div><div class="ci-sub">Always disclose common allergens: nuts, dairy, gluten, eggs. Printable template in kit.</div></div><div class="ci-cost">Incl.</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Recipe cards (optional)</div><div class="ci-sub">Print 20–30 recipe cards for your best sellers. Template in kit.</div></div><div class="ci-cost">Incl.</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <h4>🍞 Classic Baked Goods — Minimum 3 Varieties <span class="req-badge">Required</span></h4>
+
+      <div class="recipe-block">
+        <h5><span>🍞</span> From-Scratch Sandwich / Loaf Bread</h5>
+        <div class="recipe-row"><span class="ingredient">All-purpose flour (5 lb bag)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Active dry yeast (3-pack)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">Salt (table salt, already have or $1)</span><span class="ing-cost">~$1</span></div>
+        <div class="recipe-row"><span class="ingredient">Sugar (granulated, small bag)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">Butter (1 stick)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">Whole milk (1 qt)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-note">Makes 2 full loaves. Slice and bag individually. Sell at $3–5/loaf or $2/half. Bake the night before.</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>🍪</span> From-Scratch Chocolate Chip Cookies</h5>
+        <div class="recipe-row"><span class="ingredient">All-purpose flour (from bread bag above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Brown sugar (1 lb)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">Granulated sugar (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Butter (2 sticks, unsalted)</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Eggs (6-pack)</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Vanilla extract (small bottle)</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Baking soda (box)</span><span class="ing-cost">~$1</span></div>
+        <div class="recipe-row"><span class="ingredient">Chocolate chips (12 oz bag)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-note">Makes ~36 cookies. Bag 3-for-$2 or $1 each. Classic crowd-pleaser, highest profit margin.</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>🟫</span> From-Scratch Fudgy Brownies</h5>
+        <div class="recipe-row"><span class="ingredient">Cocoa powder (unsweetened, 8 oz)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">All-purpose flour (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Sugar (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Butter (2 sticks)</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Eggs (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Chocolate chips (optional, from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-note">Makes 16 generous squares. Individually wrap each. Sell at $2–3/piece.</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>🍋</span> From-Scratch Fresh Lemonade (by the cup)</h5>
+        <div class="recipe-row"><span class="ingredient">Lemons (6–8 fresh)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Granulated sugar (simple syrup, from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Water (filtered, large pitcher)</span><span class="ing-cost">~$1</span></div>
+        <div class="recipe-row"><span class="ingredient">Ice (bag)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">9 oz clear cups + lids (50-pack)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-note">Make a simple syrup (1:1 sugar + water, heat until dissolved). Squeeze lemons, mix, serve cold. Sell at $2/cup. High margin, crowd-drawing.</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>💧</span> Sparkling Moss Water with Fresh Fruit <span class="new-badge">NEW</span></h5>
+        <div class="recipe-row"><span class="ingredient">Still or sparkling water (2L bottles)</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Fresh fruit: strawberries, cucumber, citrus slices</span><span class="ing-cost">~$6</span></div>
+        <div class="recipe-row"><span class="ingredient">Fresh mint (bunch)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">Edible "moss" garnish: matcha powder OR basil microgreens</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Glass pitcher or clear dispenser (display item)</span><span class="ing-cost">~$8</span></div>
+        <div class="recipe-row"><span class="ingredient">Clear cups (from lemonade kit above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-note">Build your infused water the night before: combine water, fruit slices, fresh mint, and a pinch of matcha or top with basil microgreens for the "moss" visual effect. Refrigerate overnight. Serve over ice with a garnish. Gorgeous for table display and TikTok content. Price at $2–3/cup or bundle with lemonade as a "Refresh Duo."</div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <h4>📣 Fundraising & Donations Setup</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Register FREE at bakesale.nokidhungry.org <span class="req-badge">Required</span></div><div class="ci-sub">Takes 5 minutes. Get your custom link, fundraising page, and free toolkit.</div></div><div class="ci-cost">FREE</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Print your fundraising page QR code <span class="req-badge">Required</span></div><div class="ci-sub">Print via your HP printer. Display at eye level on the table.</div></div><div class="ci-cost">Incl.</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Set a visible fundraising goal</div><div class="ci-sub">Every $10 = 100 meals. Write your goal on a sign at the table.</div></div><div class="ci-cost">No cost</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Share on TikTok, Instagram, Facebook</div><div class="ci-sub">Use #GCCC #GlobalCitizensCommunityCenter #NoKidHungry. Tag @globalhive for a feature on our TikTok channel.</div></div><div class="ci-cost">No cost</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Submit proceeds after the event <span class="req-badge">Required</span></div><div class="ci-sub">Via credit card on your No Kid Hungry page, OR mail check to: Share Our Strength / Bake Sale For No Kid Hungry, P.O. Box 75203, Baltimore, MD 21275</div></div><div class="ci-cost">N/A</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <h4>📅 Event Day</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Arrive 30 mins early. Set up table and 2 chairs <span class="req-badge">Required</span></div><div class="ci-sub">High-traffic spot. Chairs behind table.</div></div><div class="ci-cost">—</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Hang 2 custom banners <span class="req-badge">Required</span></div><div class="ci-sub">Zip ties or tape. 'No Kid Hungry' and 'Bake Sale' must be clearly visible.</div></div><div class="ci-cost">—</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Display QR code and donation jar prominently <span class="req-badge">Required</span></div></div><div class="ci-cost">—</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Arrange baked goods with price tags and allergy cards</div></div><div class="ci-cost">—</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Have $20–30 change in small bills</div><div class="ci-sub">Separate pouch from donations.</div></div><div class="ci-cost">—</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Film setup + event for TikTok! 🎥</div><div class="ci-sub">Tag @globalhive. #GCCC #GlobalCitizensCommunityCenter #NoKidHungry</div></div><div class="ci-cost">—</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Count and submit proceeds same day <span class="req-badge">Required</span></div></div><div class="ci-cost">—</div></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Vegan & GF Checklist -->
+  <div id="tab-vegan" class="tab-panel">
+    <div class="section-label">Checklist B</div>
+    <h2>🌿 Vegan & Gluten-Free Checklist</h2>
+    <p style="font-size:0.82rem;color:#6b6560;margin-bottom:1.5rem;line-height:1.7">This kit uses <strong>no animal products, no gluten</strong>. All items are made from scratch. Perfect for inclusive events, health-conscious communities, and food-allergy-friendly spaces. All supplies and setup items are identical to the Classic Kit — only the baked goods and ingredients differ.</p>
+
+    <div class="checklist-section">
+      <h4>🖨️ Printing Setup</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">HP Printer (e.g. DeskJet 2755e or HP Envy 6055e) <span class="new-badge">NEW</span></div><div class="ci-sub">Print all signage, checklists, recipe cards, QR codes, and outreach flyers from home.</div></div><div class="ci-cost">~$50–80</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Printer Paper — 500 sheets <span class="new-badge">NEW</span></div><div class="ci-sub">Standard 8.5×11 multipurpose paper. One ream handles all event printing.</div></div><div class="ci-cost">~$8–12</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">HP Instant Ink Subscription <span class="new-badge">NEW</span></div><div class="ci-sub">Plans from ~$1/mo (10 pages) to $7/mo (100 pages). Sign up at hp.com/go/instantink.</div></div><div class="ci-cost">$1–7/mo</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <h4>🛠️ Supplies (same as Classic Kit)</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">6 ft Folding Table — Mainstays (Walmart) <span class="req-badge">Required</span></div></div><div class="ci-cost">~$35</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">2× Folding Chairs — Ozark Trail (Walmart) <span class="req-badge">Required</span></div></div><div class="ci-cost">~$20</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">2× Custom Vinyl Banners (with "Vegan & GF" callout)</div><div class="ci-sub">Add "100% Vegan & Gluten-Free" to your banner design to attract more customers.</div></div><div class="ci-cost">~$30–50</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Table cover, donation jar, clear treat bags, stickers, price tags, allergy cards</div><div class="ci-sub">All same as Classic Kit. Allergy card should prominently note: "All items are 100% vegan and gluten-free."</div></div><div class="ci-cost">~$10–15</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <h4>🌿 Vegan & GF Baked Goods — From Scratch <span class="req-badge">Required · Min. 3 Varieties</span></h4>
+
+      <div class="recipe-block">
+        <h5><span>🍞</span> Gluten-Free Sandwich Loaf (Vegan)</h5>
+        <div class="recipe-row"><span class="ingredient">GF all-purpose flour blend (Bob's Red Mill, 5 lb)</span><span class="ing-cost">~$9</span></div>
+        <div class="recipe-row"><span class="ingredient">Xanthan gum (if not in flour blend, 8 oz)</span><span class="ing-cost">~$6</span></div>
+        <div class="recipe-row"><span class="ingredient">Active dry yeast (3-pack)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">Flax eggs: ground flaxseed (1 tbsp) + water (3 tbsp) per egg</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Coconut oil or vegan butter (Earth Balance)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Maple syrup or agave (sweetener)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Unsweetened plant milk (oat or almond, 1 qt)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Apple cider vinegar (activates rise)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-note">GF bread bakes denser — use a loaf pan and bake at 375°F for 40–45 min. Let cool fully before slicing. Makes 1 large loaf. Slice and individually bag at $3–4/portion. Label "GF + Vegan" prominently.</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>🍪</span> Vegan GF Chocolate Chip Cookies</h5>
+        <div class="recipe-row"><span class="ingredient">GF flour blend (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Coconut sugar or brown sugar (1 lb)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Vegan butter (Earth Balance, 1 stick)</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Flax egg (ground flax + water, from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Vanilla extract</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Baking soda + salt</span><span class="ing-cost">~$1</span></div>
+        <div class="recipe-row"><span class="ingredient">Vegan chocolate chips (Enjoy Life brand, 10 oz)</span><span class="ing-cost">~$5</span></div>
+        <div class="recipe-note">Makes ~30 cookies. Same method as classic. Chill dough 30 min before baking for better texture. Sell 3-for-$3 or $1.50 each. Vegan label drives curiosity sales.</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>🟫</span> Vegan GF Fudgy Brownies</h5>
+        <div class="recipe-row"><span class="ingredient">GF flour blend (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Cocoa powder, unsweetened (from above or new)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Coconut sugar or granulated sugar</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Coconut oil (melted, ½ cup)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Flax eggs × 2 (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Vanilla extract (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-row"><span class="ingredient">Vegan chocolate chips (from above)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-note">Bake in 8×8 pan at 350°F for 25–28 min. These are dense and fudgy — do not overbake. Cool completely, cut into 16 pieces. Wrap individually. Sell at $2–3 each.</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>🍋</span> From-Scratch Fresh Lemonade (Naturally Vegan + GF)</h5>
+        <div class="recipe-row"><span class="ingredient">Fresh lemons (6–8)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-row"><span class="ingredient">Cane sugar or agave for simple syrup</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Water + ice</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">9 oz clear cups + lids (50-pack)</span><span class="ing-cost">~$4</span></div>
+        <div class="recipe-note">Identical process to classic kit. Naturally vegan and GF. Sign at table should say: "Fresh Lemonade — Vegan ✓ GF ✓"</div>
+      </div>
+
+      <div class="recipe-block">
+        <h5><span>💧</span> Sparkling Moss Water with Fresh Fruit <span class="new-badge">SIGNATURE</span></h5>
+        <div class="recipe-row"><span class="ingredient">Still or sparkling water (2L bottles)</span><span class="ing-cost">~$3</span></div>
+        <div class="recipe-row"><span class="ingredient">Fresh strawberries, cucumber rounds, orange or lemon slices</span><span class="ing-cost">~$6</span></div>
+        <div class="recipe-row"><span class="ingredient">Fresh mint leaves (bunch)</span><span class="ing-cost">~$2</span></div>
+        <div class="recipe-row"><span class="ingredient">Matcha powder (culinary grade) OR fresh basil microgreens for "moss" effect</span><span class="ing-cost">~$5</span></div>
+        <div class="recipe-row"><span class="ingredient">Glass pitcher or clear drink dispenser</span><span class="ing-cost">~$8</span></div>
+        <div class="recipe-row"><span class="ingredient">Clear cups (from lemonade kit)</span><span class="ing-cost">—</span></div>
+        <div class="recipe-note">Combine water, fruit slices, fresh mint, and a dusting of matcha (or float microgreens on top for the "moss" visual). Prep the night before and refrigerate. Serve over ice with a garnish stick. Naturally vegan, GF, zero added sugar. TikTok gold — film the setup! Sell at $2–3/cup. Bundle as "Garden Refresh Duo" with lemonade for $4.</div>
+      </div>
+
+    </div>
+
+    <div class="checklist-section">
+      <h4>📣 Fundraising & Event Day (same as Classic Kit)</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Register FREE at bakesale.nokidhungry.org <span class="req-badge">Required</span></div></div><div class="ci-cost">FREE</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Print and display QR code <span class="req-badge">Required</span></div></div><div class="ci-cost">Incl.</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Set a visible fundraising goal on a sign at the table</div></div><div class="ci-cost">No cost</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Post on TikTok / Instagram — film the moss water setup! 🎥</div><div class="ci-sub">Tag @globalhive. #GCCC #GlobalCitizensCommunityCenter #NoKidHungry #VeganBakeSale #GlutenFree #NoKidHungry #GCCC #GlobalCitizensCommunityCenter #GCCC</div></div><div class="ci-cost">No cost</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Count and submit proceeds same day <span class="req-badge">Required</span></div></div><div class="ci-cost">—</div></div>
+    </div>
+
+    <table class="cost-summary-table" style="margin-top:1rem">
+      <thead><tr><th>Vegan GF Ingredient Category</th><th>Est. Cost</th></tr></thead>
+      <tbody>
+        <tr><td>GF Flour Blend (Bob's Red Mill 5 lb)</td><td>~$9</td></tr>
+        <tr><td>Vegan butter, coconut oil, flaxseed</td><td>~$10</td></tr>
+        <tr><td>Vegan chocolate chips (Enjoy Life)</td><td>~$5</td></tr>
+        <tr><td>Sugars, vanilla, baking soda</td><td>~$8</td></tr>
+        <tr><td>Fresh fruit, mint, matcha (moss water)</td><td>~$13</td></tr>
+        <tr><td>Lemons, cups, ice (lemonade)</td><td>~$9</td></tr>
+        <tr><td>Pitcher/dispenser (one-time)</td><td>~$8</td></tr>
+        <tr><td><strong>TOTAL VEGAN GF INGREDIENTS</strong></td><td><strong>~$62–80</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TAB 4: Business Outreach Script -->
+  <div id="tab-script" class="tab-panel">
+    <div class="section-label">Outreach</div>
+    <h2>🤝 Business & Community Outreach Script</h2>
+    <p style="font-size:0.82rem;color:#6b6560;margin-bottom:2rem;line-height:1.7">Use these scripts when approaching businesses, organizations, and community groups to co-host a bake sale fundraiser with GCCC and No Kid Hungry. Adapt for in-person, email, phone, or social media DM. The goal: get them to register at <strong>bakesale.nokidhungry.org</strong> and co-brand with Global Citizens Community Center.</p>
+
+    <div class="script-card">
+      <div class="script-tag">IN-PERSON / COLD WALK-IN</div>
+      <h4>Script A — Talking to a Business Owner or Manager</h4>
+      <div class="script-sub">Best for: cafés, hair salons, boutiques, barbershops, small restaurants, community centers</div>
+      <div class="script-body">Hi! My name is [Your Name] and I'm with the Global Citizens Community Center — we're a nonprofit here in the community working with No Kid Hungry to fight childhood hunger.
+
+We're organizing a bake sale fundraiser and we're looking for local businesses and community partners to co-host with us. It's completely free to participate — No Kid Hungry gives every host a free fundraiser kit, their own donation page, and all the tools to run it. We handle the branding, the baked goods, and the social media promotion.
+
+Here's how it works for your business: We'd set up a bake sale table outside or inside your space — you get named as a community partner on all our flyers, our social media, and our website. All proceeds go directly to No Kid Hungry, which provides meals for children right here in America.
+
+We have two options — a classic bake sale or a fully vegan and gluten-free one, so we can fit any neighborhood or customer base.
+
+Would you be open to hosting us for a day? Registration literally takes 5 minutes at bakesale.nokidhungry.org and it's free. We'd love to have [Business Name] as a partner.
+      </div>
+      <div class="tip-box"><strong>Tip:</strong> Have your flyer printed (from your HP printer) and hand it over. Ask for the owner or manager by name if they aren't available — leave a flyer and follow up within 48 hours.</div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-tag">PHONE / VOICEMAIL</div>
+      <h4>Script B — Calling an Organization or Business</h4>
+      <div class="script-sub">Best for: churches, mosques, temples, community organizations, schools, gyms, nonprofits</div>
+      <div class="script-body">Hi, my name is [Your Name] calling from the Global Citizens Community Center. We're a local nonprofit partnering with No Kid Hungry for a community bake sale fundraiser.
+
+I'm reaching out because we're looking for organizations to partner with us — it's completely free and your team can run it at your location on your own schedule. Every dollar raised provides ten meals for a child in need. 
+
+We'd love to have [Organization Name] as an official community partner. I can send you our full kit information and it only takes 5 minutes to register. Could I speak with someone about that, or is there an email I can send our partnership info to?
+
+My contact is [Your Name] at [email/phone]. I'll also send a follow-up. Thank you so much — have a great day!
+      </div>
+      <div class="tip-box"><strong>Tip:</strong> Always follow up the same day by email or text. Attach the outreach flyer (print from kit, scan to PDF, or email as attachment). Mention that this is a time-sensitive 2026 campaign.</div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-tag">EMAIL OUTREACH</div>
+      <h4>Script C — Cold Email to a Business or Org</h4>
+      <div class="script-sub">Best for: any outreach where you have a contact email</div>
+      <div class="script-body">Subject: Partner with Us — Free Bake Sale Fundraiser for No Kid Hungry 2026
+
+Hi [Name / Team],
+
+My name is [Your Name], founder of the Global Citizens Community Center (GCCC) — a community nonprofit aligned with the UN Sustainable Development Goals, serving immigrants, refugees, and global citizens.
+
+We're running a 2026 Bake Sale Fundraiser in partnership with No Kid Hungry, and we're looking for local business and community partners to co-host with us.
+
+Here's why this is worth 5 minutes of your time:
+
+• It's completely free to sign up at bakesale.nokidhungry.org — no fees, no minimums
+• Your organization gets named as an official GCCC community partner on our social media, website, and all printed materials
+• Every $1 raised = 10 meals for a child in America
+• We handle all the branding, printed materials, and social media promotion
+• You choose your date, your location, and your format (classic or fully vegan & GF)
+
+We'd love to feature [Organization Name] as a partner. I've attached our full fundraiser kit overview, including both our Classic and Vegan & Gluten-Free options.
+
+To get started: Register free at bakesale.nokidhungry.org, then reply to this email so we can send your co-branded materials.
+
+Thank you for your time — and for being part of the community that's working toward a world where no child goes hungry.
+
+Warmly,
+[Your Name]
+Global Citizens Community Center
+[Phone] | [Email] | globalcitizencommunitycenter.org
+      </div>
+      <div class="tip-box"><strong>Tip:</strong> Print your outreach flyer and attach a scanned PDF, or paste the kit overview into the email body. Send from your GCCC email address for credibility. Follow up after 3 business days if no response.</div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-tag">SOCIAL MEDIA DM (TIKTOK / INSTAGRAM)</div>
+      <h4>Script D — DM to a Local Business or Creator</h4>
+      <div class="script-sub">Best for: small businesses, creators, influencers, community accounts you follow</div>
+      <div class="script-body">Hey [Name]! 👋 We're the Global Citizens Community Center — a nonprofit running a bake sale fundraiser for No Kid Hungry this year.
+
+We're looking for community partners to co-host with us — it's 100% free, takes 5 min to sign up, and every dollar raised = 10 meals for a child. 🍪
+
+You'd be featured as an official partner on our TikTok, Instagram, and printed materials. We even have a fully vegan + gluten-free option!
+
+Interested? Sign up free → bakesale.nokidhungry.org
+Or just reply here and we'll send you our full kit info. 🙌
+
+#NoKidHungry #GCCC #GlobalCitizensCommunityCenter #CommunityPartner
+      </div>
+      <div class="tip-box"><strong>Tip:</strong> Keep it short on DMs. Lead with the free and low-effort angle. If they're a food creator or lifestyle account, mention the vegan + moss water option — it's visually compelling and TikTok-ready.</div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-tag">FOLLOW-UP SCRIPT</div>
+      <h4>Script E — Following Up After No Response</h4>
+      <div class="script-sub">Use 3–5 days after your first outreach</div>
+      <div class="script-body">Hi [Name],
+
+Just wanted to follow up on my message about our No Kid Hungry bake sale fundraiser! We're finalizing our community partner list this week and would love to include [Business/Org Name].
+
+As a reminder — it's completely free, takes 5 minutes to register, and you get full co-branding with Global Citizens Community Center and No Kid Hungry. Happy to answer any questions or jump on a quick call.
+
+Our sign-up link: bakesale.nokidhungry.org
+
+Thank you — looking forward to hopefully partnering with you!
+
+[Your Name]
+Global Citizens Community Center
+      </div>
+      <div class="tip-box"><strong>Tip:</strong> One follow-up is polite and expected. Two is okay if there was prior interest. Don't go beyond three contacts without a response — move on to the next lead.</div>
+    </div>
+
+  </div>
+
+  <!-- TAB 5: Stickers & Sponsors -->
+  <div id="tab-stickers" class="tab-panel">
+    <div class="section-label">Printable Assets</div>
+    <h2>🏷️ Stickers & Sponsor Logos</h2>
+    <p style="font-size:0.82rem;color:#6b6560;margin-bottom:1.5rem;line-height:1.7">Print these sticker sheets on your HP printer using sticker paper (Avery 8.5×11 full-sheet labels or round sticker sheets from Amazon/Walmart). Apply to packaging, bags, cups, banners, and donation jars. The sponsor logo block below is designed for <strong>AI Local TikTok</strong> — your local TikTok sponsor.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem">
+
+      <!-- Sticker Sheet A: GCCC + No Kid Hungry -->
+      <div class="checklist-section" style="padding:1.25rem">
+        <h4>Sticker Sheet A — GCCC × No Kid Hungry × Nobel Prize</h4>
+        <p style="font-size:0.75rem;color:#6b6560;margin-bottom:1rem">Round stickers, 2-inch diameter. Print on Avery 22807 or similar round label sheets.</p>
+        <div style="background:#1a1040;border-radius:8px;padding:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center">
+          <div style="background:#fff;border-radius:50%;width:80px;height:80px;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;border:2px solid #e8c96a">
+            <div style="font-size:1.1rem">🌍</div>
+            <div style="font-size:0.35rem;font-weight:700;color:#1a1040;line-height:1.2;text-align:center">GLOBAL CITIZENS<br>COMMUNITY<br>CENTER</div>
+          </div>
+          <div style="background:#fff;border-radius:50%;width:80px;height:80px;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;border:2px solid #e8474c">
+            <div style="font-size:1rem">🟠</div>
+            <div style="font-size:0.35rem;font-weight:700;color:#1a1040;line-height:1.2;text-align:center">NO KID<br>HUNGRY<br>2026</div>
+          </div>
+          <div style="background:#fff;border-radius:50%;width:80px;height:80px;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;border:2px solid #c9a84c">
+            <div style="font-size:1rem">🏅</div>
+            <div style="font-size:0.35rem;font-weight:700;color:#1a1040;line-height:1.2;text-align:center">NOBEL<br>PRIZE<br>PARTNER</div>
+          </div>
+          <div style="background:#1a1040;border-radius:50%;width:80px;height:80px;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;border:2px solid #e8c96a">
+            <div style="font-size:0.6rem;font-weight:700;color:#e8c96a;line-height:1.3;text-align:center">BAKE SALE<br>FOR A<br>BETTER 🌍</div>
+          </div>
+          <div style="background:#e8f4ec;border-radius:50%;width:80px;height:80px;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;border:2px solid #1a5c3a">
+            <div style="font-size:0.55rem;font-weight:700;color:#1a5c3a;line-height:1.3;text-align:center">$1 RAISED<br>=<br>10 MEALS 🍪</div>
+          </div>
+          <div style="background:#fdf6e3;border-radius:50%;width:80px;height:80px;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;border:2px solid #c9a84c">
+            <div style="font-size:0.55rem;font-weight:700;color:#1a1040;line-height:1.3;text-align:center">🌿 VEGAN<br>✓ GF<br>MADE WITH ❤️</div>
+          </div>
+        </div>
+        <p style="font-size:0.68rem;color:#9e9890;margin-top:0.75rem">Print on sticker paper · Cut to size · Apply to treat bags, cups, and jars</p>
+      </div>
+
+      <!-- Sticker Sheet B: Sponsor -->
+      <div class="checklist-section" style="padding:1.25rem">
+        <h4>Sticker Sheet B — AI Local TikTok Sponsor Logo <span class="new-badge">SPONSOR</span></h4>
+        <p style="font-size:0.75rem;color:#6b6560;margin-bottom:1rem">Rectangular sponsor stickers, 3×1.5 inch. Print on Avery 5160 or rectangle label sheets. Place on packaging, bags, and table display.</p>
+        <div style="background:#000;border-radius:8px;padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <!-- AI Local TikTok sponsor sticker -->
+          <div style="background:#fff;border-radius:6px;padding:0.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70px;border:2px solid #fe2c55">
+            <div style="font-size:1.1rem;margin-bottom:0.2rem">📱</div>
+            <div style="font-size:0.55rem;font-weight:800;color:#000;letter-spacing:0.05em;text-align:center">AI LOCAL</div>
+            <div style="font-size:0.45rem;font-weight:600;color:#fe2c55;letter-spacing:0.08em;text-align:center">TIKTOK SPONSOR</div>
+            <div style="font-size:0.4rem;color:#888;text-align:center;margin-top:0.15rem">Proudly supporting GCCC</div>
+          </div>
+          <div style="background:#fff;border-radius:6px;padding:0.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70px;border:2px solid #fe2c55">
+            <div style="font-size:1.1rem;margin-bottom:0.2rem">📱</div>
+            <div style="font-size:0.55rem;font-weight:800;color:#000;letter-spacing:0.05em;text-align:center">AI LOCAL</div>
+            <div style="font-size:0.45rem;font-weight:600;color:#fe2c55;letter-spacing:0.08em;text-align:center">TIKTOK SPONSOR</div>
+            <div style="font-size:0.4rem;color:#888;text-align:center;margin-top:0.15rem">Proudly supporting GCCC</div>
+          </div>
+          <div style="background:#fff;border-radius:6px;padding:0.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70px;border:2px solid #fe2c55">
+            <div style="font-size:1.1rem;margin-bottom:0.2rem">📱</div>
+            <div style="font-size:0.55rem;font-weight:800;color:#000;letter-spacing:0.05em;text-align:center">AI LOCAL</div>
+            <div style="font-size:0.45rem;font-weight:600;color:#fe2c55;letter-spacing:0.08em;text-align:center">TIKTOK SPONSOR</div>
+            <div style="font-size:0.4rem;color:#888;text-align:center;margin-top:0.15rem">Proudly supporting GCCC</div>
+          </div>
+          <div style="background:#fff;border-radius:6px;padding:0.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70px;border:2px solid #fe2c55">
+            <div style="font-size:1.1rem;margin-bottom:0.2rem">📱</div>
+            <div style="font-size:0.55rem;font-weight:800;color:#000;letter-spacing:0.05em;text-align:center">AI LOCAL</div>
+            <div style="font-size:0.45rem;font-weight:600;color:#fe2c55;letter-spacing:0.08em;text-align:center">TIKTOK SPONSOR</div>
+            <div style="font-size:0.4rem;color:#888;text-align:center;margin-top:0.15rem">Proudly supporting GCCC</div>
+          </div>
+        </div>
+        <p style="font-size:0.68rem;color:#9e9890;margin-top:0.75rem">4 sponsor stickers per sheet · Print on rectangle label paper · Apply to all packaged items</p>
+      </div>
+    </div>
+
+    <!-- Printing instructions -->
+    <div class="checklist-section">
+      <h4>🖨️ How to Print Your Stickers</h4>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Buy sticker paper — round: Avery 22807 · rectangle: Avery 5160</div><div class="ci-sub">Available at Staples, Walmart, Amazon. ~$12–18 for a 15–25 sheet pack. Each sheet prints multiple stickers.</div></div><div class="ci-cost">~$12–18</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Open this page in Chrome, go to File → Print</div><div class="ci-sub">Set scale to 100% (no fit to page). Set margins to None. Load sticker paper in your HP printer tray.</div></div><div class="ci-cost">—</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Print Sticker Sheet A (GCCC × No Kid Hungry × Nobel Prize)</div><div class="ci-sub">Print as many sheets as needed — one per 6 treat bags is a good rule of thumb.</div></div><div class="ci-cost">~$0.10/sheet</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Print Sticker Sheet B (AI Local TikTok Sponsor)</div><div class="ci-sub">Print 1 sheet per 4 items. Place sponsor sticker on every packaged baked good to give the sponsor visibility.</div></div><div class="ci-cost">~$0.10/sheet</div></div>
+      <div class="check-item"><input type="checkbox"/><div class="ci-text"><div class="ci-name">Apply stickers to all treat bags, cups, donation jar, and banners</div><div class="ci-sub">Lead with the GCCC + No Kid Hungry sticker on front. Add AI Local TikTok sponsor sticker on the back or side.</div></div><div class="ci-cost">—</div></div>
+    </div>
+
+    <div class="tip-box" style="margin-top:0.5rem">
+      <strong>Want to add more sponsors?</strong> Just reply with any additional sponsor name and logo details and we'll add a new sticker block for each one. Each sponsor gets their own sticker design on Sheet B.
+    </div>
+  </div>
+
+  <!-- TAB 6: Event Guide -->
+  <div id="tab-guide" class="tab-panel">
+    <div class="section-label">Official Guide · Sourced from No Kid Hungry</div>
+    <h2>📖 GCCC × No Kid Hungry Bake Sale Host Guide</h2>
+    <p style="font-size:0.82rem;color:#6b6560;margin-bottom:0.5rem;line-height:1.7">This guide is built from official No Kid Hungry bake sale resources at <strong>bakesale.nokidhungry.org</strong> and adapted for GCCC events. Print this tab or save it as a PDF to include in every kit.</p>
+
+    <div class="nkh-banner">
+      <div class="nkh-icon">🟠</div>
+      <p><strong>The mission:</strong> 1 in 7 kids in America live with hunger. Every $10 you raise can connect a child with up to 100 meals. Every cookie and cupcake can make a difference. Register free at <strong>bakesale.nokidhungry.org</strong> — no fee, no minimum.</p>
+    </div>
+
+    <!-- SECTION 1: Before the Event -->
+    <div class="checklist-section">
+      <h4>📅 Step 1 — Plan Your Event (2–3 Weeks Before)</h4>
+
+      <div class="script-card" style="margin-bottom:1rem">
+        <div class="script-tag">REGISTER FIRST</div>
+        <h4>Sign Up at bakesale.nokidhungry.org</h4>
+        <div class="script-sub">Free · Takes 5 minutes · No fundraising minimum required</div>
+        <div class="script-body">There is no registration fee to host a bake sale, and no fundraising minimum is required. Once registered, you'll receive your own fundraising webpage and a free toolkit including guides, posters, flyers, and table decorations to help you plan and promote your event.
+
+After registering:
+• Set a visible fundraising goal — No Kid Hungry recommends picking a goal you feel you can meet and adjusting it along the way
+• Share your personal fundraising page link via email, text, and social media right away
+• Download and print your free toolkit from bakesale.nokidhungry.org/resources</div>
+      </div>
+
+      <div class="script-card" style="margin-bottom:1rem">
+        <div class="script-tag">CHOOSE YOUR LOCATION</div>
+        <h4>Find the Right Spot</h4>
+        <div class="script-body">Bake sales can be hosted any time of the year. Simply find a local business, school, place of worship, community center, or neighborhood that will allow you to hold your bake sale.
+
+Timing and visibility matter. Choose a date at least 2–3 weeks out to give your team time to plan. Look for built-in audiences where people are already gathering and might be hungry or open to a sweet impulse buy.
+
+Best locations for GCCC bake sales:
+• Outside a partner business (NYPD precinct, NAN office, church entrance, community center lobby)
+• Farmers markets, weekend block parties, school events
+• Inside your GCCC location during an open event or meeting
+• Using a visible location that gets solid foot traffic is most important.</div>
+      </div>
+
+      <div class="script-card" style="margin-bottom:0">
+        <div class="script-tag">BUILD YOUR TEAM</div>
+        <h4>Recruit Bakers & Volunteers</h4>
+        <div class="script-body">Gather your friends, family, or coworkers and your favorite recipes, and start baking. A bake sale is a perfect opportunity to teach young people the importance of giving back to the community.
+
+Every bake sale needs:
+• 2–3 bakers (classic or vegan GF — see your checklist tab)
+• 2 table staff (one to sell, one to manage donations & QR code)
+• 1 social media person to post live on TikTok and Instagram
+• Optional: 1 sign maker / decorator for the festive setup
+
+Assign shifts if the event runs multiple hours. Use a simple group chat to coordinate.</div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Promote -->
+    <div class="checklist-section">
+      <h4>📣 Step 2 — Promote Before Your Event</h4>
+
+      <div class="script-card" style="margin-bottom:1rem">
+        <div class="script-tag">SOCIAL MEDIA</div>
+        <h4>Post, Share & Go Live</h4>
+        <div class="script-body">When you host a Virtual Bake Sale component, it may be as simple as posting the link to your fundraising webpage on social media or sending it out in emails asking your friends and family to make online donations. Connecting your bake sale fundraising page to a Facebook fundraiser is simple and will guarantee more donations on that platform.
+
+You can also livestream your favorite content to help raise money for hungry kids — share your expertise and make a huge difference. Simply create your fundraising campaign, set your goal, and get ready to start streaming.
+
+GCCC Social Checklist:
+□ Post a "countdown" story 1 week before on TikTok + Instagram
+□ Share your No Kid Hungry fundraising page link in bio
+□ Film a baking prep video the night before — post it morning of event
+□ Go LIVE on TikTok during the event — film the table setup, moss water display, customers
+□ Use hashtags: #NoKidHungry #GCCC #GlobalCitizensCommunityCenter #BakeSale #VeganBakeSale
+□ Tag all GCCC partners in your posts</div>
+        <div class="tip-box"><strong>No Kid Hungry tip:</strong> You can also do online activities like live baking classes to help your fundraiser get noticed. Consider going live while prepping your moss water or cookies the evening before!</div>
+      </div>
+
+      <div class="script-card" style="margin-bottom:0">
+        <div class="script-tag">PRINT & HANG</div>
+        <h4>Posters, Flyers & Signs</h4>
+        <div class="script-body">Download and print the posters and flyers from bakesale.nokidhungry.org/resources to hang around your community and spread the word. No Kid Hungry also provides table decorations and signage you can print to make your bake sale look more festive.
+
+Print from your HP printer (see Printing Setup in your checklist):
+• 2× vinyl banners (ordered from BannersOnTheCheap or Vistaprint)
+• No Kid Hungry posters — download free from bakesale.nokidhungry.org/resources
+• Your custom QR code from your fundraising page
+• Price tags, recipe cards, allergy info cards (all templates in kit)
+• GCCC × No Kid Hungry × Nobel Prize sticker sheets (see Stickers tab)
+• AI Local TikTok sponsor stickers (see Stickers tab)</div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Event Day -->
+    <div class="checklist-section">
+      <h4>🎪 Step 3 — Event Day Setup & Selling Tips</h4>
+
+      <div class="script-card" style="margin-bottom:1rem">
+        <div class="script-tag">SETUP · ARRIVE 30 MINS EARLY</div>
+        <h4>Table Setup in Order</h4>
+        <div class="script-body">1. Place 6 ft folding table in your chosen high-traffic spot
+2. Set up 2 chairs behind the table
+3. Drape tablecloth (white or branded)
+4. Hang both vinyl banners — front of table or nearby surface with zip ties
+5. Place QR code printout at eye level — customers can scan to donate even without cash
+6. Set donation jar front and center, clearly labeled
+7. Arrange baked goods by type — group cookies, brownies, bread, drinks separately
+8. Place price tags and allergy cards in front of every item
+9. Apply GCCC stickers to all bags and cups
+10. Apply AI Local TikTok sponsor stickers to back of packaging
+11. Keep $20–30 in small bills in a separate pouch for making change
+12. Have your phone charged and ready for TikTok Live</div>
+      </div>
+
+      <div class="script-card" style="margin-bottom:1rem">
+        <div class="script-tag">SELLING TIPS</div>
+        <h4>How to Maximize Sales at the Table</h4>
+        <div class="script-body">Offering a few surprises can really boost sales — think items with edible glitter, individually wrapped cake pops, or allergy-friendly treats like gluten-free options.
+
+Pricing strategy:
+• Price each item at least 3× the ingredient cost for a healthy profit margin
+• Suggested pricing: $2–5 per item, or bundle 3 for $10
+• Lemonade & moss water: $2–3/cup, or "Refresh Duo" bundle for $4
+• Bread loaf: $4–5/loaf or $2/half
+
+Selling tips that work:
+• Greet every person who walks by — a warm hello converts browsers to buyers
+• Tell your cause in one sentence: "We're raising money to feed hungry kids — every $1 = 10 meals!"
+• Offer samples of cookies or brownies — taste closes the sale
+• Point out the QR code for anyone who says they don't have cash
+• Vegan + GF items: lead with "it tastes amazing AND it's fully vegan and gluten-free" — curiosity sells
+• The moss water display is your TikTok hook — have it visible and gorgeous</div>
+      </div>
+
+      <div class="script-card" style="margin-bottom:0">
+        <div class="script-tag">DONATIONS</div>
+        <h4>Collecting & Tracking Donations</h4>
+        <div class="script-body">You have two ways to collect:
+
+💵 CASH — Donation jar labeled with your cause. Count cash throughout the day and keep it secure in a separate lockbox or pouch.
+
+📱 DIGITAL — Your No Kid Hungry fundraising page QR code. Customers scan and donate directly online. This also captures donations from people who share your link on social media.
+
+No Kid Hungry recommends setting a visible fundraising goal to motivate donors. You can reach the No Kid Hungry bake sale team by email at bakesale@strength.org or by phone at (800) 761-4227, available Monday–Friday, 9am–5pm EST.
+
+Keep a simple running tally:
+• Cash total (count every hour)
+• Online donations (check your fundraising page dashboard)
+• Combined total to announce on TikTok Live throughout the day</div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Wrap Up -->
+    <div class="checklist-section">
+      <h4>✅ Step 4 — Wrap Up & Submit Proceeds</h4>
+
+      <div class="script-card" style="margin-bottom:1rem">
+        <div class="script-tag">SAME DAY</div>
+        <h4>Count, Submit & Celebrate</h4>
+        <div class="script-body">You can submit your proceeds online with a credit card through your fundraising webpage. You can also mail your donation check to:
+
+Share Our Strength / Bake Sale For No Kid Hungry
+P.O. Box 75203
+Baltimore, MD 21275-5203
+
+Same-day wrap-up steps:
+1. Count all cash collected
+2. Log your online donation total from your No Kid Hungry dashboard
+3. Submit combined proceeds online at your fundraising page (credit card)
+   — OR mail a check made out to "Share Our Strength"
+4. Post a wrap-up video on TikTok: total raised, meals funded, thank your team
+5. Tag all GCCC partners and thank them publicly
+6. Email bakesale@strength.org with photos from your event</div>
+        <div class="tip-box"><strong>Milestone rewards from No Kid Hungry:</strong> Raise $250 and earn a set of bake sale measuring spoons and cup. Raise $500 and receive a silicone whisk and tea towel set. Raise $1,000 and become a Bake Sale Rock Star — No Kid Hungry will send you a 10-piece set of Ayesha Curry bakeware. 🎉</div>
+      </div>
+
+      <div class="script-card" style="margin-bottom:0">
+        <div class="script-tag">SHARE YOUR STORY</div>
+        <h4>Tell No Kid Hungry How It Went</h4>
+        <div class="script-body">No Kid Hungry would love to hear from you! Email photos from your bake sale with a note describing your event and identifying everyone in your photos to bakesale@strength.org. You can also post photos on the Team No Kid Hungry Facebook page.
+
+For GCCC:
+• Send your recap photos and total raised to your GCCC coordinator
+• Post your final TikTok wrap-up — mention all partners by name
+• Update your GlobalHive back office with event results
+• Save all receipts for GCCC nonprofit records</div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Impact -->
+    <div class="checklist-section">
+      <h4>🌍 The Impact — What Your Bake Sale Funds</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem">
+        <div style="background:#1a1040;border-radius:4px;padding:1.25rem;text-align:center">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:#e8c96a;font-weight:700">$10</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);margin-top:0.25rem;line-height:1.5">= 100 meals<br>for a child in America</div>
+        </div>
+        <div style="background:#1a1040;border-radius:4px;padding:1.25rem;text-align:center">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:#e8c96a;font-weight:700">$250</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);margin-top:0.25rem;line-height:1.5">= 2,500 meals<br>+ NKH measuring set reward</div>
+        </div>
+        <div style="background:#1a1040;border-radius:4px;padding:1.25rem;text-align:center">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;color:#e8c96a;font-weight:700">$1,000</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);margin-top:0.25rem;line-height:1.5">= 10,000 meals<br>+ Bake Sale Rock Star status 🏆</div>
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:#3a3730;line-height:1.8">Funds raised through your bake sale support the No Kid Hungry campaign to end childhood hunger in America. Nationally, the campaign provides leadership, raises awareness and advocates for change. Locally, No Kid Hungry funds the most effective anti-hunger organizations and builds partnerships that bring together public officials, nonprofits, community groups, private funders and businesses to end childhood hunger in a particular state or city.</p>
+    </div>
+
+    <div class="tip-box" style="margin-top:1rem">
+      <strong>Questions?</strong> Contact No Kid Hungry directly: <strong>bakesale@strength.org</strong> · Call <strong>(800) 761-4227</strong> Mon–Fri 9am–5pm EST · Register free at <strong>bakesale.nokidhungry.org</strong>
+    </div>
+  </div>
+
+  <!-- TAB 7: Order Form -->
+  <div id="tab-order" class="tab-panel">
+
+    <div class="nkh-banner" style="margin-top:0">
+      <div class="nkh-icon">🟠</div>
+      <p><strong>Registration with No Kid Hungry is 100% free</strong> — no signup fee, no fundraising minimum. This kit covers your physical supplies. All proceeds go to No Kid Hungry at <strong>bakesale.nokidhungry.org</strong></p>
+    </div>
+
+    <div class="partner-banner">
+      <div class="partner-logo">🎵</div>
+      <div class="partner-info">
+        <h3>Global Citizens Community Center TikTok Partnership</h3>
+        <p>Tag <strong style="color:#e8c96a">@globalhive</strong> when your bake sale goes live. <a href="#">Learn more →</a></p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="order-card">
+          <h3>Your information</h3>
+          <div class="form-row">
+            <div class="form-group"><label>First name</label><input type="text" placeholder="Rosie"/></div>
+            <div class="form-group"><label>Last name</label><input type="text" placeholder="Williams"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Email address</label><input type="email" placeholder="you@globalcitizencommunitycenter.org"/></div>
+            <div class="form-group"><label>Phone (optional)</label><input type="tel" placeholder="+1 (212) 000-0000"/></div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group"><label>Organization / Team name</label><input type="text" placeholder="Global Citizens Community Center"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Kit type</label><select><option>Classic Bake Sale Kit</option><option>Vegan & Gluten-Free Kit</option><option>Both Kits</option></select></div>
+            <div class="form-group"><label>Planned event date</label><input type="date"/></div>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <h3>Kit contents — quantities</h3>
+
+          <div class="qty-row">
+            <div class="form-group"><label>Item</label><div class="qty-label">GCCC TikTok Partner Items</div></div>
+            <div class="form-group"><label>Qty</label><input type="number" value="1" min="1" max="20" id="q1" oninput="calc()"/></div>
+            <div class="form-group"><label>Est. cost</label><input type="text" value="Varies" readonly style="background:#f0ede6;color:#9e9890"/></div>
+          </div>
+          <div class="qty-row">
+            <div class="form-group"><label>&nbsp;</label><div class="qty-label">6 ft Folding Table (Walmart Mainstays)</div></div>
+            <div class="form-group"><label>&nbsp;</label><input type="number" value="1" min="1" max="10" id="q2" oninput="calc()"/></div>
+            <div class="form-group"><label>&nbsp;</label><input type="text" id="p2" readonly style="background:#f0ede6;color:#555" value="$35"/></div>
+          </div>
+          <div class="qty-row">
+            <div class="form-group"><label>&nbsp;</label><div class="qty-label">Folding Chairs × 2 pack (Ozark Trail)</div></div>
+            <div class="form-group"><label>&nbsp;</label><input type="number" value="1" min="1" max="10" id="q3" oninput="calc()"/></div>
+            <div class="form-group"><label>&nbsp;</label><input type="text" id="p3" readonly style="background:#f0ede6;color:#555" value="$20"/></div>
+          </div>
+          <div class="qty-row">
+            <div class="form-group"><label>&nbsp;</label><div class="qty-label">Custom vinyl banners (2-pack)</div></div>
+            <div class="form-group"><label>&nbsp;</label><input type="number" value="1" min="1" max="10" id="q4" oninput="calc()"/></div>
+            <div class="form-group"><label>&nbsp;</label><input type="text" id="p4" readonly style="background:#f0ede6;color:#555" value="$40"/></div>
+          </div>
+          <div class="qty-row">
+            <div class="form-group"><label>&nbsp;</label><div class="qty-label">HP Printer (DeskJet 2755e)</div></div>
+            <div class="form-group"><label>&nbsp;</label><input type="number" value="1" min="0" max="5" id="q6" oninput="calc()"/></div>
+            <div class="form-group"><label>&nbsp;</label><input type="text" id="p6" readonly style="background:#f0ede6;color:#555" value="$65"/></div>
+          </div>
+          <div class="qty-row">
+            <div class="form-group"><label>&nbsp;</label><div class="qty-label">Printer paper (500 sheets) + HP Instant Ink setup</div></div>
+            <div class="form-group"><label>&nbsp;</label><input type="number" value="1" min="0" max="10" id="q7" oninput="calc()"/></div>
+            <div class="form-group"><label>&nbsp;</label><input type="text" id="p7" readonly style="background:#f0ede6;color:#555" value="$10"/></div>
+          </div>
+          <div class="qty-row">
+            <div class="form-group"><label>&nbsp;</label><div class="qty-label">Packaging + supplies kit</div></div>
+            <div class="form-group"><label>&nbsp;</label><input type="number" value="1" min="1" max="10" id="q5" oninput="calc()"/></div>
+            <div class="form-group"><label>&nbsp;</label><input type="text" id="p5" readonly style="background:#f0ede6;color:#555" value="$15"/></div>
+          </div>
+          <div class="qty-row">
+            <div class="form-group"><label>&nbsp;</label><div class="qty-label">Classic + Vegan GF Checklist guide</div></div>
+            <div class="form-group"><label>&nbsp;</label><input type="number" value="1" min="1" max="20" id="q8" oninput="calc()"/></div>
+            <div class="form-group"><label>&nbsp;</label><input type="text" readonly style="background:#f0ede6;color:#9e9890" value="Free"/></div>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <h3>Shipping address</h3>
+          <div class="form-row full"><div class="form-group"><label>Street address</label><input type="text" placeholder="123 Main St"/></div></div>
+          <div class="form-row">
+            <div class="form-group"><label>City</label><input type="text" placeholder="New York"/></div>
+            <div class="form-group"><label>State</label><input type="text" placeholder="NY"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>ZIP</label><input type="text" placeholder="10001"/></div>
+            <div class="form-group"><label>Notes</label><input type="text" placeholder="Apt, suite, special instructions..."/></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="summary-card">
+          <h3>Order summary</h3>
+          <div class="summary-line"><span>6 ft Table (×<span id="s2">1</span>)</span><span id="t2">$35</span></div>
+          <div class="summary-line"><span>Chairs 2-pack (×<span id="s3">1</span>)</span><span id="t3">$20</span></div>
+          <div class="summary-line"><span>Banners (×<span id="s4">1</span>)</span><span id="t4">$40</span></div>
+          <div class="summary-line"><span>HP Printer (×<span id="s6">1</span>)</span><span id="t6">$65</span></div>
+          <div class="summary-line"><span>Paper + Ink setup (×<span id="s7">1</span>)</span><span id="t7">$10</span></div>
+          <div class="summary-line"><span>Supplies kit (×<span id="s5">1</span>)</span><span id="t5">$15</span></div>
+          <div class="summary-line"><span>GCCC TikTok Items</span><span>TBD</span></div>
+          <div class="summary-line"><span>Checklist guides</span><span>Free</span></div>
+          <hr class="summary-divider"/>
+          <div class="summary-total">
+            <span>Estimated total</span>
+            <span class="total-amt" id="grand">$185</span>
+          </div>
+          <div class="summary-impact" id="impact">
+            If your team raises just $185, that's <strong>1,850 meals</strong> for kids facing hunger. 🍪
+          </div>
+          <p style="font-size:0.65rem;color:rgba(255,255,255,0.45);text-align:center;line-height:1.6;margin-bottom:1rem">
+            <strong style="color:rgba(255,255,255,0.6)">Please note:</strong> the meal/dollar figures above are illustrative examples, not guarantees or projections. Based on national averages for No Kid Hungry bake sales, typical results are roughly <strong style="color:rgba(255,255,255,0.6)">$300–$800</strong> for an in-person table alone, and roughly <strong style="color:rgba(255,255,255,0.6)">$800–$1,500+</strong> when combined with online/social sharing (a personal fundraising link, texts, or social posts) — though some hosts raise less and a few raise significantly more. Actual amounts vary widely and depend on your community size, effort, promotion, and local demand; individual results are not typical or guaranteed.
+          </p>
+          <button class="btn-order" onclick="alert('Thank you! We\'ll follow up by email within 1 business day to confirm your kit and connect you with your No Kid Hungry fundraising page.')">Submit Kit Order →</button>
+          <button class="btn-secondary" onclick="switchTab('classic');scrollTo(0,0)">⬇ View Classic Checklist</button>
+          <button class="btn-secondary" onclick="switchTab('vegan');scrollTo(0,0)">🌿 View Vegan GF Checklist</button>
+          <p style="font-size:0.65rem;color:rgba(255,255,255,0.3);text-align:center;margin-top:0.75rem;line-height:1.6">No Kid Hungry registration is separate & free at bakesale.nokidhungry.org</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const btns=document.querySelectorAll('.tab-btn');
+  const map={kit:0,classic:1,vegan:2,script:3,stickers:4,guide:5,order:6};
+  btns[map[id]].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function calc(){
+  const q2=parseInt(document.getElementById('q2').value)||1;
+  const q3=parseInt(document.getElementById('q3').value)||1;
+  const q4=parseInt(document.getElementById('q4').value)||1;
+  const q5=parseInt(document.getElementById('q5').value)||1;
+  const q6=parseInt(document.getElementById('q6').value)||1;
+  const q7=parseInt(document.getElementById('q7').value)||1;
+
+  const t2=q2*35, t3=q3*20, t4=q4*40, t5=q5*15, t6=q6*65, t7=q7*10;
+  const total=t2+t3+t4+t5+t6+t7;
+
+  document.getElementById('p2').value='$'+t2;
+  document.getElementById('p3').value='$'+t3;
+  document.getElementById('p4').value='$'+t4;
+  document.getElementById('p5').value='$'+t5;
+  document.getElementById('p6').value='$'+t6;
+  document.getElementById('p7').value='$'+t7;
+
+  document.getElementById('s2').textContent=q2;
+  document.getElementById('s3').textContent=q3;
+  document.getElementById('s4').textContent=q4;
+  document.getElementById('s5').textContent=q5;
+  document.getElementById('s6').textContent=q6;
+  document.getElementById('s7').textContent=q7;
+
+  document.getElementById('t2').textContent='$'+t2;
+  document.getElementById('t3').textContent='$'+t3;
+  document.getElementById('t4').textContent='$'+t4;
+  document.getElementById('t5').textContent='$'+t5;
+  document.getElementById('t6').textContent='$'+t6;
+  document.getElementById('t7').textContent='$'+t7;
+
+  document.getElementById('grand').textContent='$'+total;
+  const meals=(total*10).toLocaleString();
+  document.getElementById('impact').innerHTML='If your team raises just $'+total+', that\'s <strong>'+meals+' meals</strong> for kids facing hunger. 🍪';
+}
+</script>
+</body>
+</html>

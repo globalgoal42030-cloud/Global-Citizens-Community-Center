@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Learning Center — GCCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Serif+Display&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="gccc.css"/>
+<style>:root{--accent:#6366f1;}</style>
+</head>
+<body><nav id="site-nav">
+  <a class="nav-logo-word" href="index.html">
+    <span class="nav-logo-globe">🌍</span>
+    GCCC
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#rooms">Rooms</a></li>
+    <li><a href="index.html#goals">Global Goals</a></li>
+    <li><a href="index.html#campaigns">Take Action</a></li>
+    <li><a href="index.html#membership">Membership</a></li>
+    <li><a href="dashboard.html">My Dashboard</a></li>
+    <li><a href="login.html" class="nav-cta">Sign In</a></li>
+  </ul>
+  <div class="nav-hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<main>
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-inner" style="max-width:1200px;margin:0 auto;">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>/</span>
+        <a href="index.html#rooms">Rooms</a><span>/</span>
+        Learning Center
+      </div>
+      <div class="page-hero-label">Global Scholars School</div>
+      <h1>🎓 <em>Learning Center</em></h1>
+      <p class="page-hero-desc">A full academic hub for lifelong learners — SDG-aligned curriculum, tutoring, adult education, language learning, and youth academic enrichment programs.</p>
+      <a class="btn-primary" href="#offerings">Enter the Global Scholars School</a>
+      &nbsp;&nbsp;
+      <a class="btn-outline" href="index.html#rooms">All Rooms</a>
+    </div>
+    <div class="page-hero-accent">🎓</div>
+  </div>
+
+  <section class="section" style="background:var(--navy2);" id="country-explorer-section">
+    <div class="section-inner">
+      <div class="section-label">Explore Globally</div>
+      <h2 class="section-title">Browse by UN Member State</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Find local partners, SDG progress snapshots, and points of contact for the Learning Center across all 193 UN member states.</p>
+      <div class="country-explorer-search-row">
+        <input type="text" class="country-explorer-search" id="country-explorer-search" placeholder="Search countries…" autocomplete="off"/>
+        <div class="country-explorer-count" id="country-explorer-count"></div>
+      </div>
+      <div class="country-explorer-grid" id="country-explorer-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--navy);" id="offerings">
+    <div class="section-inner">
+      <div class="section-label">What We Offer</div>
+      <h2 class="section-title">Inside the Learning Center</h2>
+      <div class="divider"></div>
+      <p class="section-sub">The Global Scholars School inside the GCCC is designed for anyone who wants to grow. From K–12 enrichment to adult literacy and college prep, every program is built around the 17 UN Sustainable Development Goals.</p>
+      <div class="feature-grid"><div class="feature-card" style="--accent:#6366f1;">
+      <div class="feature-icon">📚</div>
+      <div class="feature-title">SDG-Aligned Curriculum</div>
+      <div class="feature-desc">Every course and workshop connects to one or more of the 17 SDGs — making global learning locally relevant and actionable.</div>
+    </div><div class="feature-card" style="--accent:#6366f1;">
+      <div class="feature-icon">🗣️</div>
+      <div class="feature-title">ESL & Language Learning</div>
+      <div class="feature-desc">English as a Second Language classes, language exchange pairs, and multilingual support for community members from all backgrounds.</div>
+    </div><div class="feature-card" style="--accent:#6366f1;">
+      <div class="feature-icon">👩‍🎓</div>
+      <div class="feature-title">Adult Education</div>
+      <div class="feature-desc">GED prep, workforce readiness, digital literacy, and continuing education programs for adult learners at every stage.</div>
+    </div><div class="feature-card" style="--accent:#6366f1;">
+      <div class="feature-icon">🧒</div>
+      <div class="feature-title">Youth Enrichment</div>
+      <div class="feature-desc">After-school tutoring, STEM workshops, arts programs, and mentorship for K–12 students in the community.</div>
+    </div><div class="feature-card" style="--accent:#6366f1;">
+      <div class="feature-icon">🏛️</div>
+      <div class="feature-title">College & Career Prep</div>
+      <div class="feature-desc">SAT/ACT prep, college application guidance, scholarship searches, and career pathway counseling.</div>
+    </div><div class="feature-card" style="--accent:#6366f1;">
+      <div class="feature-icon">🎓</div>
+      <div class="feature-title">Intern & Volunteer Credit</div>
+      <div class="feature-desc">Students can earn college credit by volunteering or interning with GCCC programs — apply through the dashboard.</div>
+    </div></div>
+      
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--navy2);">
+    <div class="section-inner">
+      <div class="section-label">Resources &amp; Access</div>
+      <h2 class="section-title">Get Started</h2>
+      <div class="divider"></div>
+      <div class="resource-list"><a class="resource-item" href="#offerings">
+      <div class="resource-item-icon">🌐</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">Global Scholars School Portal</div>
+        <div class="resource-item-desc">Full course catalog, registration, and student dashboard</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="https://sdgs.un.org/goals/goal4" target="_blank" rel="noopener">
+      <div class="resource-item-icon">📖</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">UN SDG Education Resources</div>
+        <div class="resource-item-desc">Official SDG learning materials and lesson plans</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="https://literacydirectory.org" target="_blank" rel="noopener">
+      <div class="resource-item-icon">🏫</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">Adult Literacy Programs</div>
+        <div class="resource-item-desc">Free adult literacy resources and program locator</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="https://khanacademy.org" target="_blank" rel="noopener">
+      <div class="resource-item-icon">💻</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">Khan Academy</div>
+        <div class="resource-item-desc">Free world-class education for anyone, anywhere</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a></div>
+    </div>
+  </section>
+
+  <section style="background:var(--slate);padding:64px 48px;text-align:center;">
+    <div style="max-width:600px;margin:0 auto;">
+      <div class="section-label" style="justify-content:center;display:block;">Ready to Enter?</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,48px);letter-spacing:.03em;color:var(--chalk);margin-bottom:14px;">Join the Learning Center</h2>
+      <p style="font-size:15px;color:var(--mist);margin-bottom:28px;line-height:1.7;">Membership is free to start. Sign in or create your GCCC account to access all room features and resources.</p>
+      <a class="btn-primary" href="register.html" style="margin-right:12px;">Create Free Account</a>
+      <a class="btn-outline" href="login.html">Sign In</a>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-word">GCCC</div>
+      <div class="footer-tagline">Global Citizens Community Center — building bridges across 193 nations through education, community, and action.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Rooms</h4>
+      <a href="room-learning-center.html">Learning Center</a>
+      <a href="room-business-lounge.html">Business Lounge</a>
+      <a href="room-global-cafe.html">Global Cafe</a>
+      <a href="room-freedom-cove.html">Freedom Cove</a>
+      <a href="room-health-spa.html">Health &amp; Wellness</a>
+      <a href="room-dev-dojo.html">Dev Dojo</a>
+    </div>
+    <div class="footer-col">
+      <h4>More Rooms</h4>
+      <a href="room-emergency-services.html">Emergency Services</a>
+      <a href="room-magazine.html">Magazine &amp; Press</a>
+      <a href="room-studio.html">Studio</a>
+      <a href="room-global-counsel.html">Global Counsel</a>
+      <a href="room-glomart.html">GloMart</a>
+      <a href="room-global-exchange.html">Global Exchange</a>
+      <a href="room-ministry.html">Ministry</a>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <a href="login.html">Sign In</a>
+      <a href="register.html">Join Free</a>
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="index.html#membership">Membership Levels</a>
+      <a href="index.html#summit">Global Summit</a>
+      <a href="index.html#donate">Donate</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Global Citizens Community Center. All rights reserved.</div>
+    <div class="footer-sdg-badge">Aligned with all 17 UN SDGs</div>
+  </div>
+</footer>
+<div class="country-modal-overlay" id="country-modal">
+  <div class="country-modal">
+    <button class="country-modal-close" id="country-modal-close" aria-label="Close">✕</button>
+    <div class="country-modal-flag" id="country-modal-flag"></div>
+    <div class="country-modal-name" id="country-modal-name"></div>
+    <div class="country-modal-section">
+      <h4>Local Partners</h4>
+      <p id="country-modal-partners"></p>
+    </div>
+    <div class="country-modal-section">
+      <h4>SDG Stats</h4>
+      <p id="country-modal-stats"></p>
+    </div>
+    <div class="country-modal-section">
+      <h4>Local Contacts</h4>
+      <p id="country-modal-contacts"></p>
+    </div>
+  </div>
+</div>
+<script>
+  window.ROOM_NAME = "Learning Center";
+  // Fill in per-country overrides here, keyed by ISO 3166-1 alpha-2 code:
+  // window.ROOM_COUNTRY_DATA = { AF: { partners:"...", stats:"...", contacts:"..." } };
+  window.ROOM_COUNTRY_DATA = {};
+</script>
+<script src="countries-data.js"></script>
+<script src="country-explorer.js"></script>
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('site-nav').classList.toggle('scrolled',window.scrollY>40);
+});
+</script>
+</body>
+</html>

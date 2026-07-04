@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Free Virtual GlowBag — GCCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Serif+Display&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="gccc.css"/>
+<style>:root{--accent:#00D4B4;}</style>
+</head>
+<body><nav id="site-nav">
+  <a class="nav-logo-word" href="index.html">
+    <span class="nav-logo-globe">🌍</span>
+    GCCC
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#rooms">Rooms</a></li>
+    <li><a href="index.html#goals">Global Goals</a></li>
+    <li><a href="index.html#campaigns">Take Action</a></li>
+    <li><a href="index.html#membership">Membership</a></li>
+    <li><a href="dashboard.html">My Dashboard</a></li>
+    <li><a href="login.html" class="nav-cta">Sign In</a></li>
+  </ul>
+  <div class="nav-hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<main>
+  <div class="page-hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;padding:120px 20px 40px;">
+    <div class="page-hero-bg"></div>
+    <div style="width:100%;max-width:640px;position:relative;z-index:2;text-align:center;">
+      <div style="font-size:56px;margin-bottom:12px;">🎁</div>
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.04em;color:var(--chalk);margin-bottom:10px;">Your Free Virtual GlowBag</h1>
+      <p style="font-size:15px;color:var(--mist);line-height:1.7;">A free 5-Day Music &amp; Journaling Retreat guide, plus a set of hand-picked wellness, budgeting, and crisis-support resources — our gift to you, no strings attached.</p>
+    </div>
+  </div>
+
+  <section class="section" id="claim">
+    <div class="section-inner" style="max-width:640px;">
+      <div id="claimBox" style="background:var(--slate);padding:36px;border-radius:8px;border:1px solid rgba(240,244,255,.08);text-align:center;">
+        <div style="font-weight:700;font-size:18px;color:var(--chalk);margin-bottom:10px;">📄 Download the Virtual GlowBag Guide</div>
+        <p style="font-size:13px;color:var(--mist);margin-bottom:20px;">Includes the 5-Day Music &amp; Journaling Retreat plus a GCCC resources page with links to meditation apps, budgeting tools, free e-books, and support lines.</p>
+        <a class="btn-primary" href="assets/glowbag/virtual-glowbag.pdf" target="_blank" rel="noopener" style="display:inline-block;">Open the GlowBag PDF</a>
+      </div>
+
+      <div style="margin-top:32px;">
+        <h2 class="section-title" style="font-size:24px;">🎵 The AnnoDominiNation Soundtrack</h2>
+        <div class="divider"></div>
+        <p class="section-sub" style="margin-bottom:24px;">Three tracks to journal, reflect, and reset by — streamed straight from the bag.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="resource-item" style="border-radius:4px;">
+            <div class="resource-item-icon">🎧</div>
+            <div class="resource-item-text" style="flex:1;">
+              <div class="resource-item-title">Dream On</div>
+              <audio controls style="width:100%;margin-top:8px;"><source src="assets/glowbag/music/dream-on.mp3" type="audio/mpeg"/></audio>
+            </div>
+          </div>
+          <div class="resource-item" style="border-radius:4px;">
+            <div class="resource-item-icon">🎧</div>
+            <div class="resource-item-text" style="flex:1;">
+              <div class="resource-item-title">Death Row</div>
+              <audio controls style="width:100%;margin-top:8px;"><source src="assets/glowbag/music/death-row.mp3" type="audio/mpeg"/></audio>
+            </div>
+          </div>
+          <div class="resource-item" style="border-radius:4px;">
+            <div class="resource-item-icon">🎧</div>
+            <div class="resource-item-text" style="flex:1;">
+              <div class="resource-item-title">What You Waiting For</div>
+              <audio controls style="width:100%;margin-top:8px;"><source src="assets/glowbag/music/what-you-waiting-for.mp3" type="audio/mpeg"/></audio>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;">
+        <h2 class="section-title" style="font-size:24px;">🧭 More Free Resources</h2>
+        <div class="divider"></div>
+        <div class="feature-grid">
+          <div class="feature-card" style="--accent:#4ade80;">
+            <div class="feature-icon">🧘</div>
+            <div class="feature-title">Meditation &amp; Mindfulness</div>
+            <div class="feature-desc">Insight Timer, Medito, UCLA Mindful, and Smiling Mind — all free to use.</div>
+          </div>
+          <div class="feature-card" style="--accent:#4ade80;">
+            <div class="feature-icon">💰</div>
+            <div class="feature-title">Budgeting Tools</div>
+            <div class="feature-desc">Rocket Money and Empower, for getting a clear picture of your finances.</div>
+          </div>
+          <div class="feature-card" style="--accent:#4ade80;">
+            <div class="feature-icon">📚</div>
+            <div class="feature-title">Free E-Books</div>
+            <div class="feature-desc">Thousands of free titles via Project Gutenberg.</div>
+          </div>
+          <div class="feature-card" style="--accent:#4ade80;">
+            <div class="feature-icon">🍽️</div>
+            <div class="feature-title">Food Support</div>
+            <div class="feature-desc">Lemontree Food Helpline, for finding food assistance near you.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:36px;padding:20px;border-radius:8px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);text-align:center;">
+        <div style="font-weight:700;color:#F87171;font-size:14px;margin-bottom:6px;">In Crisis or Need to Talk?</div>
+        <div style="font-size:13px;color:var(--mist);">Call or text <strong style="color:var(--chalk);">988</strong> (Suicide &amp; Crisis Lifeline), or text <strong style="color:var(--chalk);">HOME</strong> to <strong style="color:var(--chalk);">741741</strong> (Crisis Text Line). Both are free, confidential, and available 24/7.</div>
+      </div>
+
+      <div style="text-align:center;margin-top:40px;">
+        <p style="font-size:13px;color:var(--mist);margin-bottom:14px;">Want more from GCCC — community rooms, live events, and member perks?</p>
+        <a class="btn-primary" href="register.html">Create Your Free GCCC Account</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-word">GCCC</div>
+      <div class="footer-tagline">Global Citizens Community Center — building bridges across 193 nations through education, community, and action.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Rooms</h4>
+      <a href="room-learning-center.html">Learning Center</a>
+      <a href="room-business-lounge.html">Business Lounge</a>
+      <a href="room-global-cafe.html">Global Cafe</a>
+      <a href="room-freedom-cove.html">Freedom Cove</a>
+      <a href="room-health-spa.html">Health &amp; Wellness</a>
+      <a href="room-dev-dojo.html">Dev Dojo</a>
+    </div>
+    <div class="footer-col">
+      <h4>More Rooms</h4>
+      <a href="room-emergency-services.html">Emergency Services</a>
+      <a href="room-magazine.html">Magazine &amp; Press</a>
+      <a href="room-studio.html">Studio</a>
+      <a href="room-global-counsel.html">Global Counsel</a>
+      <a href="room-glomart.html">GloMart</a>
+      <a href="room-global-exchange.html">Global Exchange</a>
+      <a href="room-ministry.html">Ministry</a>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <a href="login.html">Sign In</a>
+      <a href="register.html">Join Free</a>
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="index.html#membership">Membership Levels</a>
+      <a href="index.html#summit">Global Summit</a>
+      <a href="index.html#donate">Donate</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Global Citizens Community Center. All rights reserved.</div>
+    <div class="footer-sdg-badge">Aligned with all 17 UN SDGs</div>
+  </div>
+</footer>
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('site-nav').classList.toggle('scrolled',window.scrollY>40);
+});
+</script>
+<script>
+// If arriving via a "Claim your GlowBag" link (?claim=1), scroll straight to the claim box and highlight it.
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('claim')==='1'){
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const box = document.getElementById('claimBox');
+      if(box){
+        box.style.transition='box-shadow .4s, border-color .4s';
+        box.style.boxShadow='0 0 0 3px var(--teal)';
+        box.style.borderColor='var(--teal)';
+        box.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+  }
+})();
+</script>
+</body></html>
