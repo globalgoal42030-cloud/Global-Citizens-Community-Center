@@ -3,11 +3,60 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Your Free Virtual GlowBag — GCCC</title>
+<title>Your Virtual GlowBag — GCCC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Serif+Display&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="gccc.css"/>
-<style>:root{--accent:#00D4B4;}</style>
+<style>
+  :root{--accent:#FFD166;}
+
+  .gb-hero{text-align:center;padding-bottom:8px;}
+  .gb-toggle{display:inline-flex;flex-wrap:wrap;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:4px;margin:22px 0 8px;}
+  .gb-toggle button{border:none;background:transparent;color:var(--mist);font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:.03em;padding:10px 22px;border-radius:999px;cursor:pointer;transition:all .25s;}
+  .gb-toggle button.active{background:var(--teal);color:var(--navy);}
+
+  .gb-stage{max-width:1100px;margin:0 auto;padding:24px 24px 90px;text-align:center;}
+
+  .gb-bag-wrap{position:relative;display:flex;flex-direction:column;align-items:center;margin:30px auto 10px;}
+  .gb-bag{width:180px;height:180px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:76px;cursor:pointer;user-select:none;position:relative;transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .3s;box-shadow:0 20px 60px -20px rgba(0,0,0,.6);}
+  .gb-bag.her{background:linear-gradient(135deg,#3d1a4a 0%,#7a2f6e 100%);}
+  .gb-bag.his{background:linear-gradient(135deg,#0d2338 0%,#134a52 100%);}
+  .gb-bag.kids{background:linear-gradient(135deg,#7a4a0d 0%,#d68a2e 100%);}
+  .gb-bag.pet{background:linear-gradient(135deg,#1f3d1a 0%,#4a7a3a 100%);}
+  .gb-bag:hover{transform:translateY(-4px) scale(1.03);}
+  .gb-bag.opened{transform:scale(1.08);}
+  .gb-bag-glow{position:absolute;inset:-18px;border-radius:34px;background:radial-gradient(circle,rgba(255,209,102,0.35),transparent 70%);opacity:0;transition:opacity .4s;pointer-events:none;}
+  .gb-bag.opened + .gb-bag-glow, .gb-bag-wrap.opened .gb-bag-glow{opacity:1;}
+  .gb-hint{font-size:13px;color:var(--mist);margin-top:16px;letter-spacing:.02em;}
+
+  .gb-items{max-width:980px;margin:50px auto 0;display:none;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;text-align:left;opacity:0;transform:translateY(18px);transition:opacity .5s,transform .5s;pointer-events:none;}
+  .gb-items.show{display:grid;opacity:1;transform:translateY(0);pointer-events:auto;}
+
+  .gb-card{background:var(--navy2);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:22px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s;}
+  .gb-card:hover{transform:translateY(-3px);border-color:rgba(255,209,102,.35);}
+  .gb-card-icon{font-size:30px;margin-bottom:10px;display:block;}
+  .gb-card-title{font-weight:700;font-size:15px;color:var(--chalk);margin-bottom:6px;}
+  .gb-card-desc{font-size:12.5px;color:var(--mist);line-height:1.6;margin-bottom:12px;}
+  .gb-card-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);background:var(--teal);padding:3px 10px;border-radius:999px;margin-bottom:12px;}
+  .gb-card-tag.crisis{background:var(--coral);}
+  .gb-card-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--gold);text-decoration:none;}
+  .gb-card-link:hover{text-decoration:underline;}
+
+  .gb-note{max-width:700px;margin:56px auto 0;font-size:13px;color:var(--mist);line-height:1.8;border-top:1px solid rgba(255,255,255,.08);padding-top:26px;}
+  .gb-note a{color:var(--teal);}
+
+  .gb-card-audio{grid-column:1/-1;}
+  .gb-audio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:14px;}
+  .gb-track{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:14px;}
+  .gb-track-title{font-weight:700;font-size:13.5px;color:var(--chalk);margin-bottom:8px;}
+  .gb-track audio{width:100%;height:32px;accent-color:var(--gold);}
+  .gb-track-dl{display:inline-flex;margin-top:8px;font-size:11.5px;font-weight:700;color:var(--gold);text-decoration:none;}
+  .gb-track-dl:hover{text-decoration:underline;}
+
+  .gb-confetti{position:fixed;inset:0;pointer-events:none;z-index:998;overflow:hidden;}
+  .gb-confetti span{position:absolute;top:-20px;font-size:20px;animation:gbfall linear forwards;}
+  @keyframes gbfall{to{transform:translateY(110vh) rotate(400deg);opacity:.2;}}
+</style>
 </head>
 <body><nav id="site-nav">
   <a class="nav-logo-word" href="index.html">
@@ -28,13 +77,367 @@
   </div>
 </nav>
 <main>
-  <div class="page-hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;padding:120px 20px 40px;">
+  <div class="page-hero">
     <div class="page-hero-bg"></div>
-    <div style="width:100%;max-width:640px;position:relative;z-index:2;text-align:center;">
-      <div style="font-size:56px;margin-bottom:12px;">🎁</div>
-      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.04em;color:var(--chalk);margin-bottom:10px;">Your Free Virtual GlowBag</h1>
-      <p style="font-size:15px;color:var(--mist);line-height:1.7;">A free 5-Day Music &amp; Journaling Retreat guide, plus a set of hand-picked wellness, budgeting, and crisis-support resources — our gift to you, no strings attached.</p>
+    <div class="page-hero-inner" style="max-width:1200px;margin:0 auto;">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>/</span>
+        Your Virtual GlowBag
+      </div>
+      <div class="page-hero-label">🎁 Welcome Gift</div>
+      <div class="gb-hero">
+        <h1>Your <em>Virtual GlowBag</em> Has Arrived</h1>
+        <p class="page-hero-desc" style="max-width:640px;margin:0 auto;">Every newsletter signup, free membership, and donation includes a free Virtual GlowBag — a digital care package of genuinely free tools, resources, and one gift from a GCCC creative partner. Tap your bag to open it.</p>
+      </div>
+
+      <div class="gb-toggle" role="tablist">
+        <button class="active" onclick="setBagType(this,'her')">👜 Her GlowBag</button>
+        <button onclick="setBagType(this,'his')">💼 His GlowBag</button>
+        <button onclick="setBagType(this,'kids')">🧸 Kids GlowBag</button>
+        <button onclick="setBagType(this,'pet')">🐾 Pet GlowBag</button>
+      </div>
     </div>
+  </div>
+
+  <div class="gb-stage">
+    <div class="gb-bag-wrap" id="bagWrap">
+      <div class="gb-bag her" id="bagEl" onclick="openBag()">👜</div>
+      <div class="gb-bag-glow"></div>
+      <div class="gb-hint" id="bagHint">Tap the bag to open it ✨</div>
+    </div>
+
+    <!-- ===== HER / HIS shared items ===== -->
+    <div class="gb-items" id="gbItems-adult">
+
+      <div class="gb-card">
+        <span class="gb-card-icon">🎵</span>
+        <div class="gb-card-tag">GCCC Partner Gift</div>
+        <div class="gb-card-title">5-Day Music &amp; Journaling Retreat</div>
+        <div class="gb-card-desc">A guided at-home retreat from Michelle Francois-Walsh (My Village Well) — one song a day, paired with journal prompts, for five days of reflection.</div>
+        <a class="gb-card-link" href="assets/glowbag/free-5-day-music-journaling-retreat.pdf" target="_blank" rel="noopener">Download the PDF ↓</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">🧘</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">Insight Timer</div>
+        <div class="gb-card-desc">Over 200,000 free guided meditations from thousands of independent teachers — no subscription required to access the free library.</div>
+        <a class="gb-card-link" href="https://insighttimer.com" target="_blank" rel="noopener">Get the app ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">🌿</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">Medito</div>
+        <div class="gb-card-desc">A nonprofit meditation app with no ads, no subscriptions, and no paywalls — structured courses and daily sessions, entirely free.</div>
+        <a class="gb-card-link" href="https://medito.com" target="_blank" rel="noopener">Get the app ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">🎓</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">UCLA Mindful</div>
+        <div class="gb-card-desc">Free, research-backed guided meditations from UCLA's Mindful Awareness Research Center, available in English and Spanish.</div>
+        <a class="gb-card-link" href="https://www.uclahealth.org/uclamindful" target="_blank" rel="noopener">Listen free ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">💚</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">Smiling Mind</div>
+        <div class="gb-card-desc">A nonprofit mindfulness app with structured programs for kids, teens, and adults — completely free, no paywalls.</div>
+        <a class="gb-card-link" href="https://www.smilingmind.com.au" target="_blank" rel="noopener">Get the app ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">💰</span>
+        <div class="gb-card-tag">Free Tier</div>
+        <div class="gb-card-title">Budgeting Toolkit</div>
+        <div class="gb-card-desc">Rocket Money and Empower both offer permanent free tiers for budgeting, spending tracking, and net worth — no trial, no credit card.</div>
+        <a class="gb-card-link" href="https://www.rocketmoney.com" target="_blank" rel="noopener">Explore free tools ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">📚</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">Project Gutenberg</div>
+        <div class="gb-card-desc">Over 70,000 free e-books in the public domain — classic literature, poetry, and reference, free to download forever.</div>
+        <a class="gb-card-link" href="https://www.gutenberg.org" target="_blank" rel="noopener">Browse the library ↗</a>
+      </div>
+
+      <div class="gb-card gb-card-audio">
+        <span class="gb-card-icon">🎵</span>
+        <div class="gb-card-tag">GCCC Partner Gift</div>
+        <div class="gb-card-title">AnnoDominiNation — Free Music Gift</div>
+        <div class="gb-card-desc">Three free tracks from creative partner AnnoDominiNation, gifted to every GCCC member as part of this GlowBag. Stream right here or download to keep.</div>
+        <div class="gb-audio-grid">
+          <div class="gb-track">
+            <div class="gb-track-title">Dream On</div>
+            <audio controls preload="none" src="assets/glowbag/music/dream-on.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/dream-on.mp3" download>Download ↓</a>
+          </div>
+          <div class="gb-track">
+            <div class="gb-track-title">Death Row</div>
+            <audio controls preload="none" src="assets/glowbag/music/death-row.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/death-row.mp3" download>Download ↓</a>
+          </div>
+          <div class="gb-track">
+            <div class="gb-track-title">What You Waiting For</div>
+            <audio controls preload="none" src="assets/glowbag/music/what-you-waiting-for.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/what-you-waiting-for.mp3" download>Download ↓</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="gb-card" style="border-color:rgba(255,107,107,.35);">
+        <span class="gb-card-icon">☎️</span>
+        <div class="gb-card-tag crisis">Free · 24/7</div>
+        <div class="gb-card-title">Crisis Support Line</div>
+        <div class="gb-card-desc">If you or someone you know is struggling: call or text <strong style="color:var(--chalk);">988</strong> (Suicide &amp; Crisis Lifeline), or text HOME to <strong style="color:var(--chalk);">741741</strong> (Crisis Text Line). Free, confidential, 24/7.</div>
+      </div>
+
+    </div>
+
+    <!-- ===== KIDS items ===== -->
+    <div class="gb-items" id="gbItems-kids">
+
+      <div class="gb-card">
+        <span class="gb-card-icon">🎨</span>
+        <div class="gb-card-tag">GCCC Partner Gift</div>
+        <div class="gb-card-title">5-Day Journaling &amp; Drawing Retreat</div>
+        <div class="gb-card-desc">A kid-friendly version of our music &amp; journaling retreat — one song a day, paired with simple draw-or-write prompts grown-ups can share with kids.</div>
+        <a class="gb-card-link" href="assets/glowbag/free-5-day-music-journaling-retreat.pdf" target="_blank" rel="noopener">Download the PDF ↓</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">💚</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">Smiling Mind</div>
+        <div class="gb-card-desc">A nonprofit mindfulness app with programs built specifically for kids and teens — completely free, no paywalls.</div>
+        <a class="gb-card-link" href="https://www.smilingmind.com.au" target="_blank" rel="noopener">Get the app ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">🎓</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">UCLA Mindful</div>
+        <div class="gb-card-desc">Free, research-backed guided meditations, including shorter sessions that work well for younger listeners.</div>
+        <a class="gb-card-link" href="https://www.uclahealth.org/uclamindful" target="_blank" rel="noopener">Listen free ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">📚</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">Project Gutenberg — Children's Shelf</div>
+        <div class="gb-card-desc">Free public-domain storybooks and classic children's literature — no cost, no account needed.</div>
+        <a class="gb-card-link" href="https://www.gutenberg.org" target="_blank" rel="noopener">Browse the library ↗</a>
+      </div>
+
+      <div class="gb-card gb-card-audio">
+        <span class="gb-card-icon">🎵</span>
+        <div class="gb-card-tag">GCCC Partner Gift</div>
+        <div class="gb-card-title">AnnoDominiNation — Free Music Gift</div>
+        <div class="gb-card-desc">Three tracks from creative partner AnnoDominiNation, gifted as part of this GlowBag — a nice one for grown-ups and older kids to listen to together.</div>
+        <div class="gb-audio-grid">
+          <div class="gb-track">
+            <div class="gb-track-title">Dream On</div>
+            <audio controls preload="none" src="assets/glowbag/music/dream-on.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/dream-on.mp3" download>Download ↓</a>
+          </div>
+          <div class="gb-track">
+            <div class="gb-track-title">Death Row</div>
+            <audio controls preload="none" src="assets/glowbag/music/death-row.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/death-row.mp3" download>Download ↓</a>
+          </div>
+          <div class="gb-track">
+            <div class="gb-track-title">What You Waiting For</div>
+            <audio controls preload="none" src="assets/glowbag/music/what-you-waiting-for.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/what-you-waiting-for.mp3" download>Download ↓</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="gb-card" style="border-color:rgba(255,107,107,.35);">
+        <span class="gb-card-icon">☎️</span>
+        <div class="gb-card-tag crisis">Free · 24/7</div>
+        <div class="gb-card-title">Need to Talk to Someone?</div>
+        <div class="gb-card-desc">Parents and kids can call or text <strong style="color:var(--chalk);">988</strong> (Suicide &amp; Crisis Lifeline) anytime, or text HOME to <strong style="color:var(--chalk);">741741</strong> (Crisis Text Line). Free, confidential, 24/7.</div>
+      </div>
+
+    </div>
+
+    <!-- ===== PET items ===== -->
+    <div class="gb-items" id="gbItems-pet">
+
+      <div class="gb-card">
+        <span class="gb-card-icon">🐾</span>
+        <div class="gb-card-tag">GCCC Partner Gift</div>
+        <div class="gb-card-title">5-Day Bonding &amp; Enrichment Retreat</div>
+        <div class="gb-card-desc">A simple 5-day routine of play, training, and quiet time with your pet — paired with a song a day from our retreat guide.</div>
+        <a class="gb-card-link" href="assets/glowbag/free-5-day-music-journaling-retreat.pdf" target="_blank" rel="noopener">Download the PDF ↓</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">💰</span>
+        <div class="gb-card-tag">Free Tier</div>
+        <div class="gb-card-title">Pet-Cost Budgeting</div>
+        <div class="gb-card-desc">Track food, vet visits, and supply costs with Rocket Money or Empower's free tier — no trial, no credit card.</div>
+        <a class="gb-card-link" href="https://www.rocketmoney.com" target="_blank" rel="noopener">Explore free tools ↗</a>
+      </div>
+
+      <div class="gb-card">
+        <span class="gb-card-icon">📚</span>
+        <div class="gb-card-tag">100% Free</div>
+        <div class="gb-card-title">Project Gutenberg — Animal &amp; Pet-Care Shelf</div>
+        <div class="gb-card-desc">Classic public-domain animal-care guides and stories — free to download forever.</div>
+        <a class="gb-card-link" href="https://www.gutenberg.org" target="_blank" rel="noopener">Browse the library ↗</a>
+      </div>
+
+      <div class="gb-card gb-card-audio">
+        <span class="gb-card-icon">🎵</span>
+        <div class="gb-card-tag">GCCC Partner Gift</div>
+        <div class="gb-card-title">AnnoDominiNation — Free Music Gift</div>
+        <div class="gb-card-desc">Three free tracks from creative partner AnnoDominiNation — good company for a quiet evening in with your pet.</div>
+        <div class="gb-audio-grid">
+          <div class="gb-track">
+            <div class="gb-track-title">Dream On</div>
+            <audio controls preload="none" src="assets/glowbag/music/dream-on.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/dream-on.mp3" download>Download ↓</a>
+          </div>
+          <div class="gb-track">
+            <div class="gb-track-title">Death Row</div>
+            <audio controls preload="none" src="assets/glowbag/music/death-row.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/death-row.mp3" download>Download ↓</a>
+          </div>
+          <div class="gb-track">
+            <div class="gb-track-title">What You Waiting For</div>
+            <audio controls preload="none" src="assets/glowbag/music/what-you-waiting-for.mp3"></audio>
+            <a class="gb-track-dl" href="assets/glowbag/music/what-you-waiting-for.mp3" download>Download ↓</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="gb-card" style="border-color:rgba(255,107,107,.35);">
+        <span class="gb-card-icon">🚑</span>
+        <div class="gb-card-tag crisis">24/7</div>
+        <div class="gb-card-title">Pet Emergency?</div>
+        <div class="gb-card-desc">Contact your local emergency vet clinic right away, or reach the ASPCA Animal Poison Control Center at <strong style="color:var(--chalk);">(888) 426-4435</strong> (a consultation fee may apply). For pet food assistance, check with your local animal shelter or humane society.</div>
+      </div>
+
+    </div>
+
+    <p class="gb-note" id="gbNote">This Virtual GlowBag is a digital sample of what's inside a real GCCC GlowBag — emergency swag bags filled with donated goods, gift cards, and services, given free to people in crisis. <a href="index.html#glowbags">See how physical GlowBags work →</a></p>
+
+    <div style="margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <a href="dashboard.html" class="btn-primary" style="text-decoration:none;">Continue to My Dashboard →</a>
+      <a href="index.html" class="btn-gold" style="text-decoration:none;">Explore GCCC</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-word">GCCC</div>
+      <div class="footer-tagline">Global Citizens Community Center — building bridges across 193 nations through education, community, and action.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Rooms</h4>
+      <a href="room-learning-center.html">Learning Center</a>
+      <a href="room-business-lounge.html">Business Lounge</a>
+      <a href="room-global-cafe.html">Global Cafe</a>
+      <a href="room-freedom-cove.html">Freedom Cove</a>
+      <a href="room-health-spa.html">Health &amp; Wellness</a>
+      <a href="room-dev-dojo.html">Dev Dojo</a>
+    </div>
+    <div class="footer-col">
+      <h4>More Rooms</h4>
+      <a href="room-emergency-services.html">Emergency Services</a>
+      <a href="room-magazine.html">Magazine &amp; Press</a>
+      <a href="room-studio.html">Studio</a>
+      <a href="room-global-counsel.html">Global Counsel</a>
+      <a href="room-glomart.html">GloMart</a>
+      <a href="room-global-exchange.html">Global Exchange</a>
+      <a href="room-ministry.html">Ministry</a>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <a href="login.html">Sign In</a>
+      <a href="register.html">Join Free</a>
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="index.html#membership">Membership Levels</a>
+      <a href="index.html#summit">Global Summit</a>
+      <a href="index.html#donate">Donate</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Global Citizens Community Center. All rights reserved.</div>
+    <div class="footer-sdg-badge">Aligned with all 17 UN SDGs</div>
+  </div>
+</footer>
+
+<div class="gb-confetti" id="gbConfetti"></div>
+
+<script>
+const BAG_ICONS = { her:'👜', his:'💼', kids:'🧸', pet:'🐾' };
+const BAG_ITEMS_ID = { her:'gbItems-adult', his:'gbItems-adult', kids:'gbItems-kids', pet:'gbItems-pet' };
+let currentType = 'her';
+
+function setBagType(btn,type){
+  document.querySelectorAll('.gb-toggle button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentType = type;
+
+  const bag=document.getElementById('bagEl');
+  const wasOpened = bag.classList.contains('opened');
+  bag.className = 'gb-bag ' + type + (wasOpened ? ' opened' : '');
+  bag.textContent = BAG_ICONS[type];
+
+  if(wasOpened){
+    showItemsFor(type);
+  }
+}
+
+function showItemsFor(type){
+  document.querySelectorAll('.gb-items').forEach(el => el.classList.remove('show'));
+  const target = document.getElementById(BAG_ITEMS_ID[type]);
+  if(target) target.classList.add('show');
+}
+
+function openBag(){
+  const bag=document.getElementById('bagEl');
+  const wrap=document.getElementById('bagWrap');
+  const hint=document.getElementById('bagHint');
+  if(bag.classList.contains('opened'))return;
+  bag.classList.add('opened');
+  wrap.classList.add('opened');
+  hint.textContent='🎉 Enjoy your free gifts below!';
+  showItemsFor(currentType);
+  burstConfetti();
+  document.getElementById(BAG_ITEMS_ID[currentType]).scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function burstConfetti(){
+  const holder=document.getElementById('gbConfetti');
+  const bits=['🎉','✨','🎁','💫','🌟'];
+  for(let i=0;i<26;i++){
+    const s=document.createElement('span');
+    s.textContent=bits[Math.floor(Math.random()*bits.length)];
+    s.style.left=Math.random()*100+'vw';
+    s.style.animationDuration=(2.2+Math.random()*1.6)+'s';
+    s.style.fontSize=(14+Math.random()*14)+'px';
+    holder.appendChild(s);
+    setTimeout(()=>s.remove(),4200);
+  }
+}
+
+// Auto-open if arriving from a signup/join/donate action
+if(new URLSearchParams(window.location.search).get('claim')==='1'){
+  window.addEventListener('DOMContentLoaded',()=>setTimeout(openBag,500));
+}
+</script>
+</body>
+</html>    </div>
   </div>
 
   <section class="section" id="claim">
