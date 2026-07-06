@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCCC · Global Goals Bingo — Card C</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --navy:#0B1F33;
+    --navy-deep:#071522;
+    --teal:#1FADA6;
+    --gold:#D4AF37;
+    --coral:#FF6B5B;
+    --cream:#F4F1EA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(31,173,166,0.16), transparent 45%),
+      radial-gradient(circle at 90% 100%, rgba(212,175,55,0.14), transparent 45%),
+      var(--navy-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:26px 12px;
+    font-family:'Inter',sans-serif;
+  }
+
+  .card{
+    width:100%;
+    max-width:440px;
+    background:var(--cream);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 22px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.25);
+  }
+
+  .header{
+    background:linear-gradient(135deg,var(--navy),var(--navy-deep));
+    padding:18px 20px 16px;
+    text-align:center;
+    position:relative;
+  }
+  .header .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:0 0 6px;
+  }
+  .header h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:32px;
+    letter-spacing:.03em;
+    margin:0;
+    color:var(--cream);
+    line-height:1;
+  }
+  .header h1 span{ color:var(--gold); }
+  .card-letter{
+    position:absolute;
+    top:14px; right:16px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--gold);
+    border:1px solid rgba(212,175,55,0.5);
+    border-radius:20px;
+    padding:3px 10px;
+    letter-spacing:.05em;
+  }
+
+  .bingo-letters{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    background:var(--navy);
+  }
+  .bingo-letters div{
+    text-align:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:26px;
+    color:var(--gold);
+    padding:8px 0 4px;
+    letter-spacing:.04em;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:5px;
+    padding:8px;
+    background:var(--navy);
+  }
+
+  .cell{
+    position:relative;
+    aspect-ratio:1/1;
+    background:#fff;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:4px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cell span{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:10.5px;
+    line-height:1.15;
+    color:var(--navy);
+    position:relative;
+    z-index:2;
+  }
+  .cell.free{
+    background:linear-gradient(135deg,var(--teal),#0F6F6A);
+  }
+  .cell.free span{
+    color:#fff;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:15px;
+    letter-spacing:.02em;
+  }
+  .cell .dab{
+    position:absolute;
+    width:74%; height:74%;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, rgba(255,107,91,0.95), rgba(178,58,46,0.92));
+    opacity:0;
+    transform:scale(0.4);
+    transition:opacity .18s ease, transform .18s ease;
+    z-index:1;
+  }
+  .cell.marked .dab{ opacity:0.88; transform:scale(1); }
+  .cell.marked span{ color:#fff; }
+  .cell.free.marked .dab{ background:radial-gradient(circle at 35% 30%, rgba(212,175,55,0.95), rgba(138,110,31,0.92)); }
+  .cell.win{
+    box-shadow:0 0 0 3px var(--gold) inset;
+  }
+
+  .status{
+    text-align:center;
+    padding:12px 16px 4px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.06em;
+    color:var(--navy);
+    background:var(--cream);
+    min-height:20px;
+  }
+  .status.bingo{
+    color:var(--coral);
+    font-weight:700;
+  }
+
+  .footer-row{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:6px 16px 18px;
+  }
+  .qr-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:4px 20px 6px;
+  }
+  .qr-row img{
+    width:60px; height:60px;
+    border-radius:4px;
+    border:1px solid rgba(11,31,51,0.15);
+  }
+  .qr-text{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;
+    color:var(--navy);
+    line-height:1.5;
+    max-width:220px;
+  }
+  .qr-text b{ color:var(--coral); }
+  .reset-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.05em;
+    color:var(--navy);
+    background:none;
+    border:1px solid rgba(11,31,51,0.35);
+    padding:5px 14px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{ background:rgba(11,31,51,0.06); }
+
+  .tagline{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;
+    color:#8a97a6;
+    padding:0 16px 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="card-letter">CARD C</div>
+    <p class="eyebrow">Global Citizens Community Center</p>
+    <h1>GLOBAL <span>GOALS</span> BINGO</h1>
+  </div>
+
+  <div class="bingo-letters">
+    <div>G</div><div>C</div><div>C</div><div>C</div><div>!</div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="status" id="status">Tap a square to mark it — get 5 in a row for BINGO!</div>
+
+  <div class="qr-row">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAV4AAAFeCAIAAABCSeBNAAAHHElEQVR4nO3dy40dyRFAUVGQD/JCfsji8UNeiDsCNEBbDXCRDzPJnIyqPmdL9PsUuy9yEYj89vPH978B/N7fb38AYCJpAII0AEEagCANQJAGIEgDEKQBCNIAhH+s//mf//r3X/M5/jL//c9vi39df9/1z+6Y+b5rO09yx63/wa/2t+DUAARpAII0AEEagCANQJAGIEgDEKQBCNIAhA/TkGvnpvR2zJxauzWlt/PK75s7vPWsbtl5kk4NQJAGIEgDEKQBCNIABGkAgjQAQRqAIA1A2JqGXLu1HXDmK689cf5vx86nOrfP8pwn/i04NQBBGoAgDUCQBiBIAxCkAQjSAARpAII0AOHgNOQTnZvSm3lD99oTv9HMHY1P5NQABGkAgjQAQRqAIA1AkAYgSAMQpAEI0gAE05C/c2uWbua84y1PvFX8fZwagCANQJAGIEgDEKQBCNIABGkAgjQAQRqAcHAa8qvNlt3alThzonHtiZ95xxP/FpwagCANQJAGIEgDEKQBCNIABGkAgjQAQRqAsDUN+b6ZtvfdlD3zM898Vjve97fg1AAEaQCCNABBGoAgDUCQBiBIAxCkAQjSAIQP05BP3Gl3y8xbtnem9GbOHa6dm0qc+X3PcWoAgjQAQRqAIA1AkAYgSAMQpAEI0gAEaQDCt58/vi/++dwOv7Vzrzzzfddmfqq1c3d/z9z+eOv7nvsrc2oAgjQAQRqAIA1AkAYgSAMQpAEI0gAEaQDCh2nItZnzjrdeecf7PtU5t+7Rnvk7ucM0JPCHSQMQpAEI0gAEaQCCNABBGoAgDUCQBiB8uCn73JzWrdmynZ8995lvTcude1a3fnamW9OuO+/r1AAEaQCCNABBGoAgDUCQBiBIAxCkAQjSAIQP05BP3Ds4c4Zvx8xXvnVj9bl51lvPeeZ8p1MDEKQBCNIABGkAgjQAQRqAIA1AkAYgSAMQrt2Ufcu5TXu3XnnmnsUnztGuve9Jrjk1AEEagCANQJAGIEgDEKQBCNIABGkAgjQA4cNuyB0zdzTOnGicuWdx7dYWxls3R+84N0l57jk7NQBBGoAgDUCQBiBIAxCkAQjSAARpAII0AOHgNOTauXm4J27pu3WD80xfbZJy5v3sTg1AkAYgSAMQpAEI0gAEaQCCNABBGoAgDUDYmoZ84mzZ2sxbp3e8b7Jw5nN+H6cGIEgDEKQBCNIABGkAgjQAQRqAIA1AkAYgfPv54/uf/uGdubQn7necOSt5a3Pk+57GV/t9XnNqAII0AEEagCANQJAGIEgDEKQBCNIABGkAwofdkDP38M2ceNvhDu7/tzNZuPN9Z+7+PPep1q/s1AAEaQCCNABBGoAgDUCQBiBIAxCkAQjSAIQPuyHP7f+7Nf+3NnPP4hO9b1fi2sy9kjtPw6kBCNIABGkAgjQAQRqAIA1AkAYgSAMQpAEIB2/KnrnB8dZs2a250plzljNnFm/9L9z6vVpzagCCNABBGoAgDUCQBiBIAxCkAQjSAARpAMLWTdlP3A156xbmtZnzjvZ3/qr3feLEqlMDEKQBCNIABGkAgjQAQRqAIA1AkAYgSAMQtm7KvuXWPNwTzdyyufO+a7fmSmfud9x5ZacGIEgDEKQBCNIABGkAgjQAQRqAIA1AkAYgbN2UvWPmlN4Td/jN3NC5NvNJ3jJz6tSpAQjSAARpAII0AEEagCANQJAGIEgDEKQBCB9uyl7bmbR73/6/mbddn/O+TYrn3nfmDexrTg1AkAYgSAMQpAEI0gAEaQCCNABBGoAgDUD4MA15bgJsZ8brfZOFO2bO0n21rZPvmw11agCCNABBGoAgDUCQBiBIAxCkAQjSAARpAMK1m7Jnmrl3cO3WLsy1J97Q/cT/33OcGoAgDUCQBiBIAxCkAQjSAARpAII0AEEagLC1G/KJZu5KfN89y7ec+8y3dp3e4tQABGkAgjQAQRqAIA1AkAYgSAMQpAEI0gCED9OQazOnuG7N8N3apDhzZvGJn3lt5ubIHetv5NQABGkAgjQAQRqAIA1AkAYgSAMQpAEI0gCErWnItXMzXufm0s7N8M18GjPn8G59qic+jXNP0qkBCNIABGkAgjQAQRqAIA1AkAYgSAMQpAEIB6chn2jmbcjnbuje8cQpzLWZ2z1vbWB1agCCNABBGoAgDUCQBiBIAxCkAQjSAARpAIJpyF/mfZOUMz1xf+ctO785Tg1AkAYgSAMQpAEI0gAEaQCCNABBGoAgDUA4OA15a6fdjlszi2u3dkN+tdu9b81Z3vrNWb+vUwMQpAEI0gAEaQCCNABBGoAgDUCQBiBIAxC2piHft0vv1je6NTl6a8Lv3HznEz/V2s43shsS+MWkAQjSAARpAII0AEEagCANQJAGIEgDEL79/PH99mcAxnFqAII0AEEagCANQJAGIEgDEKQBCNIABGkAwv8AfhvfA/fpQYEAAAAASUVORK5CYII=" alt="Scan to claim your prize">
+    <div class="qr-text"><b>Got BINGO? Scan to claim.</b><br>Have a volunteer confirm your win, then scan to submit your redemption — you'll get your prize info by email right after.</div>
+  </div>
+
+  <div class="footer-row">
+    <button class="reset-btn" id="resetBtn">clear card</button>
+  </div>
+
+  <div class="tagline">One card per 17 Sustainable Development Goals &amp; GCCC programs · globalcitizencommunitycenter.univer.se</div>
+</div>
+
+<script>
+const TERMS = ["No Poverty", "Job Readiness", "Clean Water", "Innovation", "Decent Work", "Citizenship Prep", "Partnerships", "Volunteer Day", "Life on Land", "Life Below Water", "Peace &amp; Justice", "Gender Equality", "Virtual GlowBag", "Quality Education", "Sustainable Cities", "Zero Hunger", "Community Event", "Clean Energy", "Responsible Consumption", "Youth Program", "Reduced Inequalities", "ESL Classes", "Good Health", "Climate Action"];
+
+const grid = document.getElementById('grid');
+const status = document.getElementById('status');
+const cells = [];
+
+// Build 5x5 grid, center is FREE
+let termIdx = 0;
+for(let i=0;i<25;i++){
+  const cellData = { marked: i===12, el:null };
+  const div = document.createElement('div');
+  div.className = 'cell' + (i===12 ? ' free marked' : '');
+  if(i===12){
+    div.innerHTML = `<div class="dab"></div><span>GCCC<br>FREE</span>`;
+  } else {
+    div.innerHTML = `<div class="dab"></div><span>${TERMS[termIdx]}</span>`;
+    termIdx++;
+  }
+  div.addEventListener('click', ()=>{
+    if(i===12) return; // free space always marked
+    cellData.marked = !cellData.marked;
+    div.classList.toggle('marked', cellData.marked);
+    checkBingo();
+  });
+  grid.appendChild(div);
+  cellData.el = div;
+  cells.push(cellData);
+}
+
+const LINES = [
+  [0,1,2,3,4],[5,6,7,8,9],[10,11,12,13,14],[15,16,17,18,19],[20,21,22,23,24],
+  [0,5,10,15,20],[1,6,11,16,21],[2,7,12,17,22],[3,8,13,18,23],[4,9,14,19,24],
+  [0,6,12,18,24],[4,8,12,16,20]
+];
+
+function checkBingo(){
+  cells.forEach(c => c.el.classList.remove('win'));
+  let hasBingo = false;
+  LINES.forEach(line=>{
+    if(line.every(idx => cells[idx].marked)){
+      hasBingo = true;
+      line.forEach(idx => cells[idx].el.classList.add('win'));
+    }
+  });
+  if(hasBingo){
+    status.textContent = "🎉 BINGO! Show this card at the GCCC table to claim your prize.";
+    status.classList.add('bingo');
+  } else {
+    status.textContent = "Tap a square to mark it — get 5 in a row for BINGO!";
+    status.classList.remove('bingo');
+  }
+}
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  cells.forEach((c, i)=>{
+    if(i===12) return;
+    c.marked = false;
+    c.el.classList.remove('marked');
+    c.el.classList.remove('win');
+  });
+  status.textContent = "Tap a square to mark it — get 5 in a row for BINGO!";
+  status.classList.remove('bingo');
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCCC · Global Goals Bingo Caller</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy:#0B1F33;
+    --navy-deep:#071522;
+    --teal:#1FADA6;
+    --gold:#D4AF37;
+    --coral:#FF6B5B;
+    --cream:#F4F1EA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(31,173,166,0.16), transparent 45%),
+      radial-gradient(circle at 90% 100%, rgba(212,175,55,0.14), transparent 45%),
+      var(--navy-deep);
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    padding:30px 16px 60px;
+  }
+
+  .wrap{ max-width:760px; margin:0 auto; }
+
+  .masthead{ text-align:center; margin-bottom:22px; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:0 0 8px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(32px,6vw,52px);
+    letter-spacing:.03em;
+    margin:0;
+    line-height:1;
+  }
+  h1 span{ color:var(--gold); }
+  .sub{
+    max-width:520px;
+    margin:12px auto 0;
+    font-size:13.5px;
+    color:#C9D3DE;
+    line-height:1.5;
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    align-items:start;
+    margin-top:10px;
+  }
+  @media (max-width:680px){ .layout{ grid-template-columns:1fr; } }
+
+  .wheel-panel{ text-align:center; }
+
+  .wheel-frame{
+    position:relative;
+    width:280px;
+    height:280px;
+    margin:0 auto 18px;
+  }
+  .pointer{
+    position:absolute;
+    top:-6px; left:50%;
+    transform:translateX(-50%);
+    width:0; height:0;
+    border-left:12px solid transparent;
+    border-right:12px solid transparent;
+    border-top:20px solid var(--gold);
+    z-index:5;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));
+  }
+  #wheelSvg{
+    width:280px; height:280px;
+    border-radius:50%;
+    border:4px solid var(--gold);
+    background:var(--navy);
+    transition:transform 2.4s cubic-bezier(.17,.67,.16,1);
+  }
+  .hub{
+    position:absolute;
+    top:50%; left:50%;
+    width:44px; height:44px;
+    margin:-22px 0 0 -22px;
+    border-radius:50%;
+    background:var(--cream);
+    border:3px solid var(--gold);
+    z-index:4;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:11px;
+    color:var(--navy);
+  }
+
+  .spin-btn{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px;
+    letter-spacing:.04em;
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    padding:12px 34px;
+    border-radius:30px;
+    cursor:pointer;
+    box-shadow:0 6px 0 #B23A2E;
+    transition:transform .08s ease;
+  }
+  .spin-btn:active{ transform:translateY(4px); box-shadow:0 2px 0 #B23A2E; }
+  .spin-btn:disabled{ background:#5b6b7c; box-shadow:0 6px 0 #3f4a56; cursor:not-allowed; }
+
+  .remaining-count{
+    margin-top:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--teal);
+    letter-spacing:.06em;
+  }
+
+  .call-panel{
+    background:linear-gradient(155deg,#0E2740,#0A1C2E);
+    border:1px solid rgba(212,175,55,0.35);
+    border-radius:16px;
+    padding:20px;
+  }
+
+  .current-call-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:8px;
+    text-align:center;
+  }
+  .current-call{
+    background:var(--cream);
+    color:var(--navy);
+    border-radius:12px;
+    padding:20px 14px;
+    text-align:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:26px;
+    line-height:1.1;
+    min-height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:16px;
+  }
+  .current-call.empty{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:#5b6b7c;
+    font-weight:500;
+  }
+
+  .history-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#9FB0C2;
+    margin-bottom:8px;
+  }
+  .history-list{
+    list-style:none;
+    margin:0; padding:0;
+    max-height:220px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .history-list li{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    color:var(--cream);
+    background:rgba(255,255,255,0.05);
+    border-radius:6px;
+    padding:6px 10px;
+  }
+  .history-list li .num{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal);
+    font-size:11px;
+    min-width:18px;
+  }
+  .history-empty{
+    font-size:12px;
+    color:#5b6b7c;
+    font-style:italic;
+  }
+
+  .reset-row{
+    text-align:center;
+    margin-top:20px;
+  }
+  .reset-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    color:var(--gold);
+    background:none;
+    border:1px solid rgba(212,175,55,.4);
+    padding:6px 16px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{ background:rgba(212,175,55,.12); }
+
+  footer{
+    text-align:center;
+    margin-top:34px;
+    font-size:11px;
+    color:#5E718A;
+    font-family:'JetBrains Mono',monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="masthead">
+    <p class="eyebrow">Global Citizens Community Center</p>
+    <h1>BINGO <span>CALLER</span></h1>
+    <p class="sub">Spin to draw the next item, call it out loud, and players check their A–D cards. Nothing repeats until you reset for a new game.</p>
+  </div>
+
+  <div class="layout">
+    <div class="wheel-panel">
+      <div class="wheel-frame">
+        <div class="pointer"></div>
+        <svg id="wheelSvg" viewBox="0 0 280 280"></svg>
+        <div class="hub">GCCC</div>
+      </div>
+      <button class="spin-btn" id="spinBtn">SPIN</button>
+      <div class="remaining-count" id="remainingCount">24 items remaining</div>
+    </div>
+
+    <div class="call-panel">
+      <div class="current-call-label">Current Call</div>
+      <div class="current-call empty" id="currentCall">Press Spin to draw the first item</div>
+
+      <div class="history-label">Called So Far</div>
+      <ul class="history-list" id="historyList">
+        <li class="history-empty">Nothing called yet</li>
+      </ul>
+
+      <div class="reset-row">
+        <button class="reset-btn" id="resetBtn">start new game</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>GCCC Global Goals Bingo · matches items printed on Cards A–D · globalcitizencommunitycenter.univer.se</footer>
+</div>
+
+<script>
+const FULL_POOL = [
+  "No Poverty", "Zero Hunger", "Good Health", "Quality Education", "Gender Equality",
+  "Clean Water", "Clean Energy", "Decent Work", "Innovation", "Reduced Inequalities",
+  "Sustainable Cities", "Responsible Consumption", "Climate Action", "Life Below Water",
+  "Life on Land", "Peace & Justice", "Partnerships", "ESL Classes", "Job Readiness",
+  "Youth Program", "Citizenship Prep", "Volunteer Day", "Community Event", "Virtual GlowBag"
+];
+
+const SLICE_COLORS = ["#0E2740", "#123048"];
+
+let remaining = FULL_POOL.slice();
+let called = [];
+let spinning = false;
+
+const svg = document.getElementById('wheelSvg');
+const spinBtn = document.getElementById('spinBtn');
+const currentCallEl = document.getElementById('currentCall');
+const historyListEl = document.getElementById('historyList');
+const remainingCountEl = document.getElementById('remainingCount');
+const resetBtn = document.getElementById('resetBtn');
+
+let rotationState = 0;
+
+function polarToXY(cx, cy, r, angleDeg){
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+}
+
+function drawWheel(){
+  const cx = 140, cy = 140, r = 136;
+  const n = remaining.length;
+  svg.innerHTML = '';
+  if(n === 0){
+    const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x', cx); text.setAttribute('y', cy);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('fill', '#F4F1EA');
+    text.setAttribute('font-family', 'Bebas Neue, sans-serif');
+    text.setAttribute('font-size', '20');
+    text.textContent = 'ALL CALLED';
+    svg.appendChild(text);
+    return;
+  }
+  const sliceAngle = 360 / n;
+  for(let i=0;i<n;i++){
+    const startAngle = i * sliceAngle;
+    const endAngle = startAngle + sliceAngle;
+    const [x1,y1] = polarToXY(cx,cy,r,startAngle);
+    const [x2,y2] = polarToXY(cx,cy,r,endAngle);
+    const largeArc = sliceAngle > 180 ? 1 : 0;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+    path.setAttribute('d', d);
+    path.setAttribute('fill', SLICE_COLORS[i % 2]);
+    path.setAttribute('stroke', '#D4AF37');
+    path.setAttribute('stroke-width', '0.6');
+    svg.appendChild(path);
+
+    const midAngle = startAngle + sliceAngle/2;
+    const [tx,ty] = polarToXY(cx,cy, r*0.62, midAngle);
+    const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x', tx); text.setAttribute('y', ty);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('dominant-baseline','middle');
+    text.setAttribute('fill', '#F4F1EA');
+    text.setAttribute('font-family', 'Inter, sans-serif');
+    text.setAttribute('font-weight', '600');
+    text.setAttribute('font-size', n > 14 ? '6.5' : n > 8 ? '8' : '9.5');
+    text.setAttribute('transform', `rotate(${midAngle}, ${tx}, ${ty})`);
+    text.textContent = remaining[i];
+    svg.appendChild(text);
+  }
+}
+
+function updateRemainingCount(){
+  remainingCountEl.textContent = `${remaining.length} item${remaining.length===1?'':'s'} remaining`;
+}
+
+function renderHistory(){
+  if(called.length === 0){
+    historyListEl.innerHTML = '<li class="history-empty">Nothing called yet</li>';
+    return;
+  }
+  historyListEl.innerHTML = called.map((item, idx) =>
+    `<li><span class="num">${idx+1}.</span>${item}</li>`
+  ).reverse().join('');
+}
+
+function spin(){
+  if(spinning || remaining.length === 0) return;
+  spinning = true;
+  spinBtn.disabled = true;
+
+  const n = remaining.length;
+  const chosenIndex = Math.floor(Math.random() * n);
+  const sliceAngle = 360 / n;
+  const centerAngle = sliceAngle * (chosenIndex + 0.5);
+
+  svg.style.transition = 'none';
+  svg.style.transform = 'rotate(0deg)';
+  void svg.offsetWidth;
+
+  const spins = 4;
+  const targetRotation = spins*360 + (360 - centerAngle);
+
+  requestAnimationFrame(()=>{
+    svg.style.transition = 'transform 2.4s cubic-bezier(.17,.67,.16,1)';
+    svg.style.transform = `rotate(${targetRotation}deg)`;
+  });
+
+  setTimeout(()=>{
+    const chosenItem = remaining[chosenIndex];
+    remaining.splice(chosenIndex, 1);
+    called.push(chosenItem);
+
+    currentCallEl.classList.remove('empty');
+    currentCallEl.textContent = chosenItem;
+    renderHistory();
+    updateRemainingCount();
+
+    svg.style.transition = 'none';
+    svg.style.transform = 'rotate(0deg)';
+    drawWheel();
+
+    spinning = false;
+    spinBtn.disabled = remaining.length === 0;
+  }, 2500);
+}
+
+function resetGame(){
+  remaining = FULL_POOL.slice();
+  called = [];
+  currentCallEl.classList.add('empty');
+  currentCallEl.textContent = 'Press Spin to draw the first item';
+  renderHistory();
+  updateRemainingCount();
+  svg.style.transition = 'none';
+  svg.style.transform = 'rotate(0deg)';
+  drawWheel();
+  spinBtn.disabled = false;
+}
+
+spinBtn.addEventListener('click', spin);
+resetBtn.addEventListener('click', resetGame);
+
+drawWheel();
+updateRemainingCount();
+</script>
+
+</body>
+</html>

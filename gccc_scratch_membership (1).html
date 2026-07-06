@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCCC · CITIZEN CLUB Scratch Ticket</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --main:#1FADA6;
+    --dark:#0F6F6A;
+    --accent:#1FADA6;
+    --cream:#F4F1EA;
+    --navy:#0B1F33;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 30% 10%, rgba(255,255,255,0.05), transparent 50%),
+      var(--navy);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 14px;
+    font-family:'Inter',sans-serif;
+  }
+
+  .ticket{
+    width:100%;
+    max-width:380px;
+    background:var(--cream);
+    border-radius:6px;
+    position:relative;
+    box-shadow:0 20px 45px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.08);
+    overflow:hidden;
+    background-image:
+      radial-gradient(circle, rgba(11,31,51,0.05) 1px, transparent 1px);
+    background-size:6px 6px;
+  }
+
+  /* perforated edge look */
+  .ticket::before, .ticket::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    height:14px;
+    background-image: radial-gradient(circle, var(--navy) 3.5px, transparent 3.6px);
+    background-size:14px 14px;
+    background-position:center;
+    background-repeat:repeat-x;
+    z-index:5;
+  }
+  .ticket::before{ top:-7px; }
+  .ticket::after{ bottom:-7px; }
+
+  .band{
+    background:linear-gradient(135deg,var(--main),var(--dark));
+    padding:16px 18px 14px;
+    color:#fff;
+    position:relative;
+  }
+  .band .brand-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .brand{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    opacity:.85;
+  }
+  .price-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.06em;
+    background:rgba(255,255,255,0.18);
+    border:1px solid rgba(255,255,255,0.5);
+    padding:2px 8px;
+    border-radius:20px;
+  }
+  .game-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:32px;
+    line-height:1.02;
+    letter-spacing:.02em;
+    margin:2px 0 2px;
+  }
+  .game-sub{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    opacity:.9;
+  }
+  .sdg-chip{
+    position:absolute;
+    top:14px; right:16px;
+    background:rgba(0,0,0,0.28);
+    border:1px solid rgba(255,255,255,0.35);
+    border-radius:20px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.06em;
+    padding:3px 9px;
+    display:none;
+  }
+
+  .how-to{
+    padding:10px 18px 4px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    color:#5b6b7c;
+    letter-spacing:.03em;
+    text-align:center;
+    border-bottom:1px dashed rgba(11,31,51,0.18);
+    padding-bottom:10px;
+  }
+  .how-to b{ color:var(--dark); }
+
+  .play-area{
+    padding:16px 18px 6px;
+  }
+  .play-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--navy);
+    margin-bottom:8px;
+    text-align:center;
+    font-weight:600;
+  }
+
+  .spots-row{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:16px;
+  }
+  .spot{
+    position:relative;
+    width:78px; height:78px;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid var(--navy);
+    background:#fff;
+  }
+  .spot .symbol-layer{
+    position:absolute; inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    background:#fff;
+  }
+  .spot canvas{
+    position:absolute; inset:0;
+    cursor:crosshair;
+    touch-action:none;
+  }
+
+  .divider-label{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    color:var(--dark);
+    letter-spacing:.12em;
+    margin:2px 0 10px;
+    text-transform:uppercase;
+  }
+
+  .prize-box{
+    position:relative;
+    height:120px;
+    border-radius:10px;
+    overflow:hidden;
+    border:2px solid var(--navy);
+    margin-bottom:6px;
+  }
+  .prize-reveal{
+    position:absolute; inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:#fff;
+    padding:8px;
+  }
+  .prize-reveal .won-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.12em;
+    color:var(--accent);
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .prize-reveal .prize-name{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:26px;
+    color:var(--navy);
+    line-height:1.05;
+  }
+  .prize-reveal .prize-note{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    color:#57687a;
+    margin-top:5px;
+    max-width:260px;
+  }
+  .prize-box canvas{
+    position:absolute; inset:0;
+    cursor:crosshair;
+    touch-action:none;
+  }
+
+  .status-line{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--dark);
+    letter-spacing:.06em;
+    margin:10px 0 4px;
+    min-height:16px;
+  }
+
+  .footer{
+    padding:12px 18px 18px;
+    border-top:1px dashed rgba(11,31,51,0.18);
+    margin-top:8px;
+  }
+  .barcode{
+    display:flex;
+    gap:2px;
+    height:26px;
+    align-items:flex-end;
+    margin:0 auto 6px;
+    width:fit-content;
+  }
+  .qr-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin:4px 0 10px;
+  }
+  .qr-row img{
+    width:64px; height:64px;
+    border-radius:4px;
+    border:1px solid rgba(11,31,51,0.15);
+  }
+  .qr-text{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    color:var(--navy);
+    line-height:1.5;
+    max-width:170px;
+  }
+  .qr-text b{ color:var(--accent); }
+  .barcode span{
+    display:block;
+    width:2px;
+    background:var(--navy);
+  }
+  .serial{
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    color:#5b6b7c;
+    letter-spacing:.08em;
+  }
+  .legal{
+    text-align:center;
+    font-family:'Inter',sans-serif;
+    font-size:8.5px;
+    color:#8a97a6;
+    margin-top:8px;
+    line-height:1.4;
+  }
+
+  .reset-row{
+    text-align:center;
+    margin:2px 0 14px;
+  }
+  .reset-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.06em;
+    color:var(--dark);
+    background:none;
+    border:1px solid rgba(11,31,51,0.3);
+    padding:4px 12px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{ background:rgba(11,31,51,0.06); }
+
+  .confetti-burst{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:99;
+  }
+</style>
+</head>
+<body>
+
+<div class="ticket">
+  <div class="band">
+    <div class="brand-row">
+      <span class="brand">GCCC · Global Goals Instant Win</span>
+      <span class="price-tag">FREE PLAY</span>
+    </div>
+    <div class="game-title">CITIZEN CLUB</div>
+    <div class="game-sub">GCCC Membership Instant Win</div>
+  </div>
+
+  <div class="how-to">Scratch all <b>3 circles</b> below — match them, then scratch your <b>prize box</b> to see what you won.</div>
+
+  <div class="play-area">
+    <div class="play-label">Match 3 to Win</div>
+    <div class="spots-row" id="spotsRow"></div>
+    <div class="divider-label">Your Prize</div>
+    <div class="prize-box" id="prizeBox">
+      <div class="prize-reveal">
+        <div class="won-tag">You're a winner!</div>
+        <div class="prize-name">FREE GCCC MEMBERSHIP</div>
+        <div class="prize-note">Full access to the Global Citizens Community Center.</div>
+      </div>
+      <canvas id="prizeCanvas"></canvas>
+    </div>
+    <div class="status-line" id="statusLine">Scratch to play</div>
+    <div class="reset-row"><button class="reset-btn" id="resetAll">reset this ticket</button></div>
+  </div>
+
+  <div class="footer">
+    <div class="qr-row">
+      <img src="data:image/png;base64,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" alt="Scan to claim your prize">
+      <div class="qr-text"><b>Scan to claim</b><br>Opens the GCCC redemption form — enter this ticket's serial number to receive your prize.</div>
+    </div>
+    <div class="barcode" id="barcode"></div>
+    <div class="serial">TICKET NO. GCC-0002-MB &nbsp;·&nbsp; SDG 17 · PARTNERSHIPS</div>
+    <div class="legal">Void if edges removed before scratching. One redemption per ticket. Present at any GCCC location or online at globalcitizencommunitycenter.univer.se to claim. No cash value.</div>
+  </div>
+</div>
+
+<script>
+const MAIN_SYMBOL = "🌍";
+const spotsRow = document.getElementById('spotsRow');
+let matchedCount = 0;
+const totalSpots = 3;
+
+for(let i=0;i<totalSpots;i++){
+  const spot = document.createElement('div');
+  spot.className = 'spot';
+  spot.innerHTML = `
+    <div class="symbol-layer">${MAIN_SYMBOL}</div>
+    <canvas id="spotCanvas-${i}"></canvas>
+  `;
+  spotsRow.appendChild(spot);
+}
+
+function setupScratch(canvasId, zoneEl, shape, onRevealed){
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  let revealed = false;
+  let isDown = false;
+  let checkTimer = null;
+
+  function size(){
+    const rect = zoneEl.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    drawFoil();
+  }
+
+  function drawFoil(){
+    const w = canvas.width, h = canvas.height;
+    ctx.globalCompositeOperation = 'source-over';
+    const grad2 = ctx.createLinearGradient(0,0,w,h);
+    grad2.addColorStop(0, '#e2e4e8');
+    grad2.addColorStop(0.5, '#b7bac0');
+    grad2.addColorStop(1, '#d8dade');
+    ctx.fillStyle = grad2;
+    ctx.fillRect(0,0,w,h);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 1;
+    for(let x=-h; x<w; x+=6){
+      ctx.beginPath();
+      ctx.moveTo(x,0);
+      ctx.lineTo(x+h,h);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(11,31,51,0.55)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '700 ' + Math.max(9, w*0.14) + 'px Inter, sans-serif';
+    if(shape === 'circle'){
+      ctx.fillText('SCRATCH', w/2, h/2);
+    } else {
+      ctx.font = '700 12px Inter, sans-serif';
+      ctx.fillText('SCRATCH TO REVEAL YOUR PRIZE', w/2, h/2);
+    }
+  }
+
+  size();
+  window.addEventListener('resize', size);
+
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    if(e.touches && e.touches.length){
+      return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+    }
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+  function scratchAt(x,y,r){
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fill();
+  }
+  function checkProgress(){
+    if(revealed) return;
+    const w = canvas.width, h = canvas.height;
+    if(w===0||h===0) return;
+    const d = ctx.getImageData(0,0,w,h).data;
+    let cleared = 0;
+    let total = 0;
+    for(let i=3;i<d.length;i+=32){
+      total++;
+      if(d[i] < 40) cleared++;
+    }
+    if(cleared/total > 0.5){
+      revealed = true;
+      canvas.style.transition = 'opacity .35s ease';
+      canvas.style.opacity = '0';
+      setTimeout(()=>{ canvas.style.display='none'; }, 350);
+      onRevealed();
+    }
+  }
+  function start(e){ isDown = true; const p = getPos(e); scratchAt(p.x,p.y, shape==='circle'?14:20); e.preventDefault(); }
+  function move(e){ if(!isDown) return; const p = getPos(e); scratchAt(p.x,p.y, shape==='circle'?14:20); clearTimeout(checkTimer); checkTimer = setTimeout(checkProgress,100); e.preventDefault(); }
+  function end(){ isDown = false; checkProgress(); }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end);
+
+  return {
+    reset(){
+      revealed = false;
+      canvas.style.display = 'block';
+      canvas.style.opacity = '1';
+      drawFoil();
+    }
+  };
+}
+
+const statusLine = document.getElementById('statusLine');
+const prizeBoxEl = document.getElementById('prizeBox');
+const spotControllers = [];
+
+for(let i=0;i<totalSpots;i++){
+  const zone = spotsRow.children[i];
+  const ctrl = setupScratch(`spotCanvas-${i}`, zone, 'circle', ()=>{
+    matchedCount++;
+    if(matchedCount === totalSpots){
+      statusLine.textContent = "It's a match! Scratch your prize box below ↓";
+    } else {
+      statusLine.textContent = `${matchedCount} of 3 matched...`;
+    }
+  });
+  spotControllers.push(ctrl);
+}
+
+const prizeCtrl = setupScratch('prizeCanvas', prizeBoxEl, 'box', ()=>{
+  statusLine.textContent = "🎉 Prize revealed — bring this ticket to GCCC to redeem!";
+});
+
+document.getElementById('resetAll').addEventListener('click', ()=>{
+  matchedCount = 0;
+  spotControllers.forEach(c=>c.reset());
+  prizeCtrl.reset();
+  statusLine.textContent = 'Scratch to play';
+});
+
+// barcode
+const barcode = document.getElementById('barcode');
+for(let i=0;i<34;i++){
+  const bar = document.createElement('span');
+  const h = 10 + Math.random()*16;
+  bar.style.height = h + 'px';
+  bar.style.width = (Math.random() > 0.7 ? 3 : 2) + 'px';
+  barcode.appendChild(bar);
+}
+</script>
+
+</body>
+</html>

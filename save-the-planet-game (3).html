@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Save the Planet — GCCC SDG Guardian Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --navy:#050D1A;
+    --navy2:#0A1628;
+    --teal:#00D4B4;
+    --gold:#FFD166;
+    --chalk:#F0F4FF;
+    --mist:#8A9BBE;
+    --coral:#FF6B6B;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--navy);
+    color:var(--chalk);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px 20px;
+  }
+
+  /* ─── GLOW TOAST (simplified, standalone) ─── */
+  #glowToast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translate(-50%,120%);
+    background:var(--gold);
+    color:var(--navy);
+    font-weight:700;
+    font-size:13.5px;
+    padding:14px 22px;
+    border-radius:8px;
+    box-shadow:0 12px 30px -8px rgba(0,0,0,.5);
+    transition:transform .35s ease;
+    z-index:999;
+    max-width:90vw;
+    text-align:center;
+  }
+  #glowToast.show{ transform:translate(-50%,0); }
+</style>
+</head>
+<body>
+
+<section id="guardian-game-top" style="background:var(--navy);padding:0;">
+  <!-- GLOBE VS DOOMSDAY GAME -->
+  <div id="globeGame" style="background:rgba(0,0,0,0.55);border:1px solid rgba(220,38,38,0.3);border-radius:20px;padding:36px 40px;max-width:720px;margin:0 auto;text-align:center;position:relative;overflow:hidden;">
+
+    <!-- Background pulse rings -->
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:20px;">
+      <div id="ggPulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(220,38,38,0.04),transparent 70%);animation:ggPulseAnim 3s ease-in-out infinite;"></div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#ef4444;margin-bottom:8px;">🌍 Race Against Midnight</div>
+    <h3 style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--chalk);margin-bottom:6px;letter-spacing:0.04em;">Save the Planet</h3>
+    <p style="font-size:13px;color:var(--mist);margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;">The Doomsday Clock is ticking. Complete all 17 SDGs before midnight strikes — or the world is lost. The planet starts barren. Every goal you complete brings it back to life.</p>
+
+    <!-- TOP ROW: Globe + Clock side by side -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:40px;margin-bottom:24px;flex-wrap:wrap;">
+
+      <!-- GLOBE CANVAS -->
+      <div style="position:relative;">
+        <canvas id="ggGlobe" width="180" height="180" style="border-radius:50%;display:block;"></canvas>
+        <div id="ggGlobeLabel" style="font-size:11px;color:var(--mist);margin-top:8px;letter-spacing:0.06em;text-transform:uppercase;">Barren World</div>
+      </div>
+
+      <!-- DOOMSDAY CLOCK COUNTDOWN -->
+      <div style="text-align:center;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#7f1d1d;margin-bottom:6px;">⏱ Time Remaining</div>
+        <canvas id="ggClock" width="120" height="120" style="display:block;margin:0 auto;border-radius:50%;"></canvas>
+        <div id="ggTimeLeft" style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#ef4444;margin-top:8px;text-shadow:0 0 10px rgba(239,68,68,0.5);letter-spacing:0.04em;">4:15</div>
+        <div style="font-size:10px;color:#7f1d1d;text-transform:uppercase;letter-spacing:0.1em;">before midnight</div>
+      </div>
+
+    </div>
+
+    <!-- PLANET HEALTH BAR -->
+    <div style="margin-bottom:20px;text-align:left;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mist);margin-bottom:5px;">
+        <span>🌱 Planet Health</span><span id="ggHealthPct">0%</span>
+      </div>
+      <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:7px;border:1px solid rgba(0,212,180,0.15);overflow:hidden;">
+        <div id="ggHealthBar" style="height:100%;width:0%;background:linear-gradient(90deg,#ef4444,#f59e0b,#4ade80);border-radius:7px;transition:width 0.6s;"></div>
+      </div>
+    </div>
+
+    <!-- SDG GOALS GRID (17 goals) -->
+    <div style="margin-bottom:22px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--mist);margin-bottom:10px;text-align:left;">Complete the SDGs — in order:</div>
+      <div id="ggSdgGrid" style="display:grid;grid-template-columns:repeat(9,1fr);gap:6px;"></div>
+    </div>
+
+    <!-- STATUS MESSAGE -->
+    <div id="ggMsg" style="min-height:32px;font-size:13px;color:var(--teal);margin-bottom:18px;font-style:italic;font-weight:500;">The planet is barren and silent. Humanity's clock is ticking. Will you act?</div>
+
+    <!-- ACTION BUTTON -->
+    <div id="ggActionWrap">
+      <button id="ggActionBtn" onclick="ggDoGoal()" style="width:100%;background:linear-gradient(135deg,rgba(0,212,180,0.18),rgba(96,165,250,0.18));border:1px solid rgba(0,212,180,0.4);color:var(--teal);padding:16px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.08em;cursor:pointer;transition:all 0.25s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(0,212,180,0.32),rgba(96,165,250,0.32))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(0,212,180,0.18),rgba(96,165,250,0.18))'">
+        ✊ Complete SDG 1: No Poverty
+      </button>
+    </div>
+
+    <!-- RESTART (hidden initially) -->
+    <div id="ggRestartWrap" style="display:none;margin-top:16px;">
+      <button onclick="ggRestart()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:var(--chalk);padding:12px 32px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.04em;">🔄 Play Again</button>
+    </div>
+
+    <!-- REDEMPTION TICKET (hidden until the planet is saved) -->
+    <div id="ggTicketWrap" style="display:none;margin-top:22px;background:#F4F1EA;border-radius:14px;padding:20px;text-align:left;color:#0B1F33;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.03em;margin-bottom:2px;">🌍 Planet Saved — Claim Your GlowBag</div>
+      <div style="font-size:12px;color:#57687a;margin-bottom:14px;line-height:1.5;">Scan the code below to open the GCCC redemption form and enter your ticket number to claim your free Virtual GlowBag.</div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <img id="ggTicketQr" src="" alt="Scan to open the GCCC redemption form" style="width:110px;height:110px;border-radius:8px;border:1px solid rgba(11,31,51,0.15);background:#fff;flex-shrink:0;">
+        <div style="flex:1;min-width:160px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;letter-spacing:.04em;" id="ggTicketSerial">GCC-0000-SP</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#57687a;letter-spacing:.06em;margin-top:2px;text-transform:uppercase;">Planet Saved · Virtual GlowBag</div>
+          <a id="ggTicketLink" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;background:#1FADA6;color:#0B1F33;font-weight:700;font-size:12.5px;text-decoration:none;padding:9px 16px;border-radius:20px;">Open the Redemption Form →</a>
+        </div>
+      </div>
+      <a id="ggGlowBagLink" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#1FADA6;text-decoration:underline;">Already claimed? Open your Virtual GlowBag on this device →</a>
+    </div>
+
+
+  </div>
+</section>
+
+<div id="glowToast"></div>
+
+<script>
+/* ─── Simplified toast (standalone, no GlowBag link) ─── */
+function showGlowToast(msg){
+  const t=document.getElementById('glowToast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+/* ─── GLOBE vs DOOMSDAY CLOCK GAME ─── */
+(function(){
+
+  const SDGs=[
+    {n:1,  label:'No Poverty',          color:'#E5243B', icon:'💰'},
+    {n:2,  label:'Zero Hunger',         color:'#DDA63A', icon:'🌾'},
+    {n:3,  label:'Good Health',         color:'#4C9F38', icon:'❤️'},
+    {n:4,  label:'Quality Education',   color:'#C5192D', icon:'📚'},
+    {n:5,  label:'Gender Equality',     color:'#FF3A21', icon:'♀️'},
+    {n:6,  label:'Clean Water',         color:'#26BDE2', icon:'💧'},
+    {n:7,  label:'Clean Energy',        color:'#FCC30B', icon:'☀️'},
+    {n:8,  label:'Decent Work',         color:'#A21942', icon:'💼'},
+    {n:9,  label:'Innovation',          color:'#FD6925', icon:'🏗️'},
+    {n:10, label:'Reduced Inequality',  color:'#DD1367', icon:'⚖️'},
+    {n:11, label:'Sustainable Cities',  color:'#FD9D24', icon:'🏙️'},
+    {n:12, label:'Responsible Consump.',color:'#BF8B2E', icon:'♻️'},
+    {n:13, label:'Climate Action',      color:'#3F7E44', icon:'🌡️'},
+    {n:14, label:'Life Below Water',    color:'#0A97D9', icon:'🐋'},
+    {n:15, label:'Life on Land',        color:'#56C02B', icon:'🌳'},
+    {n:16, label:'Peace & Justice',     color:'#00689D', icon:'🕊️'},
+    {n:17, label:'Partnerships',        color:'#19486A', icon:'🤝'},
+  ];
+
+  const TOTAL_SECS = 255; // 4 min 15 sec — enough pressure
+  let gg = {
+    running: false,
+    won: false,
+    lost: false,
+    secsLeft: TOTAL_SECS,
+    currentGoal: 0, // 0-indexed, 0..16
+    completed: [],
+    intervalId: null,
+    globeAngle: 0,
+  };
+
+  /* ── Build SDG grid ── */
+  function buildGrid(){
+    const grid = document.getElementById('ggSdgGrid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    SDGs.forEach((sdg, i) => {
+      const cell = document.createElement('div');
+      cell.id = 'gg-sdg-'+i;
+      cell.title = 'SDG '+sdg.n+': '+sdg.label;
+      cell.style.cssText = `width:100%;aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:default;transition:all 0.4s;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);opacity:0.35;`;
+      cell.textContent = sdg.icon;
+      grid.appendChild(cell);
+    });
+  }
+
+  function refreshGrid(){
+    SDGs.forEach((sdg,i)=>{
+      const cell = document.getElementById('gg-sdg-'+i);
+      if(!cell) return;
+      if(gg.completed.includes(i)){
+        cell.style.background = sdg.color;
+        cell.style.opacity = '1';
+        cell.style.border = '1px solid '+sdg.color;
+        cell.style.transform = 'scale(1.08)';
+        cell.style.boxShadow = '0 0 8px '+sdg.color+'88';
+      } else if(i === gg.currentGoal && gg.running){
+        cell.style.background = 'rgba(255,255,255,0.12)';
+        cell.style.opacity = '1';
+        cell.style.border = '2px solid #fff';
+        cell.style.animation = 'ggPulseCell 1s ease-in-out infinite';
+      } else {
+        cell.style.background = 'rgba(255,255,255,0.05)';
+        cell.style.opacity = '0.35';
+        cell.style.border = '1px solid rgba(255,255,255,0.08)';
+        cell.style.transform = 'scale(1)';
+        cell.style.boxShadow = 'none';
+        cell.style.animation = 'none';
+      }
+    });
+  }
+
+  /* ── Draw globe canvas ── */
+  function drawGlobe(){
+    const canvas = document.getElementById('ggGlobe');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W=180, H=180, cx=90, cy=90, r=80;
+    ctx.clearRect(0,0,W,H);
+
+    const health = gg.completed.length / 17; // 0..1
+
+    // Atmosphere glow
+    if(health > 0){
+      const atmo = ctx.createRadialGradient(cx,cy,r*0.85,cx,cy,r*1.1);
+      const gc = health < 0.5
+        ? `rgba(74,222,128,${health*0.4})`
+        : `rgba(56,189,248,${health*0.5})`;
+      atmo.addColorStop(0, gc);
+      atmo.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(cx,cy,r*1.1,0,Math.PI*2);
+      ctx.fillStyle=atmo; ctx.fill();
+    }
+
+    // Base sphere — barren (grey-brown) → living (blue-green)
+    const barrenC = [60,45,35];
+    const liveC   = [30,80,140];
+    const r2      = barrenC.map((v,i)=>Math.round(v+(liveC[i]-v)*health));
+    const grad = ctx.createRadialGradient(cx-25,cy-25,10,cx,cy,r);
+    grad.addColorStop(0, `rgb(${r2[0]+50},${r2[1]+50},${r2[2]+50})`);
+    grad.addColorStop(0.5, `rgb(${r2[0]},${r2[1]},${r2[2]})`);
+    grad.addColorStop(1, `rgb(${Math.max(0,r2[0]-30)},${Math.max(0,r2[1]-30)},${Math.max(0,r2[2]-30)})`);
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle=grad; ctx.fill();
+
+    // Continent patches that appear as goals complete
+    if(health > 0){
+      ctx.save();
+      ctx.clip(); // clip to sphere
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+
+      const continents = [
+        {x:68,y:55,w:28,h:22},  // N. America
+        {x:72,y:88,w:18,h:26},  // S. America
+        {x:88,y:52,w:20,h:28},  // Europe/Africa
+        {x:110,y:58,w:30,h:24}, // Asia
+        {x:120,y:100,w:22,h:14},// Australia
+      ];
+      const landAlpha = Math.min(health*2.5, 1);
+      const landColor = health > 0.5
+        ? `rgba(34,197,94,${landAlpha*0.7})`
+        : `rgba(120,160,60,${landAlpha*0.5})`;
+      ctx.fillStyle = landColor;
+      const showCount = Math.ceil(health * continents.length);
+      continents.slice(0,showCount).forEach(c=>{
+        ctx.beginPath();
+        ctx.ellipse(c.x + Math.sin(gg.globeAngle*0.4)*3, c.y, c.w/2, c.h/2, 0, 0, Math.PI*2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    // Ice caps at high health
+    if(health > 0.7){
+      const iceAlpha = (health-0.7)/0.3;
+      ctx.save();
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+      ctx.fillStyle = `rgba(220,240,255,${iceAlpha*0.6})`;
+      ctx.beginPath(); ctx.ellipse(cx, cy-r+14, 20, 10, 0, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx, cy+r-14, 16, 8, 0, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    // Clouds
+    if(health > 0.3){
+      ctx.save();
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.clip();
+      const cloudAlpha = Math.min((health-0.3)*2, 0.35);
+      ctx.fillStyle = `rgba(255,255,255,${cloudAlpha})`;
+      const angle = gg.globeAngle;
+      [[70,65,20,8],[100,80,16,6],[85,110,22,7]].forEach(([bx,by,bw,bh])=>{
+        ctx.beginPath();
+        ctx.ellipse(bx+Math.sin(angle)*5, by, bw, bh, 0, 0, Math.PI*2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    // Rim highlight
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle = health > 0.3 ? `rgba(100,200,255,0.4)` : `rgba(150,120,100,0.3)`;
+    ctx.lineWidth=2; ctx.stroke();
+
+    // Shine
+    const shine = ctx.createRadialGradient(cx-28,cy-28,2,cx-20,cy-20,r*0.6);
+    shine.addColorStop(0,'rgba(255,255,255,0.22)');
+    shine.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle=shine; ctx.fill();
+
+    // Explosion if lost
+    if(gg.lost){
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.fillStyle='rgba(220,38,38,0.7)'; ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.font='bold 56px serif';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText('💥',cx,cy);
+    }
+
+    // Victory shimmer
+    if(gg.won){
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.fillStyle='rgba(250,204,21,0.25)'; ctx.fill();
+    }
+  }
+
+  /* ── Draw game clock ── */
+  function drawGameClock(){
+    const canvas = document.getElementById('ggClock');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W=120,H=120,cx=60,cy=60,r=54;
+    ctx.clearRect(0,0,W,H);
+
+    const frac = gg.secsLeft / TOTAL_SECS; // 1→0
+    const danger = frac < 0.25;
+
+    // Face
+    const g = ctx.createRadialGradient(cx-10,cy-10,4,cx,cy,r);
+    g.addColorStop(0,'#1a0202'); g.addColorStop(1,'#0a0000');
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle=g; ctx.fill();
+
+    // Countdown arc
+    const startAngle = -Math.PI/2;
+    const endAngle   = startAngle + (2*Math.PI*frac);
+    ctx.beginPath();
+    ctx.arc(cx,cy,r-4,startAngle,endAngle);
+    ctx.strokeStyle = danger ? '#ef4444' : '#f59e0b';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    if(danger){ ctx.shadowColor='#ef4444'; ctx.shadowBlur=10; }
+    ctx.stroke();
+    ctx.shadowBlur=0;
+
+    // Tick marks
+    for(let i=0;i<12;i++){
+      const a=(i/12)*2*Math.PI-Math.PI/2;
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(a)*(r-10),cy+Math.sin(a)*(r-10));
+      ctx.lineTo(cx+Math.cos(a)*(r-4), cy+Math.sin(a)*(r-4));
+      ctx.strokeStyle=i===0?'#ef4444':'rgba(127,29,29,0.7)';
+      ctx.lineWidth=i===0?2:1; ctx.stroke();
+    }
+
+    // Sweeping hand (real seconds)
+    const secAngle = ((Date.now()/1000)%(60)/60)*2*Math.PI - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(secAngle+Math.PI)*10,cy+Math.sin(secAngle+Math.PI)*10);
+    ctx.lineTo(cx+Math.cos(secAngle)*42,cy+Math.sin(secAngle)*42);
+    ctx.strokeStyle='#ef4444'; ctx.lineWidth=1.5; ctx.lineCap='round'; ctx.stroke();
+
+    // Centre pin
+    ctx.beginPath(); ctx.arc(cx,cy,4,0,Math.PI*2);
+    ctx.fillStyle='#ef4444'; ctx.fill();
+
+    // Rim
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle = danger ? '#dc2626' : '#7f1d1d';
+    ctx.lineWidth=2.5;
+    if(danger){ ctx.shadowColor='#ef4444'; ctx.shadowBlur=12; }
+    ctx.stroke(); ctx.shadowBlur=0;
+  }
+
+  /* ── Update time display ── */
+  function updateTimeDisplay(){
+    const el = document.getElementById('ggTimeLeft');
+    if(!el) return;
+    const m = Math.floor(gg.secsLeft/60);
+    const s = gg.secsLeft % 60;
+    el.textContent = m+':'+(s<10?'0':'')+s;
+    el.style.color = gg.secsLeft < 60 ? '#ff0000' : '#ef4444';
+  }
+
+  /* ── Update health bar & label ── */
+  function updateHealth(){
+    const pct = Math.round((gg.completed.length/17)*100);
+    const bar = document.getElementById('ggHealthBar');
+    const pctEl = document.getElementById('ggHealthPct');
+    const label = document.getElementById('ggGlobeLabel');
+    if(bar) bar.style.width = pct+'%';
+    if(pctEl) pctEl.textContent = pct+'%';
+    if(label){
+      const labels=['Barren World','Lifeless Rock','Stirring...','First Signs','Awakening','Growing Hope','Green Shoots','Flourishing','Thriving!','Almost There!','🌍 Saved!'];
+      label.textContent = labels[Math.min(Math.floor(pct/10), labels.length-1)];
+    }
+  }
+
+  /* ── Update action button ── */
+  function updateActionBtn(){
+    const btn = document.getElementById('ggActionBtn');
+    if(!btn) return;
+    if(gg.currentGoal < 17){
+      const sdg = SDGs[gg.currentGoal];
+      btn.textContent = '✊ Complete SDG '+sdg.n+': '+sdg.label;
+      btn.style.borderColor = sdg.color+'88';
+      btn.style.color = sdg.color;
+    }
+  }
+
+  /* ── Complete a goal ── */
+  window.ggDoGoal = function(){
+    if(!gg.running || gg.won || gg.lost) return;
+    if(gg.currentGoal >= 17) return;
+    const sdg = SDGs[gg.currentGoal];
+    gg.completed.push(gg.currentGoal);
+    gg.currentGoal++;
+
+    // Bonus time: completing a goal adds seconds
+    gg.secsLeft = Math.min(TOTAL_SECS, gg.secsLeft + 10);
+
+    const msg = document.getElementById('ggMsg');
+    if(msg) msg.textContent = '✅ SDG '+sdg.n+' unlocked: '+sdg.label+'! +10 seconds added. '+(17-gg.currentGoal)+' goals remaining.';
+
+    refreshGrid();
+    updateHealth();
+    updateActionBtn();
+
+    if(gg.currentGoal >= 17){
+      ggWin();
+    }
+  };
+
+  /* ── Redemption ticket (Cognito Forms QR) ── */
+  const REDEMPTION_FORM_URL = "https://www.cognitoforms.com/gccc2/gcccprizeredemption3";
+  const GLOWBAG_URL = "https://globalcitizencommunitycenter.univer.se/virtual-glowbag.html?claim=1";
+  function qrImageUrl(data, size){
+    return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data)}`;
+  }
+  function showGlowBagTicket(){
+    const serial = `GCC-${Math.floor(1000 + Math.random()*9000)}-SP`;
+    const wrap = document.getElementById('ggTicketWrap');
+    const qr = document.getElementById('ggTicketQr');
+    const serialEl = document.getElementById('ggTicketSerial');
+    const link = document.getElementById('ggTicketLink');
+    const glowBagLink = document.getElementById('ggGlowBagLink');
+    // Primary: scan to open the real GCCC redemption form (same form the scratch tickets use)
+    if(qr) qr.src = qrImageUrl(REDEMPTION_FORM_URL, 220);
+    if(serialEl) serialEl.textContent = serial;
+    if(link) link.href = REDEMPTION_FORM_URL;
+    // Secondary: on-device shortcut straight into the Virtual GlowBag itself
+    if(glowBagLink) glowBagLink.href = `${GLOWBAG_URL}&ticket=${encodeURIComponent(serial)}`;
+    if(wrap) wrap.style.display = 'block';
+  }
+
+  /* ── Win ── */
+  function ggWin(){
+    gg.won = true; gg.running = false;
+    clearInterval(gg.intervalId);
+    const msg = document.getElementById('ggMsg');
+    if(msg) msg.innerHTML = '🌍✨ <strong style="color:#4ade80;">PLANET SAVED!</strong> All 17 SDGs achieved before midnight! The Doomsday Clock has been pushed back. Humanity lives on!';
+    const btn = document.getElementById('ggActionBtn');
+    if(btn){ btn.textContent='🌍 Planet Saved! You did it!'; btn.style.color='#4ade80'; btn.style.borderColor='#4ade80'; btn.disabled=true; }
+    const rw = document.getElementById('ggRestartWrap');
+    if(rw) rw.style.display='block';
+    showGlowBagTicket();
+    showGlowToast('🌍 You saved the planet! All 17 SDGs complete!');
+  }
+
+  /* ── Lose ── */
+  function ggLose(){
+    gg.lost = true; gg.running = false;
+    clearInterval(gg.intervalId);
+    const msg = document.getElementById('ggMsg');
+    if(msg) msg.innerHTML = '💥 <strong style="color:#ef4444;">MIDNIGHT STRIKES.</strong> The Doomsday Clock hit zero. The planet is gone. '+(17-gg.completed.length)+' SDGs remained. Try again — the world needs you.';
+    const btn = document.getElementById('ggActionBtn');
+    if(btn){ btn.textContent='💥 The world ended. Play again?'; btn.style.color='#ef4444'; btn.style.borderColor='#ef4444'; btn.disabled=true; }
+    const rw = document.getElementById('ggRestartWrap');
+    if(rw) rw.style.display='block';
+    showGlowToast('💥 Midnight struck. The planet was lost. Try again!');
+  }
+
+  /* ── Restart ── */
+  window.ggRestart = function(){
+    clearInterval(gg.intervalId);
+    gg = { running:true, won:false, lost:false, secsLeft:TOTAL_SECS, currentGoal:0, completed:[], intervalId:null, globeAngle:0 };
+    const btn = document.getElementById('ggActionBtn');
+    if(btn){ btn.disabled=false; }
+    const rw = document.getElementById('ggRestartWrap');
+    if(rw) rw.style.display='none';
+    const tw = document.getElementById('ggTicketWrap');
+    if(tw) tw.style.display='none';
+    buildGrid(); refreshGrid(); updateHealth(); updateActionBtn();
+    const msg = document.getElementById('ggMsg');
+    if(msg) msg.textContent='The planet stirs. You have 4:15 to save it. Complete the SDGs — in order!';
+    startTimer();
+  };
+
+  /* ── Timer ── */
+  function startTimer(){
+    gg.intervalId = setInterval(()=>{
+      if(!gg.running) return;
+      gg.secsLeft--;
+      gg.globeAngle += 0.02;
+      updateTimeDisplay();
+      drawGameClock();
+      drawGlobe();
+      if(gg.secsLeft <= 0) ggLose();
+    }, 1000);
+  }
+
+  /* ── Render loop for smooth globe spin ── */
+  function renderLoop(){
+    if(gg.running && !gg.won && !gg.lost){ gg.globeAngle += 0.008; }
+    drawGlobe();
+    drawGameClock();
+    requestAnimationFrame(renderLoop);
+  }
+
+  /* ── Init ── */
+  function init(){
+    buildGrid();
+    refreshGrid();
+    updateHealth();
+    updateActionBtn();
+    updateTimeDisplay();
+    gg.running = true;
+    startTimer();
+    renderLoop();
+  }
+
+  // Add pulse keyframe CSS
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes ggPulseAnim{0%,100%{opacity:0.4;transform:translate(-50%,-50%) scale(0.9);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}}
+    @keyframes ggPulseCell{0%,100%{box-shadow:none;}50%{box-shadow:0 0 10px rgba(255,255,255,0.6);}}
+  `;
+  document.head.appendChild(style);
+
+  // Wait for DOM
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 100);
+  }
+
+})();
+</script>
+</body>
+</html>
