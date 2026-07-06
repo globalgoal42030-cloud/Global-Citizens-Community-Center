@@ -69,6 +69,73 @@ framework, no backend required.
 > **Note on `assets/glowbag/`:** the GlowBag claim page pulls in *two*
 > separate PDFs, not one combined file — `virtual-glowbag.pdf` (currently
 > the Hot Bread Kitchen resource guide) and
+> `free-5-day-music-journaling-retreat.pdf` (the retreat guide). The
+> on-page description under "Download the GCCC Community Resource Guide"
+> was updated to match the Hot Bread Kitchen content. If you swap either
+> file's content again later, keep the filenames exactly as they are —
+> the page calls them by name — and update that description to match.
+
+Note: `index.html` has its own styles and scripts embedded directly in the
+page (it doesn't use `gccc.css`), while every other page links out to the
+shared `gccc.css`, `countries-data.js`, and `country-explorer.js` files.
+The event giveaway suite (prize wheel, bingo, scratch tickets, GlowBag
+page) is also self-contained — each page carries its own embedded styles
+and scripts rather than using `gccc.css`.
+
+## How the Pages Connect
+
+- The nav bar and footer on every page link to `index.html` and its
+  section anchors (`#programs`, `#rooms`, `#goals`, `#campaigns`,
+  `#membership`, `#summit`, `#donate`).
+- `login.html`, `register.html`, and `dashboard.html` link to each other
+  and to the room pages.
+- All 13 room pages share the same header/footer and load
+  `countries-data.js` + `country-explorer.js` for the searchable country
+  grid.
+- **"Start a Fundraiser"** buttons across the homepage, dashboard, and nav
+  all point to `bake-sale-kit.html`, a landing page for the No-Bake
+  Vegan/GF Bake Sale campaign. Its 5th step, **"Get Your Kit,"** links to
+  `bake-sale-fundraiser-kit.html` — the full kit with checklists, an event
+  guide, a business-outreach script, sponsor stickers, and the
+  physical-kit order form. The landing page's own "Register" CTA hands
+  off to our OneCause fundraising partner page.
+- **Event giveaway suite:** `save-the-planet-game.html` links to
+  `virtual-glowbag.html` on completion. `virtual-glowbag.html` links out
+  to `dashboard.html`, `index.html`, `gccc_prize_wheel.html`,
+  `save-the-planet-game.html`, `gccc_bingo_caller.html`, all four bingo
+  cards, and all four scratch tickets — and pulls its two PDFs and three
+  MP3s from `assets/glowbag/`. `gccc_prize_wheel.html`'s QR redemption
+  ticket links out to the GCCC Cognito prize redemption form
+  (`https://www.cognitoforms.com/gccc2/gcccprizeredemption3`). The bingo
+  cards' QR codes and each scratch ticket's redemption flow point to that
+  same Cognito form.
+
+## Deploying
+
+Every file listed above belongs in the repo **root** — none of the event
+giveaway pages use subfolders for HTML, only for the `assets/glowbag/`
+media. If any of the event giveaway files are missing from a given
+deploy, links between them (and to `index.html`/`dashboard.html`) will
+404, so upload the whole set together.├── gccc_scratch_membership.html    # Scratch-off ticket — Membership prize
+├── gccc_scratch_virtualcare.html   # Scratch-off ticket — Virtual Care prize
+├── gccc_scratch_codingclass.html   # Scratch-off ticket — Coding Class prize
+│
+├── assets/
+│   └── glowbag/
+│       ├── virtual-glowbag.pdf                     # Resource guide — currently the Hot Bread Kitchen
+│       │                                            #   Community Resources 2020 booklet
+│       ├── free-5-day-music-journaling-retreat.pdf # The 5-Day Music & Journaling Retreat guide
+│       └── music/
+│           ├── dream-on.mp3
+│           ├── death-row.mp3
+│           └── what-you-waiting-for.mp3
+│
+└── README.md                       # This file
+```
+
+> **Note on `assets/glowbag/`:** the GlowBag claim page pulls in *two*
+> separate PDFs, not one combined file — `virtual-glowbag.pdf` (currently
+> the Hot Bread Kitchen resource guide) and
 > `free-5-day-music-journaling-retreat.pdf` (the retreat guide). If you
 > swap either file's content again later, keep the filenames exactly as
 > they are — the page calls them by name.
