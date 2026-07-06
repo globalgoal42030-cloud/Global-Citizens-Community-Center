@@ -1,6 +1,8 @@
 # Global Citizens Community Center (GCCC) — Website
 
-A static, multi-page website for the Global Citizens Community Center. Built with plain **HTML, CSS, and JavaScript only** — no build step, no framework, no backend required.
+A static, multi-page website for the Global Citizens Community Center.
+Built with plain **HTML, CSS, and JavaScript only** — no build step, no
+framework, no backend required.
 
 ## File Structure
 
@@ -14,7 +16,6 @@ A static, multi-page website for the Global Citizens Community Center. Built wit
 ├── bake-sale-kit.html             # No-Bake Vegan/GF Bake Sale fundraiser landing page (5 "How It Works" steps)
 ├── bake-sale-fundraiser-kit.html  # Full fundraiser kit (self-styled, own internal tabs): checklists, event
 │                                   #   guide, business outreach script, sponsor stickers, and the order form
-├── virtual-glowbag.html           # Free "Virtual GlowBag" claim page (guide PDF + music + resources)
 │
 ├── room-business-lounge.html      # Room pages (13 total) — each is a self-contained
 ├── room-dev-dojo.html             #   destination with its own content and a shared
@@ -35,27 +36,85 @@ A static, multi-page website for the Global Citizens Community Center. Built wit
 ├── countries-data.js               # Shared list of UN member states (used by country explorer)
 ├── country-explorer.js             # Renders the searchable country grid used on room pages
 │
+├── gccc-proposal.pdf               # Downloadable proposal document linked from the homepage
+│
+├── EVENT GIVEAWAY SUITE (community event day — prize game set)
+├── ─────────────────────────────────────────────────────────
+├── virtual-glowbag.html            # Free "Virtual GlowBag" claim page (guide PDFs + music + resources)
+├── gccc_prize_wheel.html           # Spin-to-win prize wheel with QR redemption ticket (Cognito-linked)
+├── save-the-planet-game.html       # SDG mini-game; links out to virtual-glowbag.html on completion
+├── gccc_bingo_caller.html          # Spin-to-call bingo caller (draws items, no repeats until reset)
+├── gccc_bingo_card_A.html          # Bingo Card A (unique term layout, QR redemption)
+├── gccc_bingo_card_B.html          # Bingo Card B (unique term layout, QR redemption)
+├── gccc_bingo_card_C.html          # Bingo Card C (unique term layout, QR redemption)
+├── gccc_bingo_card_D.html          # Bingo Card D (unique term layout, QR redemption)
+├── gccc_scratch_glowbag.html       # Scratch-off ticket — GlowBag prize
+├── gccc_scratch_membership.html    # Scratch-off ticket — Membership prize
+├── gccc_scratch_virtualcare.html   # Scratch-off ticket — Virtual Care prize
+├── gccc_scratch_codingclass.html   # Scratch-off ticket — Coding Class prize
+│
 ├── assets/
 │   └── glowbag/
-│       ├── virtual-glowbag.pdf     # The GlowBag guide (5-Day Music & Journaling Retreat + resources page)
+│       ├── virtual-glowbag.pdf                     # Resource guide — currently the Hot Bread Kitchen
+│       │                                            #   Community Resources 2020 booklet
+│       ├── free-5-day-music-journaling-retreat.pdf # The 5-Day Music & Journaling Retreat guide
 │       └── music/
 │           ├── dream-on.mp3
 │           ├── death-row.mp3
 │           └── what-you-waiting-for.mp3
 │
-├── gccc-proposal.pdf              # Downloadable proposal document linked from the homepage
-└── README.md                      # This file
+└── README.md                       # This file
 ```
 
-Note: `index.html` has its own styles and scripts embedded directly in the page (it doesn't use `gccc.css`), while every other page links out to the shared `gccc.css`, `countries-data.js`, and `country-explorer.js` files.
+> **Note on `assets/glowbag/`:** the GlowBag claim page pulls in *two*
+> separate PDFs, not one combined file — `virtual-glowbag.pdf` (currently
+> the Hot Bread Kitchen resource guide) and
+> `free-5-day-music-journaling-retreat.pdf` (the retreat guide). If you
+> swap either file's content again later, keep the filenames exactly as
+> they are — the page calls them by name.
+
+Note: `index.html` has its own styles and scripts embedded directly in the
+page (it doesn't use `gccc.css`), while every other page links out to the
+shared `gccc.css`, `countries-data.js`, and `country-explorer.js` files.
+The event giveaway suite (prize wheel, bingo, scratch tickets, GlowBag
+page) is also self-contained — each page carries its own embedded styles
+and scripts rather than using `gccc.css`.
 
 ## How the Pages Connect
 
-- The nav bar and footer on every page link to `index.html` and its section anchors (`#programs`, `#rooms`, `#goals`, `#campaigns`, `#membership`, `#summit`, `#donate`).
-- `login.html`, `register.html`, and `dashboard.html` link to each other and to the room pages.
-- All 13 room pages share the same header/footer and load `countries-data.js` + `country-explorer.js` for the searchable country grid.
-- **"Start a Fundraiser"** buttons across the homepage, dashboard, and nav all point to `bake-sale-kit.html`, a landing page for the No-Bake Vegan/GF Bake Sale campaign. Its 5th step, **"Get Your Kit,"** links to `bake-sale-fundraiser-kit.html` — the full kit with checklists, an event guide, a business-outreach script, sponsor stickers, and the physical-kit order form. The landing page's own "Register" CTA hands off to our OneCause fundraising partner page.
-- **"Claim your free Virtual GlowBag"** links (in the homepage toast notifications, hero section, and dashboard resources list) point to `virtual-glowbag.html`, which serves the GlowBag PDF, streams the three campaign tracks, and lists free wellness/budgeting/crisis-support resources.
+- The nav bar and footer on every page link to `index.html` and its
+  section anchors (`#programs`, `#rooms`, `#goals`, `#campaigns`,
+  `#membership`, `#summit`, `#donate`).
+- `login.html`, `register.html`, and `dashboard.html` link to each other
+  and to the room pages.
+- All 13 room pages share the same header/footer and load
+  `countries-data.js` + `country-explorer.js` for the searchable country
+  grid.
+- **"Start a Fundraiser"** buttons across the homepage, dashboard, and nav
+  all point to `bake-sale-kit.html`, a landing page for the No-Bake
+  Vegan/GF Bake Sale campaign. Its 5th step, **"Get Your Kit,"** links to
+  `bake-sale-fundraiser-kit.html` — the full kit with checklists, an event
+  guide, a business-outreach script, sponsor stickers, and the
+  physical-kit order form. The landing page's own "Register" CTA hands
+  off to our OneCause fundraising partner page.
+- **Event giveaway suite:** `save-the-planet-game.html` links to
+  `virtual-glowbag.html` on completion. `virtual-glowbag.html` links out
+  to `dashboard.html`, `index.html`, `gccc_prize_wheel.html`,
+  `save-the-planet-game.html`, `gccc_bingo_caller.html`, all four bingo
+  cards, and all four scratch tickets — and pulls its two PDFs and three
+  MP3s from `assets/glowbag/`. `gccc_prize_wheel.html`'s QR redemption
+  ticket links out to the GCCC Cognito prize redemption form
+  (`https://www.cognitoforms.com/gccc2/gcccprizeredemption3`). The bingo
+  cards' QR codes and each scratch ticket's redemption flow point to that
+  same Cognito form.
+
+## Deploying
+
+Every file listed above belongs in the repo **root** — none of the event
+giveaway pages use subfolders for HTML, only for the `assets/glowbag/`
+media. If any of the event giveaway files are missing from a given
+deploy, links between them (and to `index.html`/`dashboard.html`) will
+404, so upload the whole set together.- **"Claim your free Virtual GlowBag"** links (in the homepage toast notifications, hero section, and dashboard resources list) point to `virtual-glowbag.html`, which serves the GlowBag PDF, streams the three campaign tracks, and lists free wellness/budgeting/crisis-support resources.
 - `room-glomart.html`'s new **"Let's Trade"** section links to `register.html` to start bartering.
 
 Everything is relative-path linked, so the site works the same whether it's opened locally or hosted from a subfolder — no absolute URLs to configure.
