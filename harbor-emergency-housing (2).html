@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harbor — Emergency Housing Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#0a1c2b; --mid:#122c42; --card:#153650; --card-hi:#1c4361;
+    --beacon:#f2a53c; --beacon-soft:#ffcf85; --foam:#6fcf97;
+    --alert:#e2626d; --alert-soft:rgba(226,98,109,0.12);
+    --chalk:#f5f8fb; --mist:#9db0c2; --mist-dim:#728296;
+    --line:rgba(255,255,255,0.09);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 20% -5%, rgba(242,165,60,0.10), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(111,207,151,0.06), transparent 45%),
+      var(--deep);
+    color:var(--chalk); font-family:'Inter',sans-serif;
+    min-height:100vh; padding:0 0 80px;
+  }
+  .wrap{ max-width:920px; margin:0 auto; padding:0 20px; }
+  a{ color:inherit; }
+
+  /* ---- Header ---- */
+  header{ padding:44px 20px 8px; text-align:center; }
+  .mark{ width:54px; height:54px; margin:0 auto 14px; display:block; }
+  .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:3px; color:var(--foam); text-transform:uppercase; }
+  h1{ font-family:'Fraunces',serif; font-weight:700; font-size:clamp(30px,6vw,44px); margin:14px 0 10px; letter-spacing:-.01em; }
+  h1 em{ color:var(--beacon); font-style:italic; }
+  .lede{ max-width:520px; margin:0 auto; color:var(--mist); font-size:15px; line-height:1.7; }
+
+  /* ---- Crisis banner ---- */
+  .crisis{ max-width:880px; margin:28px auto 0; background:var(--alert-soft); border:1px solid rgba(226,98,109,.4); border-radius:12px; padding:16px 20px; display:flex; flex-wrap:wrap; gap:14px 28px; align-items:center; justify-content:center; }
+  .crisis .item{ font-size:13px; color:var(--chalk); line-height:1.5; }
+  .crisis .item b{ display:block; font-family:'JetBrains Mono',monospace; font-size:15px; color:#ffd7da; letter-spacing:.02em; }
+  .crisis .item span{ color:var(--mist); font-size:11.5px; }
+
+  /* ---- Section scaffolding ---- */
+  .section{ margin-top:56px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+  .section-title{ font-family:'Fraunces',serif; font-weight:600; font-size:21px; }
+  .section-sub{ color:var(--mist); font-size:13px; margin-top:4px; }
+
+  /* ---- Start Here (Global PATH Center) ---- */
+  .path-hero{ margin-top:32px; }
+  .path-card{ position:relative; background:linear-gradient(160deg, rgba(242,165,60,0.14), var(--card-hi) 60%); border:1.5px solid rgba(242,165,60,.5); border-radius:16px; padding:26px 24px; overflow:hidden; box-shadow:0 0 0 1px rgba(242,165,60,.08), 0 20px 40px -20px rgba(242,165,60,.25); }
+  .path-card::before{ content:''; position:absolute; top:-50%; left:-10%; width:260px; height:260px; background:radial-gradient(circle, rgba(242,165,60,.20), transparent 70%); }
+  .path-badge{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--deep); background:var(--beacon); padding:4px 11px; border-radius:999px; margin-bottom:12px; }
+  .path-title{ font-family:'Fraunces',serif; font-weight:700; font-size:22px; margin-bottom:6px; }
+  .path-desc{ font-size:13.5px; color:var(--mist); line-height:1.6; max-width:480px; margin-bottom:16px; }
+  .path-empty{ font-size:13px; color:var(--mist-dim); font-style:italic; margin-bottom:14px; }
+
+  /* ---- Quick access (Get Help Now) ---- */
+  .quick-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+  .quick-card{ position:relative; background:linear-gradient(160deg, var(--card-hi), var(--card)); border:1px solid var(--line); border-radius:14px; padding:20px; overflow:hidden; transition:transform .2s, border-color .2s; }
+  .quick-card:hover{ transform:translateY(-2px); border-color:rgba(242,165,60,.4); }
+  .quick-card::before{ content:''; position:absolute; top:-40%; right:-30%; width:140px; height:140px; background:radial-gradient(circle, rgba(242,165,60,.16), transparent 70%); }
+  .quick-cat{ display:inline-block; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--deep); background:var(--beacon); padding:3px 10px; border-radius:999px; margin-bottom:10px; }
+  .quick-title{ font-weight:700; font-size:16px; margin-bottom:4px; }
+  .quick-tags{ font-size:11.5px; color:var(--mist); margin-bottom:12px; }
+  .quick-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+  .btn-call{ display:inline-flex; align-items:center; gap:6px; background:var(--beacon); color:var(--deep); font-weight:700; font-size:13px; text-decoration:none; padding:9px 16px; border-radius:999px; border:none; cursor:pointer; }
+  .btn-map{ display:inline-flex; align-items:center; gap:6px; background:transparent; color:var(--chalk); border:1px solid var(--line); font-weight:600; font-size:13px; text-decoration:none; padding:9px 16px; border-radius:999px; cursor:pointer; }
+  .no-contact{ font-size:12px; color:var(--mist-dim); font-style:italic; }
+  .quick-meta{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--mist); margin-top:10px; line-height:1.6; }
+
+  /* ---- Filter tabs ---- */
+  .tabs{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+  .tab{ font-size:12.5px; font-weight:600; color:var(--mist); background:var(--mid); border:1px solid var(--line); padding:8px 14px; border-radius:999px; cursor:pointer; transition:all .2s; }
+  .tab.active{ background:var(--foam); color:var(--deep); border-color:var(--foam); }
+
+  /* ---- Category groups / listing cards ---- */
+  .cat-group{ margin-bottom:34px; }
+  .cat-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .cat-icon{ font-size:20px; }
+  .cat-name{ font-weight:700; font-size:15px; }
+  .cat-desc{ font-size:12px; color:var(--mist-dim); margin-left:auto; text-align:right; max-width:320px; }
+  .listing-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; transition:transform .2s, border-color .2s; position:relative; }
+  .card:hover{ transform:translateY(-2px); border-color:rgba(255,255,255,.18); }
+  .card-title{ font-weight:700; font-size:14.5px; margin-bottom:6px; padding-right:50px; }
+  .tag-row{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+  .pop-tag{ font-size:10px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--mist); background:rgba(255,255,255,0.06); border:1px solid var(--line); padding:2px 8px; border-radius:999px; }
+  .card-meta{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--mist); line-height:1.7; margin-bottom:10px; }
+  .card-notes{ font-size:12.5px; color:var(--mist); line-height:1.6; margin-bottom:12px; }
+  .card-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .card-edit{ position:absolute; top:14px; right:14px; display:flex; gap:6px; }
+  .icon-btn{ width:26px; height:26px; border-radius:7px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--mist); font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .icon-btn:hover{ color:var(--chalk); border-color:rgba(255,255,255,.3); }
+  .empty-state{ border:1px dashed var(--line); border-radius:12px; padding:22px; text-align:center; color:var(--mist-dim); font-size:13px; }
+  .empty-state button{ margin-top:10px; }
+
+  /* ---- Add listing button / disclosure ---- */
+  .add-row{ margin-top:40px; text-align:center; }
+  .btn-add{ background:transparent; border:1.5px dashed var(--beacon); color:var(--beacon); font-weight:700; font-size:13.5px; padding:12px 22px; border-radius:999px; cursor:pointer; }
+  .btn-add:hover{ background:rgba(242,165,60,.08); }
+  .disclosure{ max-width:600px; margin:16px auto 0; font-size:11.5px; color:var(--mist-dim); text-align:center; line-height:1.6; }
+
+  /* ---- Modal ---- */
+  .overlay{ position:fixed; inset:0; background:rgba(5,12,20,0.72); backdrop-filter:blur(3px); display:none; align-items:flex-start; justify-content:center; padding:40px 16px; z-index:50; overflow-y:auto; }
+  .overlay.open{ display:flex; }
+  .modal{ background:var(--mid); border:1px solid var(--line); border-radius:16px; padding:28px; width:100%; max-width:520px; }
+  .modal h2{ font-family:'Fraunces',serif; font-size:20px; margin:0 0 4px; }
+  .modal .sub{ font-size:12.5px; color:var(--mist); margin-bottom:20px; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--mist); margin-bottom:6px; letter-spacing:.02em; }
+  .field input[type=text], .field input[type=tel], .field select, .field textarea{
+    width:100%; background:var(--deep); border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+    color:var(--chalk); font-family:'Inter',sans-serif; font-size:13.5px; resize:vertical;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:2px solid var(--beacon); outline-offset:1px; }
+  .check-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+  .check-pill{ display:flex; align-items:center; gap:6px; font-size:12.5px; background:var(--deep); border:1px solid var(--line); border-radius:999px; padding:7px 12px; cursor:pointer; }
+  .check-pill input{ accent-color:var(--beacon); }
+  .modal-actions{ display:flex; justify-content:space-between; align-items:center; margin-top:22px; gap:10px; flex-wrap:wrap; }
+  .btn-primary{ background:var(--beacon); color:var(--deep); font-weight:700; font-size:13.5px; padding:10px 20px; border-radius:999px; border:none; cursor:pointer; }
+  .btn-ghost{ background:transparent; color:var(--mist); font-weight:600; font-size:13px; padding:10px 16px; border-radius:999px; border:1px solid var(--line); cursor:pointer; }
+  .btn-danger{ background:transparent; color:var(--alert); font-weight:600; font-size:12.5px; border:none; cursor:pointer; }
+
+  .toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--foam); color:var(--deep); font-weight:700; font-size:13px; padding:11px 20px; border-radius:999px; opacity:0; transition:all .3s ease; pointer-events:none; z-index:60; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .loading{ text-align:center; color:var(--mist); font-size:13px; padding:40px 0; }
+
+  @media (max-width:520px){
+    .card-edit{ top:12px; right:12px; }
+    .card-title{ padding-right:60px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg class="mark" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="glow" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#f2a53c" stop-opacity="0.9"/><stop offset="100%" stop-color="#f2a53c" stop-opacity="0"/></radialGradient></defs>
+      <circle cx="30" cy="26" r="24" fill="url(#glow)"/>
+      <path d="M16 52 V28 C16 16 22 8 30 8 C38 8 44 16 44 28 V52 Z" fill="none" stroke="#f2a53c" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="16" y="46" width="28" height="6" fill="#0a1c2b" stroke="#f2a53c" stroke-width="3"/>
+    </svg>
+    <div class="eyebrow">Emergency Housing Directory</div>
+    <h1>Find a Safe <em>Door</em> Tonight</h1>
+    <p class="lede">Start at the Global PATH Center — they'll connect you to emergency shelter, domestic violence housing, gender-based violence housing, or family court &amp; reunification housing, based on what you need.</p>
+  </header>
+
+  <div class="crisis">
+    <div class="item"><b>911</b><span>Immediate danger</span></div>
+    <div class="item"><b>988</b><span>Suicide &amp; Crisis Lifeline</span></div>
+    <div class="item"><b>1-800-799-7233</b><span>National DV Hotline · or text START to 88788</span></div>
+    <div class="item"><b>211</b><span>Local shelter &amp; housing referrals</span></div>
+  </div>
+
+  <div id="app">
+    <div class="loading">Opening the directory…</div>
+  </div>
+
+  <div class="add-row">
+    <button class="btn-add" id="openAddBtn">+ Add a housing or shelter listing</button>
+    <p class="disclosure">Listings are stored for this app and visible to everyone who opens it — anyone with the link can view, add, or edit entries. Don't include personal contact info for individual people, only organizations.</p>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Add a listing</h2>
+    <div class="sub">This will be visible to everyone who opens the app.</div>
+    <form id="listingForm">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="f_name" required placeholder="e.g. Riverside Family Shelter">
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select id="f_category">
+          <option value="path">Global PATH Center (Start Here / Intake)</option>
+          <option value="emergency">Emergency / Homeless Shelter</option>
+          <option value="dv">Domestic Violence Shelter</option>
+          <option value="gbv">Gender-Based Violence Shelter</option>
+          <option value="familycourt">Family Court &amp; Reunification Housing</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Who it serves</label>
+        <div class="check-grid" id="f_population">
+          <label class="check-pill"><input type="checkbox" value="Women"> Women</label>
+          <label class="check-pill"><input type="checkbox" value="Men"> Men</label>
+          <label class="check-pill"><input type="checkbox" value="Families"> Families</label>
+          <label class="check-pill"><input type="checkbox" value="Children"> Children</label>
+          <label class="check-pill"><input type="checkbox" value="Preteens"> Preteens</label>
+          <label class="check-pill"><input type="checkbox" value="Foster-care alternative"> Foster-care alternative</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Address</label>
+        <input type="text" id="f_address" placeholder="Street, city, state">
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input type="tel" id="f_phone" placeholder="e.g. (555) 555-5555">
+      </div>
+      <div class="field">
+        <label>Hours / Availability</label>
+        <input type="text" id="f_hours" placeholder="e.g. 24/7 intake, or Mon–Fri 9am–5pm">
+      </div>
+      <div class="field">
+        <label>Notes (intake requirements, capacity, etc.)</label>
+        <textarea id="f_notes" rows="3" placeholder="Anything someone should know before they arrive or call"></textarea>
+      </div>
+      <div class="field">
+        <label class="check-pill" style="width:fit-content;">
+          <input type="checkbox" id="f_immediate"> Show in "Get Help Now" quick access
+        </label>
+      </div>
+      <div class="modal-actions">
+        <div>
+          <button type="button" class="btn-danger" id="deleteBtn" style="display:none;">Delete this listing</button>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn-primary">Save listing</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS = {
+  path:        { icon:'🧭', name:'Global PATH Center', desc:'Start here — intake &amp; referral to the right housing.' },
+  emergency:   { icon:'🏠', name:'Emergency / Homeless Shelter', desc:'For men, women, families, and children who need shelter now.' },
+  dv:          { icon:'🛡️', name:'Domestic Violence Shelter', desc:'For families, women, men, preteens, and children — including as an alternative to entering foster care.' },
+  gbv:         { icon:'🕊️', name:'Gender-Based Violence Shelter', desc:'For families, women, and men affected by gender-based violence.' },
+  familycourt: { icon:'⚖️', name:'Family Court & Reunification Housing', desc:'Housing for parents and children involved in family court matters, with a home health aide on site 24/7.' },
+};
+const CAT_ORDER = ['emergency','dv','gbv','familycourt'];
+const INDEX_KEY = 'listings-index';
+
+let listings = [];
+let activeFilter = 'all';
+let editingId = null;
+
+function uid(){ return 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+async function getIndex(){
+  try{ const r = await window.storage.get(INDEX_KEY, true); return r ? JSON.parse(r.value) : []; }
+  catch(e){ return []; }
+}
+async function saveIndex(ids){
+  try{ await window.storage.set(INDEX_KEY, JSON.stringify(ids), true); }catch(e){ console.error('index save failed', e); }
+}
+async function getListing(id){
+  try{ const r = await window.storage.get('listing:'+id, true); return r ? JSON.parse(r.value) : null; }
+  catch(e){ return null; }
+}
+async function saveListingRecord(obj){
+  try{ await window.storage.set('listing:'+obj.id, JSON.stringify(obj), true); return true; }
+  catch(e){ console.error('listing save failed', e); return false; }
+}
+async function deleteListingRecord(id){
+  try{ await window.storage.delete('listing:'+id, true); }catch(e){}
+  const idx = await getIndex();
+  await saveIndex(idx.filter(x => x !== id));
+}
+
+async function seedIfEmpty(){
+  const idx = await getIndex();
+  if (idx.length > 0) return idx;
+  const seeds = [
+    { name:'Global PATH Center', category:'path', population:['Men','Women','Families','Children'], immediate:false },
+    { name:"Women's Shelter", category:'emergency', population:['Women'], immediate:true },
+    { name:"Men's Shelter", category:'emergency', population:['Men'], immediate:true },
+  ].map(s => ({ id: uid(), address:'', phone:'', hours:'', notes:'Add contact info to complete this listing.', ...s }));
+  for (const s of seeds){ await saveListingRecord(s); }
+  const ids = seeds.map(s => s.id);
+  await saveIndex(ids);
+  return ids;
+}
+
+// One-time migration: earlier versions of this app seeded a "PATH Center"
+// listing under the Emergency category. Move it into its own Global PATH
+// Center intake category instead of leaving a duplicate behind.
+async function migrateLegacyPathCenter(loaded){
+  const legacy = loaded.find(l => l.category === 'emergency' && l.name.trim().toLowerCase() === 'path center');
+  if (!legacy) return loaded;
+  legacy.name = 'Global PATH Center';
+  legacy.category = 'path';
+  await saveListingRecord(legacy);
+  return loaded;
+}
+
+async function loadAll(){
+  const ids = await seedIfEmpty();
+  const loaded = [];
+  for (const id of ids){
+    const l = await getListing(id);
+    if (l) loaded.push(l);
+  }
+  await migrateLegacyPathCenter(loaded);
+  listings = loaded;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function mapsUrl(address){
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address);
+}
+function telHref(phone){
+  return 'tel:' + phone.replace(/[^\d+]/g,'');
+}
+
+function renderPathHero(){
+  const path = listings.filter(l => l.category === 'path');
+  return `
+    <div class="path-hero">
+      <div class="path-card">
+        <div class="path-badge">Start Here</div>
+        <div class="path-title">Global PATH Center</div>
+        <div class="path-desc">Come here first. The Global PATH Center will connect you to the right housing — Emergency Shelter, Domestic Violence Shelter, Gender-Based Violence Shelter, or Family Court &amp; Reunification Housing — based on what you and your family need.</div>
+        ${path.length === 0 ? `<div class="path-empty">No contact info added yet.</div>` : ''}
+        ${path.map(l => `
+          <div class="quick-row">
+            ${l.phone ? `<a class="btn-call" href="${telHref(l.phone)}">📞 Call ${escapeHtml(l.phone)}</a>` : `<button class="btn-add" data-edit="${l.id}" style="padding:9px 16px; font-size:13px;">+ Add contact info</button>`}
+            ${l.address ? `<a class="btn-map" href="${mapsUrl(l.address)}" target="_blank" rel="noopener">📍 Directions</a>` : ''}
+          </div>
+          ${l.hours ? `<div class="quick-meta">${escapeHtml(l.hours)}</div>` : ''}
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderQuick(){
+  const quick = listings.filter(l => l.immediate && l.category !== 'path');
+  if (quick.length === 0) return '';
+  return `
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Get Help Now</div>
+          <div class="section-sub">Tap to call or get directions.</div>
+        </div>
+      </div>
+      <div class="quick-grid">
+        ${quick.map(l => `
+          <div class="quick-card">
+            <div class="quick-cat">${CATS[l.category] ? CATS[l.category].name : l.category}</div>
+            <div class="quick-title">${escapeHtml(l.name)}</div>
+            <div class="quick-tags">${(l.population||[]).join(' · ') || 'Population not set'}</div>
+            <div class="quick-row">
+              ${l.phone ? `<a class="btn-call" href="${telHref(l.phone)}">📞 Call ${escapeHtml(l.phone)}</a>` : `<span class="no-contact">No phone on file yet</span>`}
+              ${l.address ? `<a class="btn-map" href="${mapsUrl(l.address)}" target="_blank" rel="noopener">📍 Directions</a>` : ''}
+            </div>
+            ${l.hours ? `<div class="quick-meta">${escapeHtml(l.hours)}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderTabs(){
+  const tabs = [{key:'all', label:'All'}, ...CAT_ORDER.map(k => ({key:k, label:CATS[k].name}))];
+  return `<div class="tabs">${tabs.map(t => `<button class="tab ${activeFilter===t.key?'active':''}" data-filter="${t.key}">${t.label}</button>`).join('')}</div>`;
+}
+
+function renderCard(l){
+  const tags = (l.population||[]).map(p => `<span class="pop-tag">${escapeHtml(p)}</span>`).join('');
+  const meta = [];
+  if (l.phone) meta.push('☎ ' + l.phone);
+  if (l.hours) meta.push('🕐 ' + l.hours);
+  return `
+    <div class="card" data-id="${l.id}">
+      <div class="card-edit">
+        <button class="icon-btn" data-edit="${l.id}" title="Edit">✎</button>
+      </div>
+      <div class="card-title">${escapeHtml(l.name)}</div>
+      <div class="tag-row">${tags}</div>
+      ${meta.length ? `<div class="card-meta">${meta.map(escapeHtml).join('<br>')}</div>` : ''}
+      ${l.address ? `<div class="card-meta">📍 ${escapeHtml(l.address)}</div>` : ''}
+      ${l.notes ? `<div class="card-notes">${escapeHtml(l.notes)}</div>` : ''}
+      <div class="card-actions">
+        ${l.phone ? `<a class="btn-call" href="${telHref(l.phone)}">📞 Call</a>` : ''}
+        ${l.address ? `<a class="btn-map" href="${mapsUrl(l.address)}" target="_blank" rel="noopener">📍 Directions</a>` : ''}
+        ${!l.phone && !l.address ? `<span class="no-contact">Contact info not added yet</span>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderGroups(){
+  const cats = activeFilter === 'all' ? CAT_ORDER : [activeFilter];
+  return cats.map(catKey => {
+    const items = listings.filter(l => l.category === catKey);
+    const cat = CATS[catKey];
+    return `
+      <div class="cat-group">
+        <div class="cat-head">
+          <span class="cat-icon">${cat.icon}</span>
+          <span class="cat-name">${cat.name}</span>
+          <span class="cat-desc">${cat.desc}</span>
+        </div>
+        ${items.length > 0
+          ? `<div class="listing-grid">${items.map(renderCard).join('')}</div>`
+          : `<div class="empty-state">No listings yet in this category.<br><button class="btn-add" data-addcat="${catKey}">+ Add the first one</button></div>`
+        }
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    ${renderPathHero()}
+    ${renderQuick()}
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <div class="section-title">Browse All Housing &amp; Shelter Resources</div>
+          <div class="section-sub">Filter by the kind of housing someone needs.</div>
+        </div>
+      </div>
+      ${renderTabs()}
+      ${renderGroups()}
+    </div>
+  `;
+  attachDynamicListeners();
+}
+
+function attachDynamicListeners(){
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => { activeFilter = btn.dataset.filter; render(); });
+  });
+  document.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.edit));
+  });
+  document.querySelectorAll('[data-addcat]').forEach(btn => {
+    btn.addEventListener('click', () => openModal(null, btn.dataset.addcat));
+  });
+}
+
+/* ---- Modal logic ---- */
+const overlay = document.getElementById('overlay');
+const form = document.getElementById('listingForm');
+
+function openModal(id, presetCategory){
+  editingId = id || null;
+  document.getElementById('modalTitle').textContent = id ? 'Edit listing' : 'Add a listing';
+  document.getElementById('deleteBtn').style.display = id ? 'inline-block' : 'none';
+  form.reset();
+  document.querySelectorAll('#f_population input').forEach(cb => cb.checked = false);
+
+  if (id){
+    const l = listings.find(x => x.id === id);
+    if (l){
+      document.getElementById('f_name').value = l.name || '';
+      document.getElementById('f_category').value = l.category || 'emergency';
+      document.getElementById('f_address').value = l.address || '';
+      document.getElementById('f_phone').value = l.phone || '';
+      document.getElementById('f_hours').value = l.hours || '';
+      document.getElementById('f_notes').value = l.notes || '';
+      document.getElementById('f_immediate').checked = !!l.immediate;
+      (l.population||[]).forEach(p => {
+        const cb = [...document.querySelectorAll('#f_population input')].find(x => x.value === p);
+        if (cb) cb.checked = true;
+      });
+    }
+  } else if (presetCategory){
+    document.getElementById('f_category').value = presetCategory;
+  }
+  overlay.classList.add('open');
+}
+function closeModal(){ overlay.classList.remove('open'); editingId = null; }
+
+document.getElementById('openAddBtn').addEventListener('click', () => openModal(null));
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+
+document.getElementById('deleteBtn').addEventListener('click', async () => {
+  if (!editingId) return;
+  if (!confirm('Delete this listing? This cannot be undone.')) return;
+  await deleteListingRecord(editingId);
+  listings = listings.filter(l => l.id !== editingId);
+  closeModal();
+  render();
+  showToast('Listing deleted');
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const population = [...document.querySelectorAll('#f_population input:checked')].map(cb => cb.value);
+  const obj = {
+    id: editingId || uid(),
+    name: document.getElementById('f_name').value.trim(),
+    category: document.getElementById('f_category').value,
+    population,
+    address: document.getElementById('f_address').value.trim(),
+    phone: document.getElementById('f_phone').value.trim(),
+    hours: document.getElementById('f_hours').value.trim(),
+    notes: document.getElementById('f_notes').value.trim(),
+    immediate: document.getElementById('f_immediate').checked,
+  };
+  if (!obj.name){ return; }
+
+  const ok = await saveListingRecord(obj);
+  if (!ok){ showToast('Could not save — try again'); return; }
+
+  if (!editingId){
+    const idx = await getIndex();
+    idx.push(obj.id);
+    await saveIndex(idx);
+    listings.push(obj);
+  } else {
+    listings = listings.map(l => l.id === obj.id ? obj : l);
+  }
+  closeModal();
+  render();
+  showToast(editingId ? 'Listing updated' : 'Listing added');
+});
+
+/* ---- Init ---- */
+(async function init(){
+  try{
+    await loadAll();
+    render();
+  }catch(e){
+    document.getElementById('app').innerHTML = '<div class="loading">Something went wrong loading the directory. Refresh to try again.</div>';
+    console.error(e);
+  }
+})();
+</script>
+</body>
+</html>
