@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GCCC · Global Goals Prize Wheel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy:#0B1F33;
+    --navy-deep:#071522;
+    --teal:#1FADA6;
+    --gold:#D4AF37;
+    --coral:#FF6B5B;
+    --cream:#F4F1EA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(31,173,166,0.16), transparent 45%),
+      radial-gradient(circle at 90% 100%, rgba(212,175,55,0.14), transparent 45%),
+      var(--navy-deep);
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    padding:30px 16px 60px;
+  }
+
+  .wrap{ max-width:780px; margin:0 auto; }
+
+  .masthead{ text-align:center; margin-bottom:22px; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:0 0 8px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(32px,6vw,52px);
+    letter-spacing:.03em;
+    margin:0;
+    line-height:1;
+  }
+  h1 span{ color:var(--gold); }
+  .sub{
+    max-width:540px;
+    margin:12px auto 0;
+    font-size:13.5px;
+    color:#C9D3DE;
+    line-height:1.5;
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    align-items:start;
+    margin-top:10px;
+  }
+  @media (max-width:680px){ .layout{ grid-template-columns:1fr; } }
+
+  .wheel-panel{ text-align:center; }
+
+  .wheel-frame{
+    position:relative;
+    width:300px;
+    height:300px;
+    margin:0 auto 18px;
+  }
+  .pointer{
+    position:absolute;
+    top:-6px; left:50%;
+    transform:translateX(-50%);
+    width:0; height:0;
+    border-left:12px solid transparent;
+    border-right:12px solid transparent;
+    border-top:20px solid var(--gold);
+    z-index:5;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));
+  }
+  #wheelSvg{
+    width:300px; height:300px;
+    border-radius:50%;
+    border:4px solid var(--gold);
+    background:var(--navy);
+    transition:transform 3s cubic-bezier(.12,.66,.14,1);
+  }
+  .hub{
+    position:absolute;
+    top:50%; left:50%;
+    width:46px; height:46px;
+    margin:-23px 0 0 -23px;
+    border-radius:50%;
+    background:var(--cream);
+    border:3px solid var(--gold);
+    z-index:4;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:11px;
+    color:var(--navy);
+  }
+
+  .spin-btn{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px;
+    letter-spacing:.04em;
+    background:var(--coral);
+    color:#fff;
+    border:none;
+    padding:12px 34px;
+    border-radius:30px;
+    cursor:pointer;
+    box-shadow:0 6px 0 #B23A2E;
+    transition:transform .08s ease;
+  }
+  .spin-btn:active{ transform:translateY(4px); box-shadow:0 2px 0 #B23A2E; }
+  .spin-btn:disabled{ background:#5b6b7c; box-shadow:0 6px 0 #3f4a56; cursor:not-allowed; }
+
+  .slice-count{
+    margin-top:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--teal);
+    letter-spacing:.06em;
+  }
+
+  .call-panel{
+    background:linear-gradient(155deg,#0E2740,#0A1C2E);
+    border:1px solid rgba(212,175,55,0.35);
+    border-radius:16px;
+    padding:20px;
+  }
+
+  .current-call-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:8px;
+    text-align:center;
+  }
+  .current-call{
+    background:var(--cream);
+    color:var(--navy);
+    border-radius:12px;
+    padding:20px 14px;
+    text-align:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:23px;
+    line-height:1.1;
+    min-height:64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:16px;
+  }
+  .current-call .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--coral);
+    margin-bottom:4px;
+  }
+  .current-call.empty{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:#5b6b7c;
+    font-weight:500;
+  }
+
+  /* ---------- Redemption ticket (prizes only) ---------- */
+  .ticket-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed rgba(11,31,51,0.25);
+    width:100%;
+    text-align:left;
+  }
+  .ticket-row img.ticket-qr{
+    width:64px; height:64px;
+    border-radius:6px;
+    border:1px solid rgba(11,31,51,0.15);
+    flex-shrink:0;
+    background:#fff;
+  }
+  .ticket-info{ flex:1; min-width:0; }
+  .ticket-serial{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:.04em;
+  }
+  .ticket-note{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    color:#57687a;
+    line-height:1.4;
+    margin-top:2px;
+  }
+
+  .history-list li.ticket-row-li{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:4px;
+  }
+  .history-list li .hist-top{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:100%;
+  }
+  .history-list li .hist-ticket{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:2px;
+    padding-left:26px;
+  }
+  .history-list li .hist-ticket img{
+    width:34px; height:34px;
+    border-radius:4px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:#fff;
+  }
+  .history-list li .hist-serial{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--gold);
+    letter-spacing:.03em;
+  }
+
+  .history-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#9FB0C2;
+    margin-bottom:8px;
+  }
+  .history-list{
+    list-style:none;
+    margin:0; padding:0;
+    max-height:220px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .history-list li{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    color:var(--cream);
+    background:rgba(255,255,255,0.05);
+    border-radius:6px;
+    padding:6px 10px;
+  }
+  .history-list li .num{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--teal);
+    font-size:11px;
+    min-width:18px;
+  }
+  .history-empty{
+    font-size:12px;
+    color:#5b6b7c;
+    font-style:italic;
+  }
+
+  .reset-row{
+    text-align:center;
+    margin-top:20px;
+  }
+  .reset-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    color:var(--gold);
+    background:none;
+    border:1px solid rgba(212,175,55,.4);
+    padding:6px 16px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .reset-btn:hover{ background:rgba(212,175,55,.12); }
+
+  footer{
+    text-align:center;
+    margin-top:34px;
+    font-size:11px;
+    color:#5E718A;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  /* ---------- Countdown overlay ---------- */
+  #countdownOverlay{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(31,173,166,0.18), transparent 55%),
+      var(--navy-deep);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  #countdownOverlay.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+  .cd-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:0 0 6px;
+  }
+  .cd-line{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(20px,4vw,28px);
+    letter-spacing:.03em;
+    color:var(--cream);
+    margin:0 0 26px;
+  }
+  .cd-line span{ color:var(--gold); }
+  .cd-number{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(90px,26vw,160px);
+    line-height:1;
+    color:var(--gold);
+    text-shadow:0 0 30px rgba(212,175,55,.45);
+    animation:cdPulse 1s ease-in-out infinite;
+  }
+  .cd-number.urgent{
+    color:var(--coral);
+    text-shadow:0 0 34px rgba(255,107,91,.6);
+  }
+  @keyframes cdPulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.06); }
+  }
+  .cd-caption{
+    margin-top:22px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    color:#9FB0C2;
+    text-transform:uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div id="countdownOverlay">
+  <p class="cd-eyebrow">Global Citizens Community Center</p>
+  <p class="cd-line">Please line up — the <span>Global Goals Prize Wheel</span> starts in</p>
+  <div class="cd-number" id="cdNumber">60</div>
+  <p class="cd-caption" id="cdCaption">Get ready to spin</p>
+  <p class="cd-caption" style="margin-top:8px; opacity:.55;">(organizers: tap anywhere to skip)</p>
+</div>
+
+<div class="wrap">
+  <div class="masthead">
+    <p class="eyebrow">Global Citizens Community Center</p>
+    <h1>SPIN TO <span>WIN</span></h1>
+    <p class="sub">Prizes, the 17 Global Goals, and a few fun facts share the wheel — spin lands on one every time, and it can come up again for the next guest. Prize? You'll get a redemption ticket with a QR code — scan it to open the GCCC redemption form and claim. Global Goal or fact? Just read it out loud!</p>
+  </div>
+
+  <div class="layout">
+    <div class="wheel-panel">
+      <div class="wheel-frame">
+        <div class="pointer"></div>
+        <svg id="wheelSvg" viewBox="0 0 300 300"></svg>
+        <div class="hub">GCCC</div>
+      </div>
+      <button class="spin-btn" id="spinBtn">SPIN</button>
+      <div class="slice-count" id="sliceCount">items on the wheel</div>
+    </div>
+
+    <div class="call-panel">
+      <div class="current-call-label">Your Result</div>
+      <div class="current-call empty" id="currentCall">Press Spin to play</div>
+
+      <div class="history-label">Spin &amp; Redemption History (this session)</div>
+      <ul class="history-list" id="historyList">
+        <li class="history-empty">No spins yet</li>
+      </ul>
+
+      <div class="reset-row">
+        <button class="reset-btn" id="resetBtn">clear history</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>GCCC Global Goals Prize Wheel · globalcitizencommunitycenter.univer.se</footer>
+</div>
+
+<script>
+const PRIZES = [
+  // ---- Original prizes (unchanged) ----
+  { type:"prize", label:"Free Virtual GlowBag", full:"Free Virtual GlowBag (full bundle)", tag:"Prize!" },
+  { type:"prize", label:"GCCC Membership", full:"Free GCCC Membership", tag:"Prize!" },
+  { type:"prize", label:"Virtual Care Visit", full:"Free Virtual Care Visit", tag:"Prize!" },
+  { type:"prize", label:"Coding Class", full:"Free Coding Class", tag:"Prize!" },
+  { type:"prize", label:"Music & Journal Retreat", full:"GlowBag item: 5-Day Music & Journaling Retreat", tag:"Prize!" },
+  { type:"prize", label:"Meditation App Bundle", full:"GlowBag item: Meditation App Bundle", tag:"Prize!" },
+  { type:"prize", label:"Budgeting Toolkit", full:"GlowBag item: Budgeting Toolkit", tag:"Prize!" },
+  { type:"prize", label:"E-Book Library Access", full:"GlowBag item: Free E-Book Library Access", tag:"Prize!" },
+  { type:"prize", label:"AnnoD Music Gift", full:"GlowBag item: AnnoDominiNation Music Gift", tag:"Prize!" },
+  { type:"prize", label:"Magazine & Press", full:"GlowBag item: Global Citizens Magazine & Press", tag:"Prize!" },
+  { type:"prize", label:"Free Sponsorship", full:"Free Sponsorship", tag:"Prize!" },
+  { type:"prize", label:"ESL Class Seat", full:"Free ESL Class seat", tag:"Prize!" },
+  { type:"prize", label:"Job Readiness Workshop", full:"Free Job Readiness Workshop", tag:"Prize!" },
+  { type:"prize", label:"Youth Program Seat", full:"Free Youth Program seat", tag:"Prize!" },
+  { type:"prize", label:"Citizenship Prep", full:"Free Citizenship Prep session", tag:"Prize!" },
+  { type:"prize", label:"Priority Volunteer Day", full:"Priority Volunteer Day spot", tag:"Prize!" },
+  { type:"prize", label:"VIP Event Ticket", full:"VIP ticket to next Community Event", tag:"Prize!" },
+  { type:"prize", label:"Bake Sale Coupon", full:"Bake Sale treat coupon", tag:"Prize!" },
+  { type:"prize", label:"1:1 Mentorship", full:"1:1 Mentorship session", tag:"Prize!" },
+  { type:"prize", label:"Social Shoutout", full:"Social Media Shoutout / Partner Spotlight", tag:"Prize!" },
+
+  // ---- Fun fact / meme slice ----
+  { type:"fact", label:"Doomsday Clock ⏰", full:"The Doomsday Clock is at 85 seconds to midnight. Start a Sustainability Hour now!", tag:"Fact!" },
+
+  // ---- 17 Global Goals, each with the action needed ----
+  { type:"sdg", label:"Goal 1: No Poverty", full:"Goal 1 — No Poverty. Action needed: support access to basic income, aid, and resources for people in poverty.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 2: Zero Hunger", full:"Goal 2 — Zero Hunger. Action needed: back food security, nutrition, and sustainable agriculture.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 3: Good Health", full:"Goal 3 — Good Health & Well-Being. Action needed: promote healthy lives and well-being for people of all ages.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 4: Quality Education", full:"Goal 4 — Quality Education. Action needed: ensure inclusive, equitable education and lifelong learning for all.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 5: Gender Equality", full:"Goal 5 — Gender Equality. Action needed: empower women and girls and end gender-based discrimination.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 6: Clean Water", full:"Goal 6 — Clean Water & Sanitation. Action needed: ensure access to clean water and sanitation for everyone.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 7: Clean Energy", full:"Goal 7 — Affordable & Clean Energy. Action needed: expand access to affordable, reliable, renewable energy.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 8: Decent Work", full:"Goal 8 — Decent Work & Economic Growth. Action needed: promote inclusive employment and sustainable growth.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 9: Innovation", full:"Goal 9 — Industry, Innovation & Infrastructure. Action needed: invest in resilient infrastructure and innovation.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 10: Reduced Inequalities", full:"Goal 10 — Reduced Inequalities. Action needed: reduce inequality within and among communities and countries.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 11: Sustainable Cities", full:"Goal 11 — Sustainable Cities & Communities. Action needed: make cities inclusive, safe, and resilient.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 12: Responsible Consumption", full:"Goal 12 — Responsible Consumption & Production. Action needed: reduce waste and consume resources responsibly.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 13: Climate Action", full:"Goal 13 — Climate Action. Action needed: take urgent action to combat climate change and its impacts.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 14: Life Below Water", full:"Goal 14 — Life Below Water. Action needed: conserve oceans, seas, and marine resources.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 15: Life on Land", full:"Goal 15 — Life on Land. Action needed: protect ecosystems, forests, and biodiversity.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 16: Peace & Justice", full:"Goal 16 — Peace, Justice & Strong Institutions. Action needed: promote peaceful, just, and inclusive societies.", tag:"Global Goal!" },
+  { type:"sdg", label:"Goal 17: Partnerships", full:"Goal 17 — Partnerships for the Goals. Action needed: strengthen global partnerships for sustainable development.", tag:"Global Goal!" }
+];
+
+const SLICE_COLORS = {
+  prize: ["#0E2740", "#123048"],
+  sdg:   ["#123B3A", "#0F4A47"],
+  fact:  ["#7A2E24", "#8C3527"]
+};
+
+/* ---------- Redemption ticket helpers (prizes only) ---------- */
+const REDEMPTION_FORM_URL = "https://www.cognitoforms.com/gccc2/gcccprizeredemption3";
+
+function makeTicketSerial(){
+  const n = Math.floor(1000 + Math.random() * 9000);
+  return `GCC-${n}-PW`;
+}
+
+function qrImageUrl(data, size){
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data)}`;
+}
+
+function makeTicket(prizeLabel){
+  const serial = makeTicketSerial();
+  // Points at the GCCC redemption form on Cognito Forms — same form used by the
+  // Glow & Go scratch tickets. Enter the serial + prize name on the form to claim.
+  return { serial, qr: qrImageUrl(REDEMPTION_FORM_URL, 200) };
+}
+
+let history = [];
+let spinning = false;
+
+const svg = document.getElementById('wheelSvg');
+const spinBtn = document.getElementById('spinBtn');
+const currentCallEl = document.getElementById('currentCall');
+const historyListEl = document.getElementById('historyList');
+const sliceCountEl = document.getElementById('sliceCount');
+const resetBtn = document.getElementById('resetBtn');
+
+function polarToXY(cx, cy, r, angleDeg){
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+}
+
+function drawWheel(){
+  const cx = 150, cy = 150, r = 146;
+  const n = PRIZES.length;
+  svg.innerHTML = '';
+  const sliceAngle = 360 / n;
+  // font size shrinks as more slices are packed onto the wheel
+  const fontSize = n <= 20 ? 6.2 : (n <= 30 ? 5 : 4.3);
+  const textRadius = r * 0.62;
+  // rough max readable width for a slice at that radius (90% of the chord)
+  const maxWidth = 2 * textRadius * Math.sin((sliceAngle/2) * Math.PI/180) * 0.92;
+
+  for(let i=0;i<n;i++){
+    const item = PRIZES[i];
+    const colors = SLICE_COLORS[item.type] || SLICE_COLORS.prize;
+    const startAngle = i * sliceAngle;
+    const endAngle = startAngle + sliceAngle;
+    const [x1,y1] = polarToXY(cx,cy,r,startAngle);
+    const [x2,y2] = polarToXY(cx,cy,r,endAngle);
+    const largeArc = sliceAngle > 180 ? 1 : 0;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+    path.setAttribute('d', d);
+    path.setAttribute('fill', colors[i % 2]);
+    path.setAttribute('stroke', '#D4AF37');
+    path.setAttribute('stroke-width', '0.6');
+    svg.appendChild(path);
+
+    const midAngle = startAngle + sliceAngle/2;
+    const [tx,ty] = polarToXY(cx,cy, textRadius, midAngle);
+    const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x', tx); text.setAttribute('y', ty);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('dominant-baseline','middle');
+    text.setAttribute('fill', '#F4F1EA');
+    text.setAttribute('font-family', 'Inter, sans-serif');
+    text.setAttribute('font-weight', '600');
+    text.setAttribute('font-size', fontSize);
+    text.setAttribute('transform', `rotate(${midAngle}, ${tx}, ${ty})`);
+    text.textContent = item.label;
+    svg.appendChild(text);
+
+    // compress long labels so they never spill into the next slice
+    const measured = text.getComputedTextLength();
+    if(measured > maxWidth){
+      text.setAttribute('textLength', maxWidth);
+      text.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+    }
+  }
+}
+
+function renderHistory(){
+  if(history.length === 0){
+    historyListEl.innerHTML = '<li class="history-empty">No spins yet</li>';
+    return;
+  }
+  historyListEl.innerHTML = history.map((item, idx) => {
+    if(item.ticket){
+      return `<li class="ticket-row-li">
+        <div class="hist-top"><span class="num">${idx+1}.</span>${item.text}</div>
+        <div class="hist-ticket">
+          <img src="${item.ticket.qr}" alt="Redemption QR for ${item.ticket.serial}">
+          <span class="hist-serial">${item.ticket.serial}</span>
+        </div>
+      </li>`;
+    }
+    return `<li><span class="num">${idx+1}.</span>${item.text}</li>`;
+  }).reverse().join('');
+}
+
+function spin(){
+  if(spinning) return;
+  spinning = true;
+  spinBtn.disabled = true;
+
+  const n = PRIZES.length;
+  const chosenIndex = Math.floor(Math.random() * n);
+  const sliceAngle = 360 / n;
+  const centerAngle = sliceAngle * (chosenIndex + 0.5);
+
+  svg.style.transition = 'none';
+  svg.style.transform = 'rotate(0deg)';
+  void svg.offsetWidth;
+
+  const spins = 5;
+  const targetRotation = spins*360 + (360 - centerAngle);
+
+  requestAnimationFrame(()=>{
+    svg.style.transition = 'transform 3s cubic-bezier(.12,.66,.14,1)';
+    svg.style.transform = `rotate(${targetRotation}deg)`;
+  });
+
+  setTimeout(()=>{
+    const chosen = PRIZES[chosenIndex];
+    const isPrize = chosen.type === 'prize';
+    const ticket = isPrize ? makeTicket(chosen.full) : null;
+
+    history.push({ text: chosen.full, ticket });
+
+    currentCallEl.classList.remove('empty');
+    let html = `<div class="tag">${chosen.tag || 'Winner!'}</div>${chosen.full}`;
+    if(ticket){
+      html += `
+        <div class="ticket-row">
+          <img class="ticket-qr" src="${ticket.qr}" alt="Redemption QR for ${ticket.serial}">
+          <div class="ticket-info">
+            <div class="ticket-serial">${ticket.serial}</div>
+            <div class="ticket-note">Scan to open the GCCC redemption form — enter this ticket's serial number to claim your prize.</div>
+          </div>
+        </div>`;
+    }
+    currentCallEl.innerHTML = html;
+    renderHistory();
+
+    svg.style.transition = 'none';
+    svg.style.transform = 'rotate(0deg)';
+    drawWheel();
+
+    spinning = false;
+    spinBtn.disabled = false;
+  }, 3100);
+}
+
+function resetHistory(){
+  history = [];
+  currentCallEl.classList.add('empty');
+  currentCallEl.textContent = 'Press Spin to play';
+  renderHistory();
+}
+
+spinBtn.addEventListener('click', spin);
+resetBtn.addEventListener('click', resetHistory);
+
+drawWheel();
+sliceCountEl.textContent = `${PRIZES.length} items on the wheel`;
+
+/* ---------- 60-second lineup countdown ---------- */
+(function startCountdown(){
+  const overlay = document.getElementById('countdownOverlay');
+  const numberEl = document.getElementById('cdNumber');
+  const captionEl = document.getElementById('cdCaption');
+  let secondsLeft = 60;
+
+  const captions = [
+    'Get ready to spin',
+    'Round up your group',
+    'Eyes on the wheel',
+    'Almost time to play'
+  ];
+
+  function render(){
+    numberEl.textContent = secondsLeft;
+    numberEl.classList.toggle('urgent', secondsLeft <= 10);
+    if(secondsLeft === 45) captionEl.textContent = captions[1];
+    if(secondsLeft === 25) captionEl.textContent = captions[2];
+    if(secondsLeft === 10) captionEl.textContent = captions[3];
+  }
+
+  render();
+  const timer = setInterval(()=>{
+    secondsLeft -= 1;
+    if(secondsLeft <= 0){
+      clearInterval(timer);
+      numberEl.textContent = '0';
+      captionEl.textContent = "Let's go!";
+      setTimeout(()=>{ overlay.classList.add('hidden'); }, 500);
+      return;
+    }
+    render();
+  }, 1000);
+
+  // let organizers skip the wait by tapping the overlay
+  overlay.addEventListener('click', ()=>{
+    clearInterval(timer);
+    overlay.classList.add('hidden');
+  });
+})();
+</script>
+
+</body>
+</html>
