@@ -4,20 +4,29 @@
    script you run yourself, not something in auth.js.
 
    SETUP (one-time):
-     1. npm install firebase-admin
-     2. Firebase Console → Project Settings → Service Accounts →
+     1. npm install firebase-admin */
+     
+     var admin = require("firebase-admin");
+
+var serviceAccount = require("path/to/serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+    /* 2. Firebase Console → Project Settings → Service Accounts →
         "Generate new private key" → save the JSON file somewhere safe,
         OUTSIDE your public repo (never commit it).
-     3. Set an env var pointing to it:
+     3. Set an env var pointing to it: */
           export GOOGLE_APPLICATION_CREDENTIALS="/path/to/serviceAccountKey.json"
 
-   USAGE:
+   /*USAGE:*/
      node set-user-role.js rmwrosewilliams@gmail.com admin
      node set-user-role.js rosewilliams@sffeep.org staff
      node set-user-role.js globalcitizenscommunitycenter@gmail.com security
      node set-user-role.js someone@gccc.org --remove   (clears the role claim)
 
-   After running this, the user must sign out and back in (or wait for their
+   /*  After running this, the user must sign out and back in (or wait for their
    ID token to refresh — auth.js forces a refresh on every load, so a normal
    page reload after a few minutes also works). */
 
