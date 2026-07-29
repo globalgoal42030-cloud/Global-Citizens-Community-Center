@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GloMart — Global Market — GCCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Serif+Display&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="gccc.css"/>
+<style>:root{--accent:#E879F9;}</style>
+</head>
+<body><nav id="site-nav">
+  <a class="nav-logo-word" href="index.html">
+    <span class="nav-logo-globe">🌍</span>
+    GCCC
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#rooms">Rooms</a></li>
+    <li><a href="index.html#goals">Global Goals</a></li>
+    <li><a href="index.html#campaigns">Take Action</a></li>
+    <li><a href="index.html#membership">Membership</a></li>
+    <li><a href="dashboard.html">My Dashboard</a></li>
+    <li><a href="login.html" class="nav-cta">Sign In</a></li>
+  </ul>
+  <div class="nav-hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<main>
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-inner" style="max-width:1200px;margin:0 auto;">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>/</span>
+        <a href="index.html#rooms">Rooms</a><span>/</span>
+        GloMart — Global Market
+      </div>
+      <div class="page-hero-label">Community Marketplace</div>
+      <h1>🛒 <em>GloMart — Global Market</em></h1>
+      <p class="page-hero-desc">Community marketplace featuring mission-aligned products, services, and businesses. Buy, sell, and support fellow global citizens building economic power.</p>
+      <a class="btn-primary" href="#offerings">Visit GloMart</a>
+      &nbsp;&nbsp;
+      <a class="btn-outline" href="#lets-trade">🤝 Let's Trade</a>
+      &nbsp;&nbsp;
+      <a class="btn-outline" href="index.html#rooms">All Rooms</a>
+    </div>
+    <div class="page-hero-accent">🛒</div>
+  </div>
+
+  <section class="section" style="background:var(--navy2);" id="country-explorer-section">
+    <div class="section-inner">
+      <div class="section-label">Explore Globally</div>
+      <h2 class="section-title">Browse by UN Member State</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Find local partners, SDG progress snapshots, and points of contact for the GloMart across all 193 UN member states.</p>
+      <div class="country-explorer-search-row">
+        <input type="text" class="country-explorer-search" id="country-explorer-search" placeholder="Search countries…" autocomplete="off"/>
+        <div class="country-explorer-count" id="country-explorer-count"></div>
+      </div>
+      <div class="country-explorer-grid" id="country-explorer-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--navy);" id="offerings">
+    <div class="section-inner">
+      <div class="section-label">What We Offer</div>
+      <h2 class="section-title">Inside the GloMart — Global Market</h2>
+      <div class="divider"></div>
+      <p class="section-sub">GloMart is the GCCC's community economic engine. A marketplace where mission-driven businesses, artisans, service providers, and entrepreneurs from across the global community connect with buyers who share their values.</p>
+      <div class="feature-grid"><div class="feature-card" style="--accent:#E879F9;">
+      <div class="feature-icon">🛍️</div>
+      <div class="feature-title">Sell Your Products</div>
+      <div class="feature-desc">List physical goods, digital products, handmade items, and community-made merchandise — reaching the entire GCCC membership base.</div>
+    </div><div class="feature-card" style="--accent:#E879F9;">
+      <div class="feature-icon">💼</div>
+      <div class="feature-title">Offer Your Services</div>
+      <div class="feature-desc">Freelancers, consultants, tutors, and professionals can list their services and connect with clients inside the GCCC community.</div>
+    </div><div class="feature-card" style="--accent:#E879F9;">
+      <div class="feature-icon">🌱</div>
+      <div class="feature-title">Mission-Aligned Vetting</div>
+      <div class="feature-desc">All GloMart vendors are reviewed for alignment with GCCC values and UN SDG commitments — community trust is our baseline.</div>
+    </div><div class="feature-card" style="--accent:#E879F9;">
+      <div class="feature-icon">🌍</div>
+      <div class="feature-title">Global Reach, Local Impact</div>
+      <div class="feature-desc">Products and services ship, stream, or connect worldwide — while keeping economic value circulating within the community.</div>
+    </div><div class="feature-card" style="--accent:#E879F9;">
+      <div class="feature-icon">💳</div>
+      <div class="feature-title">Community Currency</div>
+      <div class="feature-desc">GCCC members earn and spend community credits that unlock discounts, feature placements, and exclusive GloMart benefits.</div>
+    </div><div class="feature-card" style="--accent:#E879F9;">
+      <div class="feature-icon">📦</div>
+      <div class="feature-title">Storefront Setup Support</div>
+      <div class="feature-desc">Need help setting up your store? The Business Lounge and Dev Dojo teams can help you build your GloMart presence.</div>
+    </div></div>
+      
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--navy2);">
+    <div class="section-inner">
+      <div class="section-label">Resources &amp; Access</div>
+      <h2 class="section-title">Get Started</h2>
+      <div class="divider"></div>
+      <div class="resource-list"><a class="resource-item" href="#offerings">
+      <div class="resource-item-icon">🛒</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">GloMart Portal</div>
+        <div class="resource-item-desc">Browse the marketplace and open your store</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="room-business-lounge.html" target="_blank" rel="noopener">
+      <div class="resource-item-icon">💼</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">Business Lounge</div>
+        <div class="resource-item-desc">Get business support and funding connections</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="https://etsy.com" target="_blank" rel="noopener">
+      <div class="resource-item-icon">💸</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">Etsy for Handmade Goods</div>
+        <div class="resource-item-desc">Additional marketplace platform for community artisans</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="https://bcorporation.net" target="_blank" rel="noopener">
+      <div class="resource-item-icon">🌱</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">B Corp Certification</div>
+        <div class="resource-item-desc">Become a certified mission-driven business</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--navy);" id="lets-trade">
+    <div class="section-inner">
+      <div class="section-label">Community Exchange</div>
+      <h2 class="section-title">🤝 Let's Trade — No Cash Needed</h2>
+      <div class="divider"></div>
+      <p class="section-sub">GCCC now accepts <strong style="color:var(--chalk);">bartering</strong> — trade your time, skill, or service with the community center and with fellow members. Offer what you've got, get matched, and redeem what you need from the list below.</p>
+      <div class="feature-grid">
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">👥</div>
+          <div class="feature-title">Free Staffing Services</div>
+          <div class="feature-desc">Emergency Services — short-term staffing support for members in need.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🎫</div>
+          <div class="feature-title">Free GCCC Membership</div>
+          <div class="feature-desc">Home Town Heroes tier, included as part of any trade.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">📰</div>
+          <div class="feature-title">Resource Newsletter</div>
+          <div class="feature-desc">Magazine &amp; Press — curated community resources, every Monday.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">💻</div>
+          <div class="feature-title">Free Coding Classes</div>
+          <div class="feature-desc">Dev Dojo — beginner to intermediate programming instruction.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🧸</div>
+          <div class="feature-title">Free Online Preschool</div>
+          <div class="feature-desc">Learning Center — early-childhood classes, taught virtually.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">💰</div>
+          <div class="feature-title">Funding &amp; Business Mentorship</div>
+          <div class="feature-desc">Business Lounge — trade your time for funding leads and 1:1 mentorship.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🖥️</div>
+          <div class="feature-title">Full Website Design</div>
+          <div class="feature-desc">Dev Dojo — full site build, back office, and ongoing tech support.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🧘</div>
+          <div class="feature-title">Wellness &amp; Mindfulness</div>
+          <div class="feature-desc">Health &amp; Wellness — guided sessions for members and family.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">⚖️</div>
+          <div class="feature-title">Legal &amp; Benefits Referrals</div>
+          <div class="feature-desc">Global Counsel — connections to legal and benefits support.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🗣️</div>
+          <div class="feature-title">Language Exchange</div>
+          <div class="feature-desc">Global Cafe — conversation meetups across the GCCC community.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🧓</div>
+          <div class="feature-title">Virtual Adult Day Care</div>
+          <div class="feature-desc">Emergency Services — daytime virtual check-ins and support.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🌙</div>
+          <div class="feature-title">Virtual Adult Night Care</div>
+          <div class="feature-desc">Emergency Services — overnight virtual check-ins and support.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🧒</div>
+          <div class="feature-title">Virtual Child Day Care</div>
+          <div class="feature-desc">Learning Center — daytime virtual childcare supervision.</div>
+        </div>
+        <div class="feature-card" style="--accent:#FF6B6B;">
+          <div class="feature-icon">🌜</div>
+          <div class="feature-title">Virtual Child Night Care</div>
+          <div class="feature-desc">Learning Center — overnight virtual childcare supervision.</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <a class="btn-primary" href="membership-intake.html">Join Now to Start Trading</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--slate);padding:64px 48px;text-align:center;">
+    <div style="max-width:600px;margin:0 auto;">
+      <div class="section-label" style="justify-content:center;display:block;">Ready to Enter?</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,48px);letter-spacing:.03em;color:var(--chalk);margin-bottom:14px;">Join the GloMart — Global Market</h2>
+      <p style="font-size:15px;color:var(--mist);margin-bottom:28px;line-height:1.7;">Membership is free to start. Sign in or create your GCCC account to access all room features and resources.</p>
+      <a class="btn-primary" href="membership-intake.html" style="margin-right:12px;">Join Now</a>
+      <a class="btn-outline" href="login.html">Sign In</a>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-word">GCCC</div>
+      <div class="footer-tagline">Global Citizens Community Center — building bridges across 193 nations through education, community, and action.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Rooms</h4>
+      <a href="room-learning-center.html">Learning Center</a>
+      <a href="room-business-lounge.html">Business Lounge</a>
+      <a href="room-global-cafe.html">Global Cafe</a>
+      <a href="room-freedom-cove.html">Freedom Cove</a>
+      <a href="room-health-spa.html">Health &amp; Wellness</a>
+      <a href="room-dev-dojo.html">Dev Dojo</a>
+    </div>
+    <div class="footer-col">
+      <h4>More Rooms</h4>
+      <a href="room-emergency-services.html">Emergency Services</a>
+      <a href="room-magazine.html">Magazine &amp; Press</a>
+      <a href="room-studio.html">Studio</a>
+      <a href="room-global-counsel.html">Global Counsel</a>
+      <a href="room-glomart.html">GloMart</a>
+      <a href="room-global-exchange.html">Global Exchange</a>
+      <a href="room-ministry.html">Ministry</a>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <a href="login.html">Sign In</a>
+      <a href="membership-intake.html">Join Free</a>
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="index.html#membership">Membership Levels</a>
+      <a href="index.html#summit">Global Summit</a>
+      <a href="index.html#donate">Donate</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Global Citizens Community Center. All rights reserved.</div>
+    <div class="footer-sdg-badge">Aligned with all 17 UN SDGs</div>
+  </div>
+</footer>
+<div class="country-modal-overlay" id="country-modal">
+  <div class="country-modal">
+    <button class="country-modal-close" id="country-modal-close" aria-label="Close">✕</button>
+    <div class="country-modal-flag" id="country-modal-flag"></div>
+    <div class="country-modal-name" id="country-modal-name"></div>
+    <div class="country-modal-section">
+      <h4>Local Partners</h4>
+      <p id="country-modal-partners"></p>
+    </div>
+    <div class="country-modal-section">
+      <h4>SDG Stats</h4>
+      <p id="country-modal-stats"></p>
+    </div>
+    <div class="country-modal-section">
+      <h4>Local Contacts</h4>
+      <p id="country-modal-contacts"></p>
+    </div>
+  </div>
+</div>
+<script>
+  window.ROOM_NAME = "GloMart";
+  // Fill in per-country overrides here, keyed by ISO 3166-1 alpha-2 code:
+  // window.ROOM_COUNTRY_DATA = { AF: { partners:"...", stats:"...", contacts:"..." } };
+  window.ROOM_COUNTRY_DATA = {};
+</script>
+<script src="countries-data.js"></script>
+<script src="country-explorer.js"></script>
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('site-nav').classList.toggle('scrolled',window.scrollY>40);
+});
+</script>
+</body>
+</html>

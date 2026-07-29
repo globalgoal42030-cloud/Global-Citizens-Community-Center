@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membership, Sponsorship &amp; Donation Application — Global Citizens Community Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#050d1a; --navy2:#0d1a2e; --teal:#00D4B4; --gold:#FFD166;
+    --chalk:#f4f6f8; --mist:#8b93a1;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--navy);color:var(--chalk);font-family:'Inter',sans-serif;min-height:100vh;padding:56px 20px 80px;}
+  .wrap{max-width:640px;margin:0 auto;}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:0.12em;color:var(--teal);text-transform:uppercase;margin-bottom:10px;}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,6vw,48px);margin:0 0 12px;line-height:1.05;}
+  .sub{color:var(--mist);font-size:14.5px;line-height:1.6;margin-bottom:36px;max-width:520px;}
+  .tier-banner{background:var(--navy2);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px 20px;margin-bottom:32px;font-size:14px;color:var(--chalk);}
+  .tier-banner strong{color:var(--teal);}
+  form{background:var(--navy2);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:32px;}
+  label{display:block;font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--mist);margin-bottom:6px;}
+  .field{margin-bottom:20px;}
+  .field.hidden{display:none;}
+  input, select, textarea{
+    width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);
+    border-radius:8px;padding:12px 14px;color:var(--chalk);font-family:'Inter',sans-serif;font-size:14px;
+  }
+  select option{background:var(--navy);color:var(--chalk);}
+  input:focus, select:focus, textarea:focus{outline:none;border-color:var(--teal);}
+
+  /* ─── Payment gate (shown pre-submit for paid categories) ─── */
+  .payment-gate{display:none;background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.35);border-radius:10px;padding:20px;margin-bottom:24px;}
+  .payment-gate.show{display:block;}
+  .payment-gate h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.02em;margin:0 0 8px;color:var(--gold);}
+  .payment-gate p{font-size:13px;color:var(--mist);line-height:1.6;margin:0 0 16px;}
+  .pay-btn{display:inline-block;background:var(--gold);color:var(--navy);font-weight:700;font-size:14px;padding:12px 24px;border-radius:8px;text-decoration:none;margin-bottom:16px;}
+  .pay-btn:hover{background:#ffdd8a;}
+  .confirm-row{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--chalk);line-height:1.5;}
+  .confirm-row input{width:auto;margin-top:2px;accent-color:var(--teal);}
+
+  .submit-btn{
+    width:100%;border:none;background:var(--teal);color:var(--navy);font-weight:700;font-size:15px;
+    padding:14px 24px;border-radius:8px;cursor:pointer;margin-top:8px;
+  }
+  .submit-btn:hover{background:#00FFDF;}
+  .submit-btn:disabled{background:rgba(255,255,255,0.1);color:var(--mist);cursor:not-allowed;}
+  .submit-note{font-size:12px;color:var(--mist);margin-top:10px;text-align:center;display:none;}
+  .submit-note.show{display:block;}
+
+  .step2{display:none;background:var(--navy2);border:1px solid rgba(0,212,180,0.35);border-radius:14px;padding:32px;margin-top:24px;text-align:center;}
+  .step2.show{display:block;}
+  .step2 h2{font-family:'Bebas Neue',sans-serif;font-size:28px;margin:0 0 10px;color:var(--teal);}
+  .step2 p{color:var(--mist);font-size:14px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Global Citizens Community Center</div>
+  <h1>Join, Sponsor, Donate, or Intern</h1>
+  <p class="sub">Tell us a bit about yourself and choose what you're here for. Paid categories ask you to complete payment before you submit; free categories (like Home Town Heroes membership or an internship application) submit right away.</p>
+
+  <div class="tier-banner" id="tierBanner">Selected: <strong id="tierName">Home Town Heroes (Free Membership)</strong></div>
+
+  <form id="intakeForm" action="https://formspree.io/f/mqernvwd" method="POST">
+    <input type="hidden" name="Category" id="tierField" value="Home Town Heroes (Free Membership)">
+    <input type="hidden" name="_subject" id="subjectField" value="New GCCC Application — Home Town Heroes (Free Membership)">
+
+    <div class="field">
+      <label for="tierSelect">I'm here to</label>
+      <select id="tierSelect">
+        <optgroup label="Membership">
+          <option value="home-town-heroes">Home Town Heroes — Free Membership</option>
+          <option value="community-leaders">Community Leaders — $15/month Membership</option>
+          <option value="global-ambassadors">Global Ambassadors — $40/month Membership</option>
+          <option value="org-membership">Organization Membership — $1,200/year</option>
+        </optgroup>
+        <optgroup label="Give">
+          <option value="sponsor">Become a Sponsor</option>
+          <option value="donor">Make a Donation</option>
+        </optgroup>
+        <optgroup label="Get Involved">
+          <option value="intern">Apply for an Internship</option>
+          <option value="volunteer">Sign Up to Volunteer</option>
+        </optgroup>
+        <optgroup label="Events &amp; Programs">
+          <option value="sgt-tour">Sustainability Global Tour</option>
+          <option value="summit-2026">Global Summit 2026</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="Full Name" required>
+    </div>
+    <div class="field">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="field">
+      <label for="phone">Phone (optional)</label>
+      <input type="tel" id="phone" name="Phone">
+    </div>
+    <div class="field">
+      <label for="org">Organization / School (if applicable)</label>
+      <input type="text" id="org" name="Organization">
+    </div>
+    <div class="field hidden" id="amountField">
+      <label for="amount">Amount (optional — helps us follow up accurately)</label>
+      <input type="text" id="amount" name="Amount" placeholder="e.g. $250, or 'monthly $15'">
+    </div>
+    <div class="field hidden" id="volunteerField">
+      <label for="volunteerInterest">Areas of interest / availability (optional)</label>
+      <input type="text" id="volunteerInterest" name="Volunteer Interest" placeholder="e.g. weekends, ESL tutoring, event setup">
+    </div>
+    <div class="field hidden" id="sgtTeamField">
+      <label for="sgtTeam">Choose your SDG Team</label>
+      <select id="sgtTeam" name="SGT Team">
+        <option value="">Select your team (SDG 1–17)…</option>
+        <option value="1">Team 1 — No Poverty</option>
+        <option value="2">Team 2 — Zero Hunger</option>
+        <option value="3">Team 3 — Good Health &amp; Well-Being</option>
+        <option value="4">Team 4 — Quality Education</option>
+        <option value="5">Team 5 — Gender Equality</option>
+        <option value="6">Team 6 — Clean Water &amp; Sanitation</option>
+        <option value="7">Team 7 — Affordable &amp; Clean Energy</option>
+        <option value="8">Team 8 — Decent Work &amp; Economic Growth</option>
+        <option value="9">Team 9 — Industry, Innovation &amp; Infrastructure</option>
+        <option value="10">Team 10 — Reduced Inequalities</option>
+        <option value="11">Team 11 — Sustainable Cities &amp; Communities</option>
+        <option value="12">Team 12 — Responsible Consumption &amp; Production</option>
+        <option value="13">Team 13 — Climate Action</option>
+        <option value="14">Team 14 — Life Below Water</option>
+        <option value="15">Team 15 — Life on Land</option>
+        <option value="16">Team 16 — Peace, Justice &amp; Strong Institutions</option>
+        <option value="17">Team 17 — Partnerships for the Goals</option>
+      </select>
+    </div>
+    <div class="field hidden" id="sgtInterestsField">
+      <label>I want to (select all that apply)</label>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--chalk);text-transform:none;font-weight:500;letter-spacing:normal;cursor:pointer;"><input type="checkbox" name="SGT Interests" value="Participate in the Global Race" style="width:auto;accent-color:var(--teal);"> Participate in the Global Race (7 continents, 7 days)</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--chalk);text-transform:none;font-weight:500;letter-spacing:normal;cursor:pointer;"><input type="checkbox" name="SGT Interests" value="Host a bake sale fundraiser" style="width:auto;accent-color:var(--teal);"> Host a No-Bake Vegan GF Bake Sale fundraiser</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--chalk);text-transform:none;font-weight:500;letter-spacing:normal;cursor:pointer;"><input type="checkbox" name="SGT Interests" value="Volunteer / help organize locally" style="width:auto;accent-color:var(--teal);"> Volunteer / help organize locally</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--chalk);text-transform:none;font-weight:500;letter-spacing:normal;cursor:pointer;"><input type="checkbox" name="SGT Interests" value="Receive updates" style="width:auto;accent-color:var(--teal);"> Receive updates &amp; launch announcements</label>
+      </div>
+    </div>
+    <div class="field hidden" id="summitInterestField">
+      <label for="summitInterest">I'm interested in</label>
+      <select id="summitInterest" name="Summit Interest">
+        <option value="">Select one…</option>
+        <option value="Attending">Attending</option>
+        <option value="Speaking">Speaking / Presenting</option>
+        <option value="Sponsoring">Sponsoring / Partnering</option>
+        <option value="Media">Media / Press</option>
+        <option value="Volunteering">Volunteering at the Summit</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="notes">Anything else we should know?</label>
+      <textarea id="notes" name="Notes" rows="3"></textarea>
+    </div>
+
+    <div class="payment-gate" id="paymentGate">
+      <h3>Complete payment first</h3>
+      <p id="paymentGateCopy">This category requires payment via PayPal before you can submit. Click below to pay, then check the confirmation box to unlock Submit.</p>
+      <a href="https://www.paypal.com/paypalme/globalcitizens30" target="_blank" rel="noopener" class="pay-btn" id="payBtn">Pay via PayPal →</a>
+      <div class="confirm-row">
+        <input type="checkbox" id="paymentConfirmed" name="Payment Confirmed">
+        <label for="paymentConfirmed" style="display:inline;text-transform:none;font-weight:500;font-size:13px;letter-spacing:normal;color:var(--chalk);">I've completed my payment via PayPal for this amount.</label>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Submit Application</button>
+    <p class="submit-note" id="submitNote">Complete payment and check the confirmation box above to enable Submit.</p>
+  </form>
+
+  <div class="step2" id="confirmStep">
+    <h2 id="confirmHeadline">You're in!</h2>
+    <p id="confirmCopy">Check your inbox for a welcome email confirming your access and next steps.</p>
+  </div>
+</div>
+
+<script>
+  const CATEGORIES = {
+    'home-town-heroes': { name: 'Home Town Heroes — Free Membership', paymentRequired: false, confirmHeadline: "You're in — free of charge.", confirmCopy: 'No payment needed for Home Town Heroes membership. Check your inbox for a welcome email confirming your access and benefits.' },
+    'community-leaders': { name: 'Community Leaders — $15/month Membership', paymentRequired: true, gateCopy: 'Community Leaders is a $15/month membership. Complete your first payment via PayPal, then check the box below to unlock Submit.', confirmHeadline: "You're a Community Leader.", confirmCopy: 'Thanks for your payment. Keep an eye on your inbox for your welcome email and membership details.' },
+    'global-ambassadors': { name: 'Global Ambassadors — $40/month Membership', paymentRequired: true, gateCopy: 'Global Ambassadors is a $40/month membership. Complete your first payment via PayPal, then check the box below to unlock Submit.', confirmHeadline: "Welcome, Global Ambassador.", confirmCopy: 'Thanks for your payment. Keep an eye on your inbox for your welcome email and membership details.' },
+    'org-membership': { name: 'Organization Membership — $1,200/year', paymentRequired: true, gateCopy: 'Organization Membership is $1,200/year. Complete your payment via PayPal, then check the box below to unlock Submit.', confirmHeadline: "You're an Org Member.", confirmCopy: 'Thanks for your payment. Keep an eye on your inbox for your welcome email and membership details.' },
+    'sponsor': { name: 'Sponsor', paymentRequired: true, gateCopy: "Enter your sponsorship amount above, complete payment via PayPal for that amount, then check the box below to unlock Submit.", confirmHeadline: 'Thank you for sponsoring GCCC!', confirmCopy: "We've received your sponsorship submission. Our team will follow up by email with your sponsor benefits and recognition details." },
+    'donor': { name: 'Donor / One-Time Donation', paymentRequired: true, gateCopy: "Enter your donation amount above, complete payment via PayPal for that amount, then check the box below to unlock Submit.", confirmHeadline: 'Thank you for your donation!', confirmCopy: "We've received your donation submission. Check your inbox for a receipt and thank-you note." },
+    'intern': { name: 'Internship Application', paymentRequired: false, confirmHeadline: "Application received!", confirmCopy: "Thanks for applying to intern with GCCC. Our team will review your application and follow up by email." },
+    'volunteer': { name: 'Volunteer Sign-Up', paymentRequired: false, confirmHeadline: "Thanks for signing up to volunteer!", confirmCopy: "We've received your volunteer sign-up. Our team will follow up by email with next steps and opportunities that match your interests." },
+    'sgt-tour': { name: 'Sustainability Global Tour', paymentRequired: false, confirmHeadline: "You're on the team! 🌍", confirmCopy: "Thanks for joining the Sustainability Global Tour — 7 continents, 7 days, one planet to save. Check your inbox for details." },
+    'summit-2026': { name: 'Global Summit 2026', paymentRequired: false, confirmHeadline: "You're on the list!", confirmCopy: "We'll email you as Global Summit 2026 details are confirmed." }
+  };
+
+  const tierSelect = document.getElementById('tierSelect');
+  const tierName = document.getElementById('tierName');
+  const tierField = document.getElementById('tierField');
+  const subjectField = document.getElementById('subjectField');
+  const amountField = document.getElementById('amountField');
+  const volunteerField = document.getElementById('volunteerField');
+  const sgtTeamField = document.getElementById('sgtTeamField');
+  const sgtTeam = document.getElementById('sgtTeam');
+  const sgtInterestsField = document.getElementById('sgtInterestsField');
+  const summitInterestField = document.getElementById('summitInterestField');
+  const summitInterest = document.getElementById('summitInterest');
+  const paymentGate = document.getElementById('paymentGate');
+  const paymentGateCopy = document.getElementById('paymentGateCopy');
+  const paymentConfirmed = document.getElementById('paymentConfirmed');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitNote = document.getElementById('submitNote');
+
+  function refreshForCategory(){
+    const key = CATEGORIES[tierSelect.value] ? tierSelect.value : 'home-town-heroes';
+    const cat = CATEGORIES[key];
+
+    tierName.textContent = cat.name;
+    tierField.value = cat.name;
+    subjectField.value = 'New GCCC Application — ' + cat.name;
+
+    amountField.classList.toggle('hidden', !(key === 'sponsor' || key === 'donor'));
+    volunteerField.classList.toggle('hidden', key !== 'volunteer');
+    sgtTeamField.classList.toggle('hidden', key !== 'sgt-tour');
+    sgtInterestsField.classList.toggle('hidden', key !== 'sgt-tour');
+    summitInterestField.classList.toggle('hidden', key !== 'summit-2026');
+
+    sgtTeam.required = (key === 'sgt-tour');
+    summitInterest.required = (key === 'summit-2026');
+
+    if (cat.paymentRequired){
+      paymentGate.classList.add('show');
+      paymentGateCopy.textContent = cat.gateCopy;
+      paymentConfirmed.checked = false;
+      submitBtn.disabled = true;
+      submitNote.classList.add('show');
+    } else {
+      paymentGate.classList.remove('show');
+      submitBtn.disabled = false;
+      submitNote.classList.remove('show');
+    }
+  }
+
+  paymentConfirmed.addEventListener('change', function(){
+    submitBtn.disabled = !paymentConfirmed.checked;
+  });
+
+  tierSelect.addEventListener('change', refreshForCategory);
+
+  // Pre-select from ?tier= query param (backwards compatible with existing links)
+  const params = new URLSearchParams(window.location.search);
+  const paramTier = params.get('tier');
+  if (paramTier && CATEGORIES[paramTier]){
+    tierSelect.value = paramTier;
+  }
+  refreshForCategory();
+
+  document.getElementById('intakeForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const key = CATEGORIES[tierSelect.value] ? tierSelect.value : 'home-town-heroes';
+    const cat = CATEGORIES[key];
+
+    if (cat.paymentRequired && !paymentConfirmed.checked){
+      submitNote.classList.add('show');
+      paymentGate.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const form = e.target;
+    const data = new FormData(form);
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      form.style.display = 'none';
+      document.getElementById('tierBanner').style.display = 'none';
+      document.getElementById('confirmHeadline').textContent = cat.confirmHeadline;
+      document.getElementById('confirmCopy').textContent = cat.confirmCopy;
+      document.getElementById('confirmStep').classList.add('show');
+    }).catch(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Application';
+      alert('Something went wrong submitting the form. Please check your connection and try again, or email rosewilliams@sffeep.org directly.');
+    });
+  });
+</script>
+</body>
+</html>

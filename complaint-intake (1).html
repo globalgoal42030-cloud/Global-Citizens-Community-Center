@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complaint Intake &amp; Referral Form — Global Citizens Community Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#050d1a; --navy2:#0d1a2e; --teal:#00D4B4; --gold:#FFD166;
+    --chalk:#f4f6f8; --mist:#8b93a1;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--navy);color:var(--chalk);font-family:'Inter',sans-serif;min-height:100vh;padding:56px 20px 80px;}
+  .wrap{max-width:640px;margin:0 auto;}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:0.12em;color:var(--teal);text-transform:uppercase;margin-bottom:10px;}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,6vw,48px);margin:0 0 12px;line-height:1.05;}
+  .sub{color:var(--mist);font-size:14.5px;line-height:1.6;margin-bottom:16px;max-width:520px;}
+  .disclaimer{background:var(--navy2);border:1px solid rgba(255,209,102,0.35);border-radius:12px;padding:16px 20px;margin-bottom:32px;font-size:13px;color:var(--chalk);line-height:1.6;}
+  .disclaimer strong{color:var(--gold);}
+
+  form{background:var(--navy2);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:32px;}
+  fieldset{border:none;padding:0;margin:0 0 28px;}
+  fieldset:last-of-type{margin-bottom:0;}
+  legend{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.03em;color:var(--teal);margin-bottom:14px;padding:0;}
+  label{display:block;font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--mist);margin-bottom:6px;}
+  .field{margin-bottom:18px;}
+  .row{display:flex;gap:16px;flex-wrap:wrap;}
+  .row .field{flex:1 1 220px;}
+  input, select, textarea{
+    width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);
+    border-radius:8px;padding:12px 14px;color:var(--chalk);font-family:'Inter',sans-serif;font-size:14px;
+  }
+  select option{background:var(--navy);color:var(--chalk);}
+  input:focus, select:focus, textarea:focus{outline:none;border-color:var(--teal);}
+  textarea{resize:vertical;min-height:90px;}
+  .radio-group{display:flex;gap:18px;flex-wrap:wrap;margin-top:4px;}
+  .radio-option{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--chalk);text-transform:none;font-weight:500;letter-spacing:normal;}
+  .radio-option input{width:auto;accent-color:var(--teal);}
+  .hint{font-size:12px;color:var(--mist);margin-top:6px;line-height:1.5;}
+
+  .submit-btn{
+    width:100%;border:none;background:var(--teal);color:var(--navy);font-weight:700;font-size:15px;
+    padding:14px 24px;border-radius:8px;cursor:pointer;margin-top:8px;
+  }
+  .submit-btn:hover{background:#00FFDF;}
+
+  .step2{display:none;background:var(--navy2);border:1px solid rgba(0,212,180,0.35);border-radius:14px;padding:32px;margin-top:24px;text-align:center;}
+  .step2.show{display:block;}
+  .step2 h2{font-family:'Bebas Neue',sans-serif;font-size:28px;margin:0 0 10px;color:var(--teal);}
+  .step2 p{color:var(--mist);font-size:14px;line-height:1.6;}
+
+  .footnote{max-width:520px;margin:28px auto 0;font-size:11.5px;color:var(--mist);line-height:1.6;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Global Citizens Community Center · Staff Use</div>
+  <h1>Complaint Intake &amp; Referral Form</h1>
+  <p class="sub">Fill this out with the community member while identifying the correct official channel and assisting with filing.</p>
+  <div class="disclaimer"><strong>Note:</strong> GCCC helps identify the correct official channel and assists with filing — GCCC does not investigate or decide outcomes.</div>
+
+  <form id="intakeForm" action="https://formspree.io/f/mqernvwd" method="POST">
+    <input type="hidden" name="_subject" value="New GCCC Complaint Intake &amp; Referral">
+
+    <fieldset>
+      <legend>Intake Information</legend>
+      <div class="row">
+        <div class="field">
+          <label for="intakeDate">Date of Intake</label>
+          <input type="date" id="intakeDate" name="Date of Intake" required>
+        </div>
+        <div class="field">
+          <label for="staffMember">GCCC Staff Member</label>
+          <input type="text" id="staffMember" name="Staff Member" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="memberName">Community Member Name</label>
+        <input type="text" id="memberName" name="Community Member Name" required>
+      </div>
+      <div class="field">
+        <label for="memberContact">Contact Info (phone / email)</label>
+        <input type="text" id="memberContact" name="Contact Info" required>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Nature of the Concern</legend>
+      <div class="field">
+        <label for="concern">Describe the concern in the community member's own words</label>
+        <textarea id="concern" name="Concern Description" required></textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Category &amp; Level</legend>
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category" name="Category" required>
+          <option value="">Select a category…</option>
+          <option value="Housing">Housing</option>
+          <option value="Employment">Employment</option>
+          <option value="Consumer / Financial">Consumer / Financial</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Immigration">Immigration</option>
+          <option value="Civil Rights / Discrimination">Civil Rights / Discrimination</option>
+          <option value="Public Safety / Police">Public Safety / Police</option>
+          <option value="Education">Education</option>
+          <option value="Government Services / Benefits">Government Services / Benefits</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Level Involved</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="Level Involved" value="Federal" required> Federal</label>
+          <label class="radio-option"><input type="radio" name="Level Involved" value="State" required> State</label>
+          <label class="radio-option"><input type="radio" name="Level Involved" value="Local" required> Local</label>
+          <label class="radio-option"><input type="radio" name="Level Involved" value="International" required> International</label>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Referral &amp; Filing</legend>
+      <div class="field">
+        <label for="officialChannel">Official Channel Identified by GCCC Staff</label>
+        <input type="text" id="officialChannel" name="Official Channel" placeholder="Agency, office, or body name">
+        <div class="hint">Use the matching country routing template as a starting point, and verify against that country's official sources.</div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="dateFiled">Date Filed with Official Channel</label>
+          <input type="date" id="dateFiled" name="Date Filed">
+        </div>
+        <div class="field">
+          <label for="caseRef">Reference / Case #</label>
+          <input type="text" id="caseRef" name="Reference or Case Number">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Follow-Up &amp; Outcome <span style="text-transform:none;color:var(--mist);font-family:'Inter',sans-serif;font-weight:400;font-size:13px;">(GCCC program tracking only)</span></legend>
+      <div class="field">
+        <label for="followUpDate">Follow-Up Date</label>
+        <input type="date" id="followUpDate" name="Follow-Up Date">
+      </div>
+      <div class="field">
+        <label for="outcomeNotes">Outcome Notes</label>
+        <textarea id="outcomeNotes" name="Outcome Notes"></textarea>
+      </div>
+    </fieldset>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Submit Intake</button>
+  </form>
+
+  <div class="step2" id="confirmStep">
+    <h2>Intake submitted</h2>
+    <p>This record has been sent to the GCCC team for tracking and follow-up.</p>
+  </div>
+
+  <p class="footnote">GCCC Complaint Intake &amp; Referral Form · GCCC is a nonprofit civic-education and advocacy organization, not a government body or court.</p>
+</div>
+
+<script>
+  const form = document.getElementById('intakeForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const confirmStep = document.getElementById('confirmStep');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.style.display = 'none';
+        confirmStep.classList.add('show');
+        confirmStep.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Intake';
+      alert('Something went wrong submitting this form. Please try again.');
+    }
+  });
+</script>
+</body>
+</html>

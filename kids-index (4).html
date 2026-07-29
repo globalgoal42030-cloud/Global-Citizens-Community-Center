@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Global Citizens Kids Club — GCCC</title>
+<meta name="description" content="The GCCC Kids Club — story time, super missions, art, games, and friendship for young global citizens."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --sun:#FFC93C;
+  --sky:#3EC6E0;
+  --grass:#6BCB77;
+  --bubble:#FF6FA5;
+  --grape:#9B72CF;
+  --coral:#FF8552;
+  --cream:#FFF8EC;
+  --cream2:#FFF1D6;
+  --ink:#2B2250;
+  --ink-soft:#5B5486;
+  --white:#ffffff;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Quicksand',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;}
+a{color:inherit;}
+img{max-width:100%;display:block;}
+
+/* ── Floating background shapes ── */
+.bg-blob{position:absolute;border-radius:50%;opacity:0.35;filter:blur(2px);animation:floaty 7s ease-in-out infinite;pointer-events:none;}
+@keyframes floaty{0%,100%{transform:translateY(0px) rotate(0deg);}50%{transform:translateY(-18px) rotate(6deg);}}
+@keyframes wiggle{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes pop{0%{transform:scale(0.9);}60%{transform:scale(1.04);}100%{transform:scale(1);}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+/* ── NAV ── */
+#kid-nav{
+  position:sticky;top:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;background:rgba(255,248,236,0.92);backdrop-filter:blur(10px);
+  border-bottom:4px dashed var(--sun);
+}
+.kid-logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Baloo 2',sans-serif;font-size:22px;color:var(--ink);font-weight:800;}
+.kid-logo-globe{width:38px;height:38px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:19px;animation:bob 3s ease-in-out infinite;}
+.kid-nav-toggle{display:flex;align-items:center;gap:2px;background:var(--white);border:2px solid var(--ink);border-radius:30px;padding:3px;}
+.kid-mode-tab{font-family:'Quicksand',sans-serif;font-size:12.5px;font-weight:700;text-decoration:none;padding:8px 14px;border-radius:24px;color:var(--ink-soft);transition:background 0.2s,color 0.2s;white-space:nowrap;}
+.kid-mode-tab-active{background:var(--bubble);color:var(--white);}
+.kid-nav-cta{background:var(--grass);color:var(--white);font-weight:700;font-size:13px;padding:10px 20px;border-radius:30px;text-decoration:none;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);transition:transform 0.15s,box-shadow 0.15s;}
+.kid-nav-cta:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink);}
+@media (max-width:640px){.kid-nav-toggle{display:none;}#kid-nav{padding:12px 16px;}}
+
+/* ── HERO ── */
+#kid-hero{position:relative;padding:70px 24px 60px;text-align:center;overflow:hidden;}
+.kid-hero-inner{max-width:780px;margin:0 auto;position:relative;z-index:2;}
+.kid-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--white);border:2px solid var(--ink);border-radius:30px;padding:8px 18px;font-weight:700;font-size:13px;color:var(--grape);margin-bottom:22px;box-shadow:3px 3px 0 var(--ink);}
+.kid-h1{font-size:clamp(40px,8vw,76px);line-height:1.02;font-weight:800;color:var(--ink);margin:0 0 18px;letter-spacing:0.01em;}
+.kid-h1 .pop-sun{color:var(--sun);-webkit-text-stroke:2px var(--ink);text-stroke:2px var(--ink);}
+.kid-h1 .pop-pink{color:var(--bubble);}
+.kid-h1 .pop-blue{color:var(--sky);}
+.kid-sub{font-size:19px;color:var(--ink-soft);font-weight:600;max-width:560px;margin:0 auto 32px;line-height:1.5;}
+.kid-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:44px;}
+.kid-btn{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:17px;padding:15px 30px;border-radius:40px;text-decoration:none;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transition:transform 0.15s,box-shadow 0.15s;}
+.kid-btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink);}
+.kid-btn-primary{background:var(--bubble);color:var(--white);}
+.kid-btn-secondary{background:var(--white);color:var(--ink);}
+.kid-hero-mascot{font-size:100px;animation:bob 3.4s ease-in-out infinite;margin-bottom:6px;display:inline-block;}
+
+/* ── STATS ── */
+#kid-stats{display:flex;justify-content:center;gap:0;flex-wrap:wrap;max-width:900px;margin:0 auto;padding:0 24px 70px;}
+.kid-stat{background:var(--white);border:3px solid var(--ink);border-radius:20px;padding:22px 26px;text-align:center;margin:8px;box-shadow:4px 4px 0 var(--ink);min-width:150px;}
+.kid-stat-num{font-family:'Baloo 2',sans-serif;font-size:34px;font-weight:800;color:var(--grape);line-height:1;}
+.kid-stat-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-top:6px;text-transform:uppercase;letter-spacing:0.03em;}
+
+/* ── SECTION shared ── */
+.kid-section{padding:70px 24px;position:relative;}
+.kid-section-inner{max-width:1140px;margin:0 auto;position:relative;z-index:2;}
+.kid-label{display:inline-block;font-weight:700;font-size:12.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--grape);background:rgba(155,114,207,0.12);padding:6px 14px;border-radius:20px;margin-bottom:14px;}
+.kid-title{font-size:clamp(30px,5vw,46px);font-weight:800;margin:0 0 14px;color:var(--ink);}
+.kid-section-sub{font-size:16px;color:var(--ink-soft);font-weight:600;max-width:620px;margin-bottom:44px;line-height:1.55;}
+
+/* ── ROOMS GRID ── */
+.kid-rooms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;}
+.kid-room-card{background:var(--white);border:3px solid var(--ink);border-radius:26px;padding:26px;position:relative;box-shadow:5px 5px 0 var(--ink);transition:transform 0.2s,box-shadow 0.2s;}
+.kid-room-card:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink);}
+.kid-room-emoji{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:16px;border:3px solid var(--ink);background:var(--room-color,var(--sun));}
+.kid-room-name{font-family:'Baloo 2',sans-serif;font-size:21px;font-weight:700;margin-bottom:8px;color:var(--ink);}
+.kid-room-desc{font-size:14.5px;color:var(--ink-soft);font-weight:500;line-height:1.55;margin-bottom:18px;min-height:66px;}
+.kid-room-link{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;text-decoration:none;color:var(--ink);background:var(--room-color,var(--sun));padding:9px 16px;border-radius:20px;border:2px solid var(--ink);}
+.kid-room-tape{position:absolute;top:-10px;right:22px;background:var(--sky);color:var(--white);font-size:10.5px;font-weight:700;padding:4px 12px;border-radius:6px;transform:rotate(4deg);border:2px solid var(--ink);letter-spacing:0.03em;}
+
+/* ── SUPER MISSIONS (SDG badges) ── */
+#missions{background:var(--ink);color:var(--white);border-radius:40px;margin:0 24px;padding:60px 40px;}
+#missions .kid-label{background:rgba(255,255,255,0.12);color:var(--sun);}
+#missions .kid-title{color:var(--white);}
+#missions .kid-section-sub{color:rgba(255,255,255,0.75);}
+.mission-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px;}
+.mission-badge{background:var(--white);color:var(--ink);border-radius:16px;padding:14px 8px;text-align:center;border:3px solid transparent;cursor:default;transition:transform 0.15s;}
+.mission-badge:hover{transform:translateY(-4px) rotate(-2deg);border-color:var(--sun);}
+.mission-emoji{font-size:26px;margin-bottom:6px;}
+.mission-num{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:11px;color:var(--grape);}
+.mission-name{font-size:10.5px;font-weight:700;line-height:1.25;margin-top:2px;}
+
+/* ── JOIN / PARENT SECTION ── */
+#kid-join{background:var(--sun);border-radius:40px;margin:0 24px 24px;padding:56px 40px;position:relative;overflow:hidden;}
+.postcard{background:var(--white);border:3px solid var(--ink);border-radius:24px;max-width:640px;margin:0 auto;padding:38px 40px;box-shadow:6px 6px 0 var(--ink);position:relative;z-index:2;}
+.postcard-eyebrow{font-family:'Baloo 2',sans-serif;font-weight:700;color:var(--bubble);font-size:14px;margin-bottom:6px;}
+.postcard h3{font-size:26px;margin:0 0 14px;}
+.postcard p{font-size:15px;color:var(--ink-soft);font-weight:600;line-height:1.6;margin-bottom:22px;}
+.postcard ul{list-style:none;padding:0;margin:0 0 26px;display:grid;gap:10px;}
+.postcard li{font-size:14.5px;font-weight:600;color:var(--ink);display:flex;gap:10px;align-items:flex-start;}
+.postcard li::before{content:"⭐";flex-shrink:0;}
+
+/* ── FOOTER ── */
+#kid-footer{padding:40px 24px 50px;text-align:center;}
+.kid-footer-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;font-weight:700;font-size:13.5px;}
+.kid-footer-links a{text-decoration:none;color:var(--ink);}
+.kid-footer-links a:hover{color:var(--bubble);}
+.kid-footer-note{font-size:12.5px;color:var(--ink-soft);font-weight:600;max-width:520px;margin:0 auto;line-height:1.6;}
+
+@media (max-width:600px){
+  .kid-btn{font-size:15px;padding:13px 22px;}
+  #missions,#kid-join{margin:0 12px 12px;padding:40px 20px;}
+  .postcard{padding:28px 22px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav id="kid-nav">
+  <a class="kid-logo" href="#kid-hero">
+    <div class="kid-logo-globe">🌍</div>
+    GCCC Kids
+  </a>
+  <div class="kid-nav-toggle" role="tablist" aria-label="Choose your GCCC experience">
+    <a href="index.html" class="kid-mode-tab" role="tab" aria-selected="false">🧑‍🤝‍🧑 Grown-Ups</a>
+    <a href="kids-index.html" class="kid-mode-tab kid-mode-tab-active" role="tab" aria-selected="true">🧒 Kids Zone</a>
+  </div>
+  <a href="#kid-join" class="kid-nav-cta">Join the Club!</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="kid-hero">
+  <div class="bg-blob" style="width:140px;height:140px;background:var(--sky);top:60px;left:6%;animation-delay:0s;"></div>
+  <div class="bg-blob" style="width:90px;height:90px;background:var(--bubble);top:180px;right:8%;animation-delay:1.2s;"></div>
+  <div class="bg-blob" style="width:110px;height:110px;background:var(--grass);bottom:10px;left:12%;animation-delay:2s;"></div>
+  <div class="bg-blob" style="width:70px;height:70px;background:var(--sun);top:40px;right:20%;animation-delay:0.6s;"></div>
+  <div class="kid-hero-inner">
+    <span class="kid-hero-mascot">🌍😄</span>
+    <div class="kid-eyebrow"><span>✨</span> Welcome to the Clubhouse!</div>
+    <h1 class="kid-h1">Explore. Play.<br><span class="pop-pink">Make</span> the world<br><span class="pop-blue">brighter!</span></h1>
+    <p class="kid-sub">GCCC Kids is where young global citizens read, build, sing, play, and go on real missions to help people and the planet — all in one super fun clubhouse!</p>
+    <div class="kid-ctas">
+      <a class="kid-btn kid-btn-primary" href="#kid-rooms">🏠 Explore the Rooms</a>
+      <a class="kid-btn kid-btn-secondary" href="#missions">🦸 See Super Missions</a>
+    </div>
+  </div>
+  <div id="kid-stats">
+    <div class="kid-stat"><div class="kid-stat-num">17</div><div class="kid-stat-label">Super Missions</div></div>
+    <div class="kid-stat"><div class="kid-stat-num">195</div><div class="kid-stat-label">Countries to Explore</div></div>
+    <div class="kid-stat"><div class="kid-stat-num">9</div><div class="kid-stat-label">Clubhouse Rooms</div></div>
+    <div class="kid-stat"><div class="kid-stat-num">∞</div><div class="kid-stat-label">New Friends</div></div>
+  </div>
+</section>
+
+<!-- ─── ROOMS ─── -->
+<section id="kid-rooms" class="kid-section">
+  <div class="kid-section-inner">
+    <div class="kid-label">Inside the Clubhouse</div>
+    <h2 class="kid-title">Pick a room,<br>start an adventure!</h2>
+    <p class="kid-section-sub">Every room is packed with something fun to do — pretend it's a treasure map and try them all!</p>
+    <div class="kid-rooms-grid">
+
+      <div class="kid-room-card">
+        <div class="kid-room-tape">NEW!</div>
+        <div class="kid-room-emoji" style="--room-color:var(--sky);">📚</div>
+        <div class="kid-room-name">Story Time Corner</div>
+        <div class="kid-room-desc">Cozy read-alouds, picture books from around the world, and a comfy rug to sit on. Grab a friend and pick a story!</div>
+        <a href="#kid-join" class="kid-room-link">Enter the Corner →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-emoji" style="--room-color:var(--sun);">🎨</div>
+        <div class="kid-room-name">Art &amp; Music Studio</div>
+        <div class="kid-room-desc">Paint, draw, drum, and sing! Show off your masterpiece on our wall of fame or start your own kid band.</div>
+        <a href="#kid-join" class="kid-room-link">Enter the Studio →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-emoji" style="--room-color:var(--grass);">🧩</div>
+        <div class="kid-room-name">Homework Help Hub</div>
+        <div class="kid-room-desc">Friendly helpers for reading, math, and science homework — plus brain-teaser puzzles when you finish early.</div>
+        <a href="#kid-join" class="kid-room-link">Get Help →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-emoji" style="--room-color:var(--bubble);">🎮</div>
+        <div class="kid-room-name">Game Zone</div>
+        <div class="kid-room-desc">Board games, team challenges, and silly minute-to-win-it contests. Come make new friends and laugh a lot.</div>
+        <a href="#kid-join" class="kid-room-link">Let's Play →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-tape">FAVORITE</div>
+        <div class="kid-room-emoji" style="--room-color:var(--coral);">🧁</div>
+        <div class="kid-room-name">Kindness Kitchen</div>
+        <div class="kid-room-desc">Our no-bake, kid-safe bake sale club! Help pack treats for friends who need a full tummy — partnered with No Kid Hungry.</div>
+        <a href="#kid-join" class="kid-room-link">Bake &amp; Give →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-emoji" style="--room-color:var(--grape);">🎭</div>
+        <div class="kid-room-name">Center Stage</div>
+        <div class="kid-room-desc">Put on a puppet show, learn a dance from another country, or just watch a fun performance with your family.</div>
+        <a href="#kid-join" class="kid-room-link">Take a Bow →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-emoji" style="--room-color:var(--sky);">🛠️</div>
+        <div class="kid-room-name">Lil' Builders Workshop</div>
+        <div class="kid-room-desc">Design, build, and code your first project — from cardboard inventions to a simple video game you make yourself.</div>
+        <a href="#kid-join" class="kid-room-link">Start Building →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-emoji" style="--room-color:var(--sun);">🐾</div>
+        <div class="kid-room-name">Pet Pals Corner</div>
+        <div class="kid-room-desc">Read animal stories, learn how to care for pets, and meet furry friends at our special pet-edition events.</div>
+        <a href="#kid-join" class="kid-room-link">Say Hi →</a>
+      </div>
+
+      <div class="kid-room-card">
+        <div class="kid-room-emoji" style="--room-color:var(--grass);">🤝</div>
+        <div class="kid-room-name">Buddy Bench</div>
+        <div class="kid-room-desc">Never sit alone! The Buddy Bench is where you find a new friend, share how you're feeling, and look out for each other.</div>
+        <a href="#kid-join" class="kid-room-link">Find a Buddy →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── SUPER MISSIONS ─── -->
+<section id="missions" class="kid-section">
+  <div class="kid-section-inner">
+    <div class="kid-label">🦸 Superhero Training</div>
+    <h2 class="kid-title">17 Super Missions to save the world</h2>
+    <p class="kid-section-sub">These are real goals grown-ups everywhere are working on by the year 2030 — and kids can help too! Collect a badge for every mission you learn about.</p>
+    <div class="mission-grid">
+      <div class="mission-badge"><div class="mission-emoji">🚫</div><div class="mission-num">01</div><div class="mission-name">No Poverty</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🍎</div><div class="mission-num">02</div><div class="mission-name">Zero Hunger</div></div>
+      <div class="mission-badge"><div class="mission-emoji">💪</div><div class="mission-num">03</div><div class="mission-name">Good Health</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🎓</div><div class="mission-num">04</div><div class="mission-name">Great Learning</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🤗</div><div class="mission-num">05</div><div class="mission-name">Fairness for All</div></div>
+      <div class="mission-badge"><div class="mission-emoji">💧</div><div class="mission-num">06</div><div class="mission-name">Clean Water</div></div>
+      <div class="mission-badge"><div class="mission-emoji">☀️</div><div class="mission-num">07</div><div class="mission-name">Clean Energy</div></div>
+      <div class="mission-badge"><div class="mission-emoji">💼</div><div class="mission-num">08</div><div class="mission-name">Good Jobs</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🚀</div><div class="mission-num">09</div><div class="mission-name">Big Ideas</div></div>
+      <div class="mission-badge"><div class="mission-emoji">⚖️</div><div class="mission-num">10</div><div class="mission-name">Less Unfairness</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🏘️</div><div class="mission-num">11</div><div class="mission-name">Happy Cities</div></div>
+      <div class="mission-badge"><div class="mission-emoji">♻️</div><div class="mission-num">12</div><div class="mission-name">Reduce &amp; Reuse</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🌎</div><div class="mission-num">13</div><div class="mission-name">Protect Climate</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🐠</div><div class="mission-num">14</div><div class="mission-name">Save the Ocean</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🌳</div><div class="mission-num">15</div><div class="mission-name">Save the Land</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🕊️</div><div class="mission-num">16</div><div class="mission-name">Peace &amp; Trust</div></div>
+      <div class="mission-badge"><div class="mission-emoji">🤝</div><div class="mission-num">17</div><div class="mission-name">Team Up!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── JOIN (parent-facing) ─── -->
+<section id="kid-join" class="kid-section">
+  <div class="postcard">
+    <div class="postcard-eyebrow">✉️ A note for grown-ups</div>
+    <h3>Sign your Global Citizen up for the club!</h3>
+    <p>GCCC Kids is a supervised, ad-free space built by parents and educators to make global citizenship playful. A parent or guardian creates and manages the account — kids just get to play, read, and earn badges.</p>
+    <ul>
+      <li>Every activity is age-appropriate and supervised by our team</li>
+      <li>Free membership, always — funded by our grown-up community</li>
+      <li>Real-world missions kids can do at home or in the clubhouse</li>
+      <li>Partnered with No Kid Hungry, Save the Children, and Global Citizen</li>
+    </ul>
+    <a class="kid-btn kid-btn-primary" href="membership-intake.html">Sign Up as a Parent →</a>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer id="kid-footer">
+  <div class="kid-footer-links">
+    <a href="index.html">🧑‍🤝‍🧑 Grown-Ups Site</a>
+    <a href="#kid-rooms">Rooms</a>
+    <a href="#missions">Super Missions</a>
+    <a href="index.html#membership">Family Membership</a>
+  </div>
+  <p class="kid-footer-note">GCCC Kids Club is a part of the Global Citizens Community Center. Parents and guardians: head to the Grown-Ups site to manage your family's membership and account.</p>
+</footer>
+
+</body>
+</html>

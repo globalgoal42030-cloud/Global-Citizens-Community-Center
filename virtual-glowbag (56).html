@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Virtual GlowBag — GCCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#050a12; --navy2:#0d1626; --navy3:#0f1c30;
+    --teal:#4fd8c4; --gold:#FFD166; --coral:#ff6b6b;
+    --chalk:#f4f6f8; --mist:#8b93a1;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(79,216,196,0.08), transparent 45%),
+      radial-gradient(circle at 90% 20%, rgba(255,209,102,0.07), transparent 45%),
+      var(--navy);
+    color:var(--chalk); font-family:'Inter',sans-serif;
+    min-height:100vh; padding:56px 20px 80px;
+  }
+  .wrap{ max-width:780px; margin:0 auto; text-align:center; }
+
+  .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:3px; color:var(--teal); }
+  .subeyebrow{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; letter-spacing:2px; color:var(--gold); margin-top:12px; }
+  h1{ font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(28px,6vw,42px); line-height:1.15; margin:18px 0 14px; }
+  h1 em{ color:var(--teal); font-style:italic; }
+  .lede{ max-width:540px; margin:0 auto 6px; color:var(--mist); font-size:15px; line-height:1.7; }
+
+  .toggle{ display:inline-flex; flex-wrap:wrap; justify-content:center; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:999px; padding:4px; margin:28px 0 6px; gap:2px; }
+  .toggle button{ border:none; background:transparent; color:var(--mist); font-family:'Inter',sans-serif; font-weight:700; font-size:13px; letter-spacing:.02em; padding:10px 18px; border-radius:999px; cursor:pointer; transition:all .25s; }
+  .toggle button.active{ background:var(--teal); color:var(--navy); }
+
+  .stage{ position:relative; margin:34px auto 0; width:220px; height:280px; display:flex; align-items:flex-end; justify-content:center; }
+  .box{ position:relative; width:200px; height:150px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .box:focus-visible .box-body{ outline:3px solid var(--gold); outline-offset:4px; }
+  .box-body{ position:absolute; bottom:0; left:0; width:200px; height:130px; background:linear-gradient(160deg, var(--navy3) 0%, var(--navy2) 100%); border:1px solid rgba(255,255,255,0.08); border-radius:8px; box-shadow:0 18px 40px -12px rgba(0,0,0,0.6); }
+  .ribbon-v{ position:absolute; top:0; bottom:0; left:50%; width:22px; margin-left:-11px; background:linear-gradient(180deg,var(--teal),#2a8f80); }
+  .lid{ position:absolute; top:-24px; left:-8px; width:216px; height:42px; background:linear-gradient(160deg, var(--gold) 0%, #d9a53f 100%); border-radius:6px; box-shadow:0 8px 16px rgba(0,0,0,0.4); transform-origin:8px 42px; transition:transform .7s cubic-bezier(.34,1.56,.64,1); z-index:3; }
+  .ribbon-h{ position:absolute; left:0; right:0; top:50%; height:13px; margin-top:-6.5px; background:linear-gradient(180deg,var(--teal),#2a8f80); }
+  .stage.opening .lid{ transform:rotate(-118deg) translate(-6px,-4px); }
+
+  .bag-wrap{ position:absolute; left:50%; bottom:60px; width:150px; margin-left:-75px; opacity:0; transform:translateY(10px) scale(0.4); z-index:2; pointer-events:none; }
+  .bag-wrap svg{ width:100%; display:block; }
+  .stage.opening .bag-wrap{ transition:transform 1.1s cubic-bezier(.2,.9,.25,1.25) .35s, opacity .5s ease .35s, filter 1.3s ease .5s; opacity:1; transform:translateY(-70px) scale(1); filter:drop-shadow(0 0 26px rgba(79,216,196,0.5)); }
+  .bag-wrap .glowbag-svg{ display:none; }
+  .bag-wrap.mode-his .glowbag-his{ display:block; }
+  .bag-wrap.mode-her .glowbag-her{ display:block; }
+  .bag-wrap.mode-kids .glowbag-kids{ display:block; }
+  .bag-wrap.mode-pet .glowbag-pet{ display:block; }
+
+  .hint{ font-size:13px; color:var(--mist); margin-top:20px; letter-spacing:.02em; transition:opacity .3s ease; }
+
+  .confetti{ position:fixed; inset:0; pointer-events:none; z-index:20; }
+  .spark{ position:absolute; top:-16px; width:8px; height:8px; border-radius:2px; opacity:.95; animation:fall linear forwards; }
+  @keyframes fall{ to{ transform:translateY(110vh) rotate(480deg); opacity:.15; } }
+
+  .items{ max-width:720px; margin:56px auto 0; display:none; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; text-align:left; opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; pointer-events:none; }
+  .items.active{ display:grid; }
+  .items.show{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .card{ background:var(--navy2); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px; transition:transform .2s, border-color .2s; }
+  .card:hover{ transform:translateY(-3px); border-color:rgba(255,209,102,.35); }
+  .card-icon{ font-size:26px; margin-bottom:8px; display:block; }
+  .card-tag{ display:inline-block; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--navy); background:var(--teal); padding:3px 10px; border-radius:999px; margin-bottom:10px; }
+  .card-tag.crisis{ background:var(--coral); }
+  .card-title{ font-weight:700; font-size:14.5px; color:var(--chalk); margin-bottom:5px; }
+  .card-desc{ font-size:12.5px; color:var(--mist); line-height:1.6; margin-bottom:10px; }
+  .card-link{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--gold); text-decoration:none; }
+  .card-link:hover{ text-decoration:underline; }
+  .card-audio{ grid-column:1/-1; }
+  .audio-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-top:12px; }
+  .track{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:12px; }
+  .track-title{ font-weight:700; font-size:13px; color:var(--chalk); margin-bottom:6px; }
+  .track audio{ width:100%; height:30px; }
+  .track-dl{ display:inline-flex; margin-top:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; }
+
+  .guide{ max-width:640px; margin:52px auto 0; background:var(--navy2); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:22px 24px; display:flex; gap:16px; align-items:center; text-align:left; flex-wrap:wrap; }
+  .guide .icon{ font-size:28px; }
+  .guide .title{ font-weight:700; font-size:15px; margin-bottom:4px; }
+  .guide .sub{ font-size:12.5px; color:var(--mist); line-height:1.5; }
+  .guide a.btn{ margin-left:auto; background:var(--teal); color:var(--navy); font-weight:700; font-size:13px; text-decoration:none; padding:10px 18px; border-radius:999px; white-space:nowrap; }
+
+  .section-title{ font-family:'Playfair Display',serif; font-weight:700; font-size:20px; margin:52px 0 6px; }
+  .section-sub{ color:var(--mist); font-size:13px; margin-bottom:22px; }
+
+  .soundtrack{ max-width:700px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; text-align:left; }
+  .soundtrack .track{ padding:16px; }
+
+  .resources{ max-width:720px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; text-align:left; }
+  .resources .card{ padding:18px; }
+
+  .games{ max-width:720px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; text-align:left; }
+  .games .card{ padding:18px; display:flex; flex-direction:column; }
+  .games .card .card-title{ margin-bottom:6px; }
+  .games .card-link{ margin-top:auto; padding-top:8px; }
+  .card-tag.game{ background:var(--gold); }
+  .games-note{ max-width:640px; margin:0 auto 22px; font-size:12px; color:var(--mist); line-height:1.6; text-align:center; }
+
+  .crisis-block{ max-width:640px; margin:22px auto 0; background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,.35); border-radius:10px; padding:16px 18px; text-align:left; font-size:13px; color:#d9dde2; line-height:1.6; }
+  .crisis-block strong{ color:var(--chalk); }
+
+  .refer{ max-width:640px; margin:0 auto; background:var(--navy2); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:26px 26px 24px; text-align:left; }
+  .refer-row{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+  .refer-field{ flex:1 1 200px; display:flex; flex-direction:column; gap:6px; }
+  .refer-field label{ font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--mist); }
+  .refer-field input{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:11px 13px; color:var(--chalk); font-family:'Inter',sans-serif; font-size:14px; }
+  .refer-field input:focus{ outline:none; border-color:var(--teal); }
+  .refer-btn{ border:none; background:var(--teal); color:var(--navy); font-weight:700; font-size:13.5px; padding:12px 20px; border-radius:999px; cursor:pointer; width:100%; margin-top:4px; transition:filter .15s; }
+  .refer-btn:hover{ filter:brightness(1.08); }
+  .refer-btn:disabled{ opacity:.5; cursor:not-allowed; }
+  .refer-result{ display:none; margin-top:18px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.1); }
+  .refer-result.show{ display:block; }
+  .refer-result-label{ font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--mist); margin-bottom:6px; }
+  .refer-code-row, .refer-link-row{ display:flex; gap:8px; margin-bottom:14px; }
+  .refer-code-row input, .refer-link-row input{ flex:1; background:rgba(79,216,196,0.08); border:1px solid rgba(79,216,196,0.3); border-radius:8px; padding:10px 12px; color:var(--teal); font-family:'JetBrains Mono',monospace; font-size:13px; }
+  .refer-link-row input{ color:var(--chalk); font-family:'Inter',sans-serif; font-size:12.5px; }
+  .refer-copy{ border:none; background:rgba(255,255,255,0.1); color:var(--chalk); font-weight:700; font-size:12px; padding:0 16px; border-radius:8px; cursor:pointer; white-space:nowrap; }
+  .refer-copy:hover{ background:rgba(255,255,255,0.18); }
+  .refer-copy.copied{ background:var(--teal); color:var(--navy); }
+  .refer-msg{ width:100%; min-height:74px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:11px 13px; color:var(--chalk); font-family:'Inter',sans-serif; font-size:13px; line-height:1.6; resize:vertical; margin-bottom:10px; }
+  .refer-note{ font-size:12px; color:var(--mist); line-height:1.6; }
+
+  .note{ max-width:640px; margin:44px auto 0; font-size:12.5px; color:var(--mist); line-height:1.8; border-top:1px solid rgba(255,255,255,.08); padding-top:22px; }
+  .note a{ color:var(--teal); }
+  .cta-row{ margin-top:22px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary, .btn-gold{ text-decoration:none; font-weight:700; font-size:13.5px; padding:11px 22px; border-radius:999px; }
+  .btn-primary{ background:var(--teal); color:var(--navy); }
+  .btn-gold{ background:var(--gold); color:var(--navy); }
+  .btn-outline{ text-decoration:none; font-weight:700; font-size:13.5px; padding:10px 22px; border-radius:999px; background:transparent; border:1.5px solid rgba(255,255,255,0.35); color:var(--chalk,#fff); }
+  .btn-outline:hover{ border-color:var(--teal); color:var(--teal); }
+  .cta-heading{ text-align:center; font-family:'Inter',sans-serif; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--mist,#9fb0c3); margin:36px 0 4px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .lid, .bag-wrap{ transition:none !important; }
+    .spark{ animation:none !important; display:none; }
+  }
+
+  @media (max-width: 640px){
+    body{ padding:56px 14px 80px; }
+    .items, .resources, .games, .audio-grid, .soundtrack{
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap:10px;
+    }
+    .card{ padding:13px; }
+    .resources .card, .games .card{ padding:13px; }
+    .card-icon{ font-size:20px; margin-bottom:6px; }
+    .card-tag{ font-size:8.5px; padding:2px 8px; margin-bottom:7px; }
+    .card-title{ font-size:12.5px; margin-bottom:4px; line-height:1.3; }
+    .card-desc{ font-size:10.5px; line-height:1.45; margin-bottom:8px; }
+    .card-link{ font-size:10.5px; }
+    .card-audio{ grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">GLOBAL CITIZENS COMMUNITY CENTER</div>
+  <div class="subeyebrow">✦ A FREE WELCOME GIFT ✦</div>
+  <h1>Your Virtual <em>GlowBag</em> Has Arrived</h1>
+  <p class="lede">Every newsletter signup, free membership, and donation includes a free Virtual GlowBag — a digital care package of genuinely free tools, resources, and one gift from a GCCC creative partner. Pick your bag, then tap the box to open it.</p>
+
+  <div class="toggle" role="tablist">
+    <button class="active" data-type="his" onclick="setType('his')">💼 His GlowBag</button>
+    <button data-type="her" onclick="setType('her')">👜 Her GlowBag</button>
+    <button data-type="kids" onclick="setType('kids')">🧸 Kids GlowBag</button>
+    <button data-type="pet" onclick="setType('pet')">🐾 Pet GlowBag</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="box" id="box" role="button" tabindex="0" aria-label="Open your GlowBag">
+      <div class="lid"><div class="ribbon-h"></div></div>
+      <div class="box-body"><div class="ribbon-v"></div></div>
+    </div>
+
+    <div class="bag-wrap mode-his" id="bagWrap">
+      <svg class="glowbag-svg glowbag-his" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bagBody-his" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0d2338"/><stop offset="100%" stop-color="#134a52"/></linearGradient>
+          <radialGradient id="emblemGlow-his" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#4fd8c4" stop-opacity="0.9"/><stop offset="70%" stop-color="#4fd8c4" stop-opacity="0.25"/><stop offset="100%" stop-color="#4fd8c4" stop-opacity="0"/></radialGradient>
+          <radialGradient id="globeFill-his" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#4fd8c4"/><stop offset="100%" stop-color="#0d2338"/></radialGradient>
+          <filter id="bagShadow-his" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/></filter>
+        </defs>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#134a52" stroke-width="9" stroke-linecap="round"/>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#FFD166" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+        <g filter="url(#bagShadow-his)">
+          <path d="M38,60 L162,60 L178,208 C178,214 173,218 167,218 L33,218 C27,218 22,214 22,208 Z" fill="url(#bagBody-his)" stroke="#00000033" stroke-width="1"/>
+          <circle cx="100" cy="118" r="70" fill="url(#emblemGlow-his)"/>
+          <g transform="translate(100,118)"><circle r="40" fill="url(#globeFill-his)" stroke="#FFD166" stroke-width="2"/><g stroke="#0A2A26" stroke-opacity="0.5" fill="none" stroke-width="1.2"><ellipse cx="0" cy="0" rx="16" ry="40"/><ellipse cx="0" cy="0" rx="30" ry="40"/><line x1="-40" y1="0" x2="40" y2="0"/><line x1="-34" y1="-18" x2="34" y2="18"/><line x1="-34" y1="18" x2="34" y2="-18"/></g></g>
+          <rect x="66" y="182" width="68" height="20" rx="10" fill="#FFD166" opacity="0.92"/>
+          <text x="100" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="700" fill="#0a1220" letter-spacing="1">GLOWBAG</text>
+        </g>
+      </svg>
+      <svg class="glowbag-svg glowbag-her" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bagBody-her" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3d1a4a"/><stop offset="100%" stop-color="#7a2f6e"/></linearGradient>
+          <radialGradient id="emblemGlow-her" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#FFD166" stop-opacity="0.9"/><stop offset="70%" stop-color="#FFD166" stop-opacity="0.25"/><stop offset="100%" stop-color="#FFD166" stop-opacity="0"/></radialGradient>
+          <radialGradient id="globeFill-her" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#FFD166"/><stop offset="100%" stop-color="#3d1a4a"/></radialGradient>
+          <filter id="bagShadow-her" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/></filter>
+        </defs>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#7a2f6e" stroke-width="9" stroke-linecap="round"/>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#4fd8c4" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+        <g filter="url(#bagShadow-her)">
+          <path d="M38,60 L162,60 L178,208 C178,214 173,218 167,218 L33,218 C27,218 22,214 22,208 Z" fill="url(#bagBody-her)" stroke="#00000033" stroke-width="1"/>
+          <circle cx="100" cy="118" r="70" fill="url(#emblemGlow-her)"/>
+          <g transform="translate(100,118)"><circle r="40" fill="url(#globeFill-her)" stroke="#4fd8c4" stroke-width="2"/><g stroke="#0A2A26" stroke-opacity="0.5" fill="none" stroke-width="1.2"><ellipse cx="0" cy="0" rx="16" ry="40"/><ellipse cx="0" cy="0" rx="30" ry="40"/><line x1="-40" y1="0" x2="40" y2="0"/><line x1="-34" y1="-18" x2="34" y2="18"/><line x1="-34" y1="18" x2="34" y2="-18"/></g></g>
+          <rect x="66" y="182" width="68" height="20" rx="10" fill="#4fd8c4" opacity="0.92"/>
+          <text x="100" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="700" fill="#0a1220" letter-spacing="1">GLOWBAG</text>
+        </g>
+      </svg>
+      <svg class="glowbag-svg glowbag-kids" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bagBody-kids" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7a4a1a"/><stop offset="100%" stop-color="#d98a2e"/></linearGradient>
+          <radialGradient id="emblemGlow-kids" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#FFD166" stop-opacity="0.9"/><stop offset="70%" stop-color="#FFD166" stop-opacity="0.25"/><stop offset="100%" stop-color="#FFD166" stop-opacity="0"/></radialGradient>
+          <radialGradient id="globeFill-kids" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#FFD166"/><stop offset="100%" stop-color="#7a4a1a"/></radialGradient>
+          <filter id="bagShadow-kids" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/></filter>
+        </defs>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#d98a2e" stroke-width="9" stroke-linecap="round"/>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#4fd8c4" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+        <g filter="url(#bagShadow-kids)">
+          <path d="M38,60 L162,60 L178,208 C178,214 173,218 167,218 L33,218 C27,218 22,214 22,208 Z" fill="url(#bagBody-kids)" stroke="#00000033" stroke-width="1"/>
+          <circle cx="100" cy="118" r="70" fill="url(#emblemGlow-kids)"/>
+          <g transform="translate(100,118)"><circle r="40" fill="url(#globeFill-kids)" stroke="#4fd8c4" stroke-width="2"/><g stroke="#0A2A26" stroke-opacity="0.5" fill="none" stroke-width="1.2"><ellipse cx="0" cy="0" rx="16" ry="40"/><ellipse cx="0" cy="0" rx="30" ry="40"/><line x1="-40" y1="0" x2="40" y2="0"/><line x1="-34" y1="-18" x2="34" y2="18"/><line x1="-34" y1="18" x2="34" y2="-18"/></g></g>
+          <rect x="66" y="182" width="68" height="20" rx="10" fill="#4fd8c4" opacity="0.92"/>
+          <text x="100" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="700" fill="#0a1220" letter-spacing="1">GLOWBAG</text>
+        </g>
+      </svg>
+      <svg class="glowbag-svg glowbag-pet" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bagBody-pet" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2f3d24"/><stop offset="100%" stop-color="#5a7a3a"/></linearGradient>
+          <radialGradient id="emblemGlow-pet" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#FFD166" stop-opacity="0.9"/><stop offset="70%" stop-color="#FFD166" stop-opacity="0.25"/><stop offset="100%" stop-color="#FFD166" stop-opacity="0"/></radialGradient>
+          <radialGradient id="globeFill-pet" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#FFD166"/><stop offset="100%" stop-color="#2f3d24"/></radialGradient>
+          <filter id="bagShadow-pet" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/></filter>
+        </defs>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#5a7a3a" stroke-width="9" stroke-linecap="round"/>
+        <path d="M64,58 C64,26 76,10 100,10 C124,10 136,26 136,58" fill="none" stroke="#4fd8c4" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+        <g filter="url(#bagShadow-pet)">
+          <path d="M38,60 L162,60 L178,208 C178,214 173,218 167,218 L33,218 C27,218 22,214 22,208 Z" fill="url(#bagBody-pet)" stroke="#00000033" stroke-width="1"/>
+          <circle cx="100" cy="118" r="70" fill="url(#emblemGlow-pet)"/>
+          <g transform="translate(100,118)"><circle r="40" fill="url(#globeFill-pet)" stroke="#4fd8c4" stroke-width="2"/><g stroke="#0A2A26" stroke-opacity="0.5" fill="none" stroke-width="1.2"><ellipse cx="0" cy="0" rx="16" ry="40"/><ellipse cx="0" cy="0" rx="30" ry="40"/><line x1="-40" y1="0" x2="40" y2="0"/><line x1="-34" y1="-18" x2="34" y2="18"/><line x1="-34" y1="18" x2="34" y2="-18"/></g></g>
+          <rect x="66" y="182" width="68" height="20" rx="10" fill="#4fd8c4" opacity="0.92"/>
+          <text x="100" y="196" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9.5" font-weight="700" fill="#0a1220" letter-spacing="1">GLOWBAG</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <p class="hint" id="hint">Tap the box to open it ✨</p>
+
+  <!-- ADULT (His / Her share this set) -->
+  <div class="items active" id="items-adult">
+    <div class="card">
+      <span class="card-icon">🕹️</span>
+      <div class="card-tag">Free · Take Action</div>
+      <div class="card-title">People Power: The Game Changers</div>
+      <div class="card-desc">Take on Global Citizen's action challenge — complete quizzes and advocacy actions around the four "Game Changer" pillars (Finance, Women's Power, AI & Innovation, Planetary Health) to earn points toward ending extreme poverty and unlock rewards.</div>
+      <a class="card-link" href="https://www.globalcitizen.org/en/challenges/people-power-the-game-changers/" target="_blank" rel="noopener">Take the challenge ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🥂</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">CAVI Caviar — $15 Off</div>
+      <div class="card-desc">$15 off your first order, $89 minimum — a small indulgence, on us.</div>
+      <a class="card-link" href="https://loox.io/z/gG3nmaCc2?s=raf" target="_blank" rel="noopener">Get $15 off ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏃</span>
+      <div class="card-tag">GCCC Partner</div>
+      <div class="card-title">The Great World Race</div>
+      <div class="card-desc">Seven marathons, seven continents, seven days — the event GCCC is fundraising alongside with our No Kid Hungry bake sale. Follow the race or learn how to get involved.</div>
+      <a class="card-link" href="https://thegreatworldrace.com/" target="_blank" rel="noopener">Visit the race ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🍹</span>
+      <div class="card-tag">10th Anniversary</div>
+      <div class="card-title">Tequila Fest — Saturday, August 1</div>
+      <div class="card-desc">Complimentary tequila beverages and free jerk &amp; BBQ chicken (while supplies last), top DJs all day, and games &amp; experiences — one of NYC's biggest summer festivals.</div>
+      <a class="card-link" href="https://www.tequilafest.com/" target="_blank" rel="noopener">Get tickets ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎵</span>
+      <div class="card-tag">GCCC Partner Gift</div>
+      <div class="card-title">5-Day Music &amp; Journaling Retreat</div>
+      <div class="card-desc">A guided at-home retreat from Michelle Francois-Walsh (My Village Well) — one song a day, paired with journal prompts, for five days of reflection.</div>
+      <a class="card-link" href="free-5-day-music-journaling-retreat.pdf" target="_blank" rel="noopener">Download the PDF ↓</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧘</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Insight Timer</div>
+      <div class="card-desc">Over 200,000 free guided meditations from thousands of independent teachers — no subscription required to access the free library.</div>
+      <a class="card-link" href="https://insighttimer.com" target="_blank" rel="noopener">Get the app ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌿</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Medito</div>
+      <div class="card-desc">A nonprofit meditation app with no ads, no subscriptions, and no paywalls — structured courses and daily sessions, entirely free.</div>
+      <a class="card-link" href="https://medito.com" target="_blank" rel="noopener">Get the app ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎓</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">UCLA Mindful</div>
+      <div class="card-desc">Free, research-backed guided meditations from UCLA's Mindful Awareness Research Center, available in English and Spanish.</div>
+      <a class="card-link" href="https://www.uclahealth.org/uclamindful" target="_blank" rel="noopener">Listen free ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💚</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Smiling Mind</div>
+      <div class="card-desc">A nonprofit mindfulness app with structured programs for kids, teens, and adults — completely free, no paywalls.</div>
+      <a class="card-link" href="https://www.smilingmind.com.au" target="_blank" rel="noopener">Get the app ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💰</span>
+      <div class="card-tag">Free Tier</div>
+      <div class="card-title">Budgeting Toolkit</div>
+      <div class="card-desc">Rocket Money and Empower both offer permanent free tiers for budgeting, spending tracking, and net worth — no trial, no credit card.</div>
+      <a class="card-link" href="https://www.rocketmoney.com" target="_blank" rel="noopener">Explore free tools ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧰</span>
+      <div class="card-tag">Free Download</div>
+      <div class="card-title">Founder's Toolkit</div>
+      <div class="card-desc">A complete kit for starting, running, and growing a business — plans, trackers, legal templates, outreach scripts, and a full operations calendar, ready to edit.</div>
+      <a class="card-link" href="founders-toolkit.html" target="_blank" rel="noopener">Get the toolkit ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">📚</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Project Gutenberg</div>
+      <div class="card-desc">Over 70,000 free e-books in the public domain — classic literature, poetry, and reference, free to download forever.</div>
+      <a class="card-link" href="https://www.gutenberg.org" target="_blank" rel="noopener">Browse the library ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🗂️</span>
+      <div class="card-tag">GCCC Partner</div>
+      <div class="card-title">TherapyBinder — IEP Viewer</div>
+      <div class="card-desc">A shared home for a child's IEP goals, session notes, and progress — built so therapists, educators, and family can stay aligned in one place instead of chasing paperwork.</div>
+      <a class="card-link" href="https://therapybinder.com/" target="_blank" rel="noopener">Visit TherapyBinder ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">📰</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Global Citizens Magazine &amp; Press</div>
+      <div class="card-desc">Community-powered journalism from global citizens in all 193 UN member nations — features, SDG analysis, and storytelling, free to read.</div>
+      <a class="card-link" href="gccc_global_hive_magazine.html" target="_blank" rel="noopener">Read the magazine ↗</a>
+    </div>
+    <div class="card card-audio">
+      <span class="card-icon">🎵</span>
+      <div class="card-tag">GCCC Partner Gift</div>
+      <div class="card-title">AnnoDominiNation — Free Music Gift</div>
+      <div class="card-desc">Three free tracks from creative partner AnnoDominiNation, gifted to every GCCC member as part of this GlowBag. Stream right here or download to keep.</div>
+      <div class="audio-grid">
+        <div class="track"><div class="track-title">Dream On</div><audio controls preload="none" src="dream-on.mp3"></audio><a class="track-dl" href="dream-on.mp3" download>Download ↓</a></div>
+        <div class="track"><div class="track-title">Death Row</div><audio controls preload="none" src="death-row.mp3"></audio><a class="track-dl" href="death-row.mp3" download>Download ↓</a></div>
+        <div class="track"><div class="track-title">What You Waiting For</div><audio controls preload="none" src="what-you-waiting-for.mp3"></audio><a class="track-dl" href="what-you-waiting-for.mp3" download>Download ↓</a></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="card-icon">🥫</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Lemontree Food Helpline</div>
+      <div class="card-desc">Find free groceries, food pantries, soup kitchens, and SNAP/EBT help near you — currently covering Atlanta, Baltimore, Boston, Charlotte, Columbus, Detroit, New Jersey, NYC, Philadelphia, Tampa, and Washington D.C. Over 900,000 families served.</div>
+      <a class="card-link" href="https://www.foodhelpline.org/?ref=rfwinzy0ze" target="_blank" rel="noopener">Find food near you ↗</a>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,107,.35);">
+      <span class="card-icon">☎️</span>
+      <div class="card-tag crisis">Free · 24/7</div>
+      <div class="card-title">Crisis Support Line</div>
+      <div class="card-desc">If you or someone you know is struggling: call or text <strong style="color:var(--chalk);">988</strong> (Suicide &amp; Crisis Lifeline), or text HOME to <strong style="color:var(--chalk);">741741</strong> (Crisis Text Line). Free, confidential, 24/7.</div>
+      <a class="card-link" href="gccc-crisis-hotline.html" target="_blank" rel="noopener">Open the GCCC Crisis Hotline ↗</a>
+    </div>
+  </div>
+
+  <!-- KIDS -->
+  <div class="items" id="items-kids">
+    <div class="card">
+      <span class="card-icon">🕹️</span>
+      <div class="card-tag">Free · Take Action</div>
+      <div class="card-title">People Power: The Game Changers</div>
+      <div class="card-desc">A fun family challenge from Global Citizen — complete quizzes and actions around Finance, Women's Power, AI & Innovation, and Planetary Health to earn points toward ending extreme poverty and unlock rewards.</div>
+      <a class="card-link" href="https://www.globalcitizen.org/en/challenges/people-power-the-game-changers/" target="_blank" rel="noopener">Take the challenge ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🥂</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">CAVI Caviar — $15 Off</div>
+      <div class="card-desc">A gift for the grown-ups — $15 off your first order, $89 minimum, through our link.</div>
+      <a class="card-link" href="https://loox.io/z/gG3nmaCc2?s=raf" target="_blank" rel="noopener">Get $15 off ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎨</span>
+      <div class="card-tag">GCCC Partner Gift</div>
+      <div class="card-title">5-Day Journaling &amp; Drawing Retreat</div>
+      <div class="card-desc">A kid-friendly version of our music &amp; journaling retreat — one song a day, paired with simple draw-or-write prompts grown-ups can share with kids.</div>
+      <a class="card-link" href="free-5-day-music-journaling-retreat.pdf" target="_blank" rel="noopener">Download the PDF ↓</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💚</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Smiling Mind</div>
+      <div class="card-desc">A nonprofit mindfulness app with programs built specifically for kids and teens — completely free, no paywalls.</div>
+      <a class="card-link" href="https://www.smilingmind.com.au" target="_blank" rel="noopener">Get the app ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎓</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">UCLA Mindful</div>
+      <div class="card-desc">Free, research-backed guided meditations, including shorter sessions that work well for younger listeners.</div>
+      <a class="card-link" href="https://www.uclahealth.org/uclamindful" target="_blank" rel="noopener">Listen free ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">📚</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Project Gutenberg — Children's Shelf</div>
+      <div class="card-desc">Free public-domain storybooks and classic children's literature — no cost, no account needed.</div>
+      <a class="card-link" href="https://www.gutenberg.org" target="_blank" rel="noopener">Browse the library ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🗂️</span>
+      <div class="card-tag">GCCC Partner</div>
+      <div class="card-title">TherapyBinder — IEP Viewer</div>
+      <div class="card-desc">A shared home for your child's IEP goals, session notes, and progress — so therapists, teachers, and family are all working from the same page instead of scattered paperwork.</div>
+      <a class="card-link" href="https://therapybinder.com/" target="_blank" rel="noopener">Visit TherapyBinder ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧩</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Symplify</div>
+      <div class="card-desc">A simple, free tool that helps parents and educators understand how a child learns best, so support at home and school can line up.</div>
+      <a class="card-link" href="https://www.symplifyapp.com/free" target="_blank" rel="noopener">Try it free ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">📰</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Global Citizens Magazine &amp; Press</div>
+      <div class="card-desc">Kid-friendly stories and features from young global citizens around the world — a fun, free read for curious kids.</div>
+      <a class="card-link" href="gccc_global_hive_magazine.html" target="_blank" rel="noopener">Read the magazine ↗</a>
+    </div>
+    <div class="card card-audio">
+      <span class="card-icon">🎵</span>
+      <div class="card-tag">GCCC Partner Gift</div>
+      <div class="card-title">AnnoDominiNation — Free Music Gift</div>
+      <div class="card-desc">Three tracks from creative partner AnnoDominiNation, gifted as part of this GlowBag — a nice one for grown-ups and older kids to listen to together.</div>
+      <div class="audio-grid">
+        <div class="track"><div class="track-title">Dream On</div><audio controls preload="none" src="dream-on.mp3"></audio><a class="track-dl" href="dream-on.mp3" download>Download ↓</a></div>
+        <div class="track"><div class="track-title">Death Row</div><audio controls preload="none" src="death-row.mp3"></audio><a class="track-dl" href="death-row.mp3" download>Download ↓</a></div>
+        <div class="track"><div class="track-title">What You Waiting For</div><audio controls preload="none" src="what-you-waiting-for.mp3"></audio><a class="track-dl" href="what-you-waiting-for.mp3" download>Download ↓</a></div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,107,.35);">
+      <span class="card-icon">☎️</span>
+      <div class="card-tag crisis">Free · 24/7</div>
+      <div class="card-title">Need to Talk to Someone?</div>
+      <div class="card-desc">Parents and kids can call or text <strong style="color:var(--chalk);">988</strong> (Suicide &amp; Crisis Lifeline) anytime, or text HOME to <strong style="color:var(--chalk);">741741</strong> (Crisis Text Line). Free, confidential, 24/7.</div>
+      <a class="card-link" href="gccc-crisis-hotline.html" target="_blank" rel="noopener">Open the GCCC Crisis Hotline ↗</a>
+    </div>
+  </div>
+
+  <!-- PET -->
+  <div class="items" id="items-pet">
+    <div class="card">
+      <span class="card-icon">🐾</span>
+      <div class="card-tag">GCCC Partner Gift</div>
+      <div class="card-title">5-Day Bonding &amp; Enrichment Retreat</div>
+      <div class="card-desc">A simple 5-day routine of play, training, and quiet time with your pet — paired with a song a day from our retreat guide.</div>
+      <a class="card-link" href="free-5-day-music-journaling-retreat.pdf" target="_blank" rel="noopener">Download the PDF ↓</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💰</span>
+      <div class="card-tag">Free Tier</div>
+      <div class="card-title">Pet-Cost Budgeting</div>
+      <div class="card-desc">Track food, vet visits, and supply costs with Rocket Money or Empower's free tier — no trial, no credit card.</div>
+      <a class="card-link" href="https://www.rocketmoney.com" target="_blank" rel="noopener">Explore free tools ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">📚</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Project Gutenberg — Animal &amp; Pet-Care Shelf</div>
+      <div class="card-desc">Classic public-domain animal-care guides and stories — free to download forever.</div>
+      <a class="card-link" href="https://www.gutenberg.org" target="_blank" rel="noopener">Browse the library ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">📰</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Global Citizens Magazine &amp; Press</div>
+      <div class="card-desc">Community journalism and storytelling from global citizens everywhere — free to read while you relax with your pet.</div>
+      <a class="card-link" href="gccc_global_hive_magazine.html" target="_blank" rel="noopener">Read the magazine ↗</a>
+    </div>
+    <div class="card card-audio">
+      <span class="card-icon">🎵</span>
+      <div class="card-tag">GCCC Partner Gift</div>
+      <div class="card-title">AnnoDominiNation — Free Music Gift</div>
+      <div class="card-desc">Three free tracks from creative partner AnnoDominiNation — good company for a quiet evening in with your pet.</div>
+      <div class="audio-grid">
+        <div class="track"><div class="track-title">Dream On</div><audio controls preload="none" src="dream-on.mp3"></audio><a class="track-dl" href="dream-on.mp3" download>Download ↓</a></div>
+        <div class="track"><div class="track-title">Death Row</div><audio controls preload="none" src="death-row.mp3"></audio><a class="track-dl" href="death-row.mp3" download>Download ↓</a></div>
+        <div class="track"><div class="track-title">What You Waiting For</div><audio controls preload="none" src="what-you-waiting-for.mp3"></audio><a class="track-dl" href="what-you-waiting-for.mp3" download>Download ↓</a></div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,107,.35);">
+      <span class="card-icon">🚑</span>
+      <div class="card-tag crisis">24/7</div>
+      <div class="card-title">Pet Emergency?</div>
+      <div class="card-desc">Contact your local emergency vet clinic right away, or reach the ASPCA Animal Poison Control Center at <strong style="color:var(--chalk);">(888) 426-4435</strong> (a consultation fee may apply). For pet food assistance, check with your local animal shelter or humane society.</div>
+    </div>
+  </div>
+
+  <div class="guide">
+    <div class="icon">📄</div>
+    <div>
+      <div class="title">Download the GCCC Community Resource Guide</div>
+      <div class="sub">The Hot Bread Kitchen Community Resources guide — housing, mental health, childcare, legal help, and more, all in one place.</div>
+    </div>
+    <a class="btn" href="virtual-glowbag.pdf" target="_blank" rel="noopener">Open the GlowBag PDF</a>
+  </div>
+
+  <div class="section-title">🎮 Free Games in Your GlowBag</div>
+  <div class="section-sub">Play any of these free — some hand out a redemption ticket you can show at the redemption table.</div>
+  <div class="games">
+    <div class="card">
+      <span class="card-icon">🌍</span>
+      <div class="card-tag game">Play Now</div>
+      <div class="card-title">Save the Planet</div>
+      <div class="card-desc">Race the Doomsday Clock and complete all 17 Global Goals before midnight. Save the planet to unlock a QR code straight to this GlowBag.</div>
+      <a class="card-link" href="save-the-planet-game.html" target="_blank" rel="noopener">Play the game ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎡</span>
+      <div class="card-tag game">Play Now</div>
+      <div class="card-title">Global Goals Prize Wheel</div>
+      <div class="card-desc">Spin for prizes, Global Goals, and fun facts. Land on a prize and you'll get a redemption ticket with a QR code to show at the table.</div>
+      <a class="card-link" href="gccc_prize_wheel.html" target="_blank" rel="noopener">Spin the wheel ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🔢</span>
+      <div class="card-tag game">Play Now</div>
+      <div class="card-title">GCCC Bingo Night</div>
+      <div class="card-desc">Follow along with the live caller and mark your card. Four printable cards included so a whole table can play at once.</div>
+      <a class="card-link" href="gccc_bingo_caller.html" target="_blank" rel="noopener">Open the caller ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧾</span>
+      <div class="card-tag game">Play Now</div>
+      <div class="card-title">Bingo Cards A–D</div>
+      <div class="card-desc">Four unique printable bingo cards to pair with the live caller — pick one, or grab a set for the whole table.</div>
+      <a class="card-link" href="gccc_bingo_card_A.html" target="_blank" rel="noopener">Card A ↗</a>
+      &nbsp;·&nbsp;
+      <a class="card-link" href="gccc_bingo_card_B.html" target="_blank" rel="noopener">B ↗</a>
+      &nbsp;·&nbsp;
+      <a class="card-link" href="gccc_bingo_card_C.html" target="_blank" rel="noopener">C ↗</a>
+      &nbsp;·&nbsp;
+      <a class="card-link" href="gccc_bingo_card_D.html" target="_blank" rel="noopener">D ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎟️</span>
+      <div class="card-tag game">Instant Win</div>
+      <div class="card-title">Glow &amp; Go — GlowBag Ticket</div>
+      <div class="card-desc">Scratch to match, then scratch your prize box for a shot at a free Virtual GlowBag.</div>
+      <a class="card-link" href="gccc_scratch_glowbag.html" target="_blank" rel="noopener">Scratch to play ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎟️</span>
+      <div class="card-tag game">Instant Win</div>
+      <div class="card-title">Glow &amp; Go — Membership Ticket</div>
+      <div class="card-desc">Scratch to match, then scratch your prize box for a shot at a free GCCC Membership.</div>
+      <a class="card-link" href="gccc_scratch_membership.html" target="_blank" rel="noopener">Scratch to play ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎟️</span>
+      <div class="card-tag game">Instant Win</div>
+      <div class="card-title">Glow &amp; Go — Virtual Care Ticket</div>
+      <div class="card-desc">Scratch to match, then scratch your prize box for a shot at a free Virtual Care Visit.</div>
+      <a class="card-link" href="gccc_scratch_virtualcare.html" target="_blank" rel="noopener">Scratch to play ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎟️</span>
+      <div class="card-tag game">Instant Win</div>
+      <div class="card-title">Glow &amp; Go — Coding Class Ticket</div>
+      <div class="card-desc">Scratch to match, then scratch your prize box for a shot at a free Coding Class.</div>
+      <a class="card-link" href="gccc_scratch_codingclass.html" target="_blank" rel="noopener">Scratch to play ↗</a>
+    </div>
+  </div>
+  <p class="games-note">Any game that awards a real prize will show a ticket with a serial number and QR code — bring it to the redemption table (or scan it) to claim.</p>
+
+
+  <div class="section-title">💰 Money &amp; Community Tools</div>
+  <div class="section-sub">Two more things tucked into your GlowBag.</div>
+  <div class="resources">
+    <div class="card" style="border-color:rgba(255,107,107,.35);">
+      <span class="card-icon">☎️</span>
+      <div class="card-tag crisis">Free · 24/7</div>
+      <div class="card-title">GCCC Crisis Hotline</div>
+      <div class="card-desc">One door in, many doors open. Start an intake, find emergency shelter through the Global PATH Center, or reach a live crisis line — all in one place.</div>
+      <a class="card-link" href="gccc-crisis-hotline.html" target="_blank" rel="noopener">Open the Crisis Hotline ↗</a>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,107,.35);">
+      <span class="card-icon">💵</span>
+      <div class="card-tag crisis">Need Help Now</div>
+      <div class="card-title">Emergency Funding</div>
+      <div class="card-desc">Facing a bill, rent, or another cost that can't wait? Get your free fundraiser kit to start raising money today.</div>
+      <a class="card-link" href="emergency-funding.html" target="_blank" rel="noopener">Get help now ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🪙</span>
+      <div class="card-tag">Design Demo</div>
+      <div class="card-title">Global Coin Exchange</div>
+      <div class="card-desc">A concept preview of Global Coin, GCCC's community-impact rewards system — earn coin for volunteering, redeem it for perks. Visual demo only; no real money or crypto involved.</div>
+      <a class="card-link" href="global-coin-exchange-demo.html" target="_blank" rel="noopener">See the demo ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎖️</span>
+      <div class="card-tag">GCCC Partner</div>
+      <div class="card-title">Mission Ready Financial</div>
+      <div class="card-desc">Financial education and mentorship from Jason Haglund, a retired Marine of 24 years — income protection, tax-advantaged wealth strategies, and retirement planning, with a path to a purpose-driven career in financial services for those who want it. GCCC does not provide financial advice; connect directly with Mission Ready Financial for your own consultation.</div>
+      <a class="card-link" href="https://missionreadyfinancial.com/" target="_blank" rel="noopener">Visit Mission Ready Financial ↗</a>
+    </div>
+  </div>
+
+  <div class="section-title">🤝 Job, Internship &amp; Volunteer Opportunities</div>
+  <div class="section-sub">Real openings, tucked right into your GlowBag.</div>
+  <div class="resources">
+    <div class="card">
+      <span class="card-icon">🏛️</span>
+      <div class="card-tag">Internship · NYC Mayor's Office Partnership</div>
+      <div class="card-title">Workforce Reentry Internship Program</div>
+      <div class="card-desc">In partnership with the NYC Mayor's Office, GCCC helps individuals receiving government benefits transition back into the workforce through internships, job coaching, and employer placement support.</div>
+      <a class="card-link" href="https://www.linkedin.com/jobs/view/4444698768/" target="_blank" rel="noopener">View &amp; Apply on LinkedIn ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🙌</span>
+      <div class="card-tag">Volunteer</div>
+      <div class="card-title">Join the GCCC Team</div>
+      <div class="card-desc">Give your time, skills, and passion to a global movement. Every volunteer hour advances the SDGs and strengthens communities near and far — no experience required, just a willingness to show up.</div>
+      <a class="card-link" href="https://globalcitizencommunitycenter.univer.se/jointheteam" target="_blank" rel="noopener">Join the Team ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💵</span>
+      <div class="card-tag">Paid · $30/hr</div>
+      <div class="card-title">DIG — Design Insight Group</div>
+      <div class="card-desc">A paid research community from Blue Ridge Labs at Robin Hood, connecting NYC residents with lived experience of poverty to interviews, focus groups, surveys, and product testing sessions — $30 per hourly engagement. Sign up to browse and join sessions.</div>
+      <a class="card-link" href="https://www.joindig.org/sessions" target="_blank" rel="noopener">Join DIG ↗</a>
+    </div>
+  </div>
+
+  <div class="section-title">⚖️ Legal Help</div>
+  <div class="section-sub">Two legal resources from a GCCC partner — not free legal aid, but a place to start if you need a lawyer.</div>
+  <div class="resources">
+    <div class="card">
+      <span class="card-icon">⚖️</span>
+      <div class="card-tag crisis">Free Matching</div>
+      <div class="card-title">Onward Justice</div>
+      <div class="card-desc">Get matched with a lawyer in minutes, free — covering family law, immigration, real estate, business, and more in NY, NJ, DC, and LA. The matching call is free; rates for actual legal work are set by the attorney.</div>
+      <a class="card-link" href="https://www.onwardjustice.com/" target="_blank" rel="noopener">Visit Onward Justice ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🤖</span>
+      <div class="card-tag">For Legal Professionals</div>
+      <div class="card-title">Bruce AI</div>
+      <div class="card-desc">A free AI tool built for lawyers and paralegals — automates discovery, drafting, and transcription. Useful if you're working with (or are) a legal professional, not a direct-to-consumer service.</div>
+      <a class="card-link" href="https://askbrucenow.com/" target="_blank" rel="noopener">Visit Bruce AI ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">📢</span>
+      <div class="card-tag crisis">Witness Appeal &amp; Community Fundraiser</div>
+      <div class="card-title">Family Court Case &amp; 2026 Bake Sale for No Kid Hungry</div>
+      <div class="card-desc">Have you witnessed a lack of training, or a failure to follow policy, law, or procedure within ACS, Family Court, or NYPD? Rosie is gathering witnesses ahead of an October 2026 hearing. Alongside that, join Global Citizens' official No Kid Hungry bake sale team — every cookie, cake, and dollar carries one promise: no child goes to bed hungry by 2030.</div>
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <a class="card-link" href="https://c.org/xmnnC9nxJG" target="_blank" rel="noopener">View Flyer &amp; Sign Up ↗</a>
+        <a class="card-link" href="https://gofund.me/e4d29b5a2" target="_blank" rel="noopener">Support the Fundraiser ↗</a>
+        <a class="card-link" href="https://p2p.onecause.com/2026bakesale/team/global-citizens-2" target="_blank" rel="noopener">Join the Bake Sale ↗</a>
+      </div>
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); font-size:12px; color:var(--muted, #8a94a3); line-height:1.6;">
+        <strong>Long-term advocacy goal (separate from this campaign's target):</strong> GCCC's broader mission is to support closing the global SDG financing gap the World Bank and UN track each year — a multi-trillion-dollar gap that no single fundraiser can close, but that sustained community action and policy advocacy chip away at over time.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">💊 Telehealth — Weight Loss Program</div>
+  <div class="section-sub">A GCCC partner offer — use the code below at checkout. Requires a medical consultation through the provider; this is not medical advice from GCCC.</div>
+  <div class="resources">
+    <div class="card">
+      <span class="card-icon">💊</span>
+      <div class="card-tag">GlowBag Partner Offer</div>
+      <div class="card-title">MDExam Telehealth</div>
+      <div class="card-desc">Use code <strong>Rosevip1</strong> at checkout. Discounts Level 1–3 plans to $175/mo for the first 3 months. Selecting the tirzepatide option brings it to $122. A free Virtual GlowBag is included no matter which plan you choose. All prescribing decisions are made by MDExam's licensed providers after a consultation — GCCC is not a medical provider.</div>
+      <a class="card-link" href="https://start.mdexam.com/" target="_blank" rel="noopener">Visit MDExam ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏥</span>
+      <div class="card-tag">Pharmacy Portal</div>
+      <div class="card-title">BloomRx — Prescription Delivery</div>
+      <div class="card-desc">Scan or tap to open your direct-to-patient pharmacy portal for prescription fulfillment tied to your MDExam telehealth visit.</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fportal.bloomrx.io%2Fdtp%2F6a0ae500dbf9538d0636a826" alt="BloomRx pharmacy portal QR code" style="width:140px;height:140px;display:block;margin:10px auto;border-radius:6px;background:#fff;padding:6px;">
+      <a class="card-link" href="https://portal.bloomrx.io/dtp/6a0ae500dbf9538d0636a826" target="_blank" rel="noopener">Open Pharmacy Portal ↗</a>
+    </div>
+  </div>
+
+  <div class="section-title">🏙️ NYC Summer Programs for Kids &amp; Teens</div>
+  <div class="section-sub">A free city resource — not a GCCC program, but worth having in every family's GlowBag.</div>
+  <div class="resources">
+    <div class="card">
+      <span class="card-icon">☀️</span>
+      <div class="card-tag">Free · City of New York</div>
+      <div class="card-title">Summer in NYC</div>
+      <div class="card-desc">The city's interactive summer finder — search by age, ZIP code, and interest to find free and low-cost programs near you, from art classes to youth sports leagues, plus info on free summer meals and citywide FIFA World Cup watch parties.</div>
+      <a class="card-link" href="https://www.nyc.gov/summer" target="_blank" rel="noopener">Find a program ↗</a>
+    </div>
+  </div>
+
+  <div class="section-title">🗳️ Civic Engagement</div>
+  <div class="section-sub">Nonpartisan tools to help you register, check your status, and find your polling place — no candidates, no parties, just access.</div>
+  <div class="resources">
+    <div class="card">
+      <span class="card-icon">🗳️</span>
+      <div class="card-tag">Free · Nonpartisan</div>
+      <div class="card-title">Vote.org</div>
+      <div class="card-desc">Register to vote, check your registration status, find your polling place, and see key deadlines for your state — all in one place, free of charge and free of any candidate or party affiliation.</div>
+      <a class="card-link" href="https://www.vote.org/" target="_blank" rel="noopener">Check your voter status ↗</a>
+    </div>
+  </div>
+
+  <div class="section-title">📜 Know Your Rights &amp; Government Guide</div>
+  <div class="section-sub">Free reference material — how government actually works, and how to find the right official channel if you ever need to file a complaint.</div>
+  <div class="resources">
+    <div class="card">
+      <span class="card-icon">📘</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Civic Education &amp; Complaint Navigation Guide</div>
+      <div class="card-desc">A plain-language walkthrough of how government works at every level — international bodies, federal, state, local, and police — plus how to file a complaint with the correct official body. Free to download, yours to keep.</div>
+      <a class="card-link" href="gccc-civic-curriculum-expanded.docx" download>Download the guide ↓</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌍</span>
+      <div class="card-tag">100% Free</div>
+      <div class="card-title">Government &amp; Complaint Routing Templates (192 Countries)</div>
+      <div class="card-desc">Fill-in-the-blank worksheets for finding the right official government or international-body channel, one per country. Handy starting points for research — always verify against that country's own official sources before relying on any entry.</div>
+      <a class="card-link" href="gccc-country-routing-templates-192.zip" download>Download the templates ↓</a>
+    </div>
+  </div>
+
+  <div class="section-title">🧭 More Free Resources</div>
+  <div class="resources">
+    <div class="card"><span class="card-icon">🧘</span><div class="card-title">Meditation &amp; Mindfulness</div><div class="card-desc">Insight Timer, Medito, UCLA Mindful, and Smiling Mind — all free to use.</div></div>
+    <div class="card"><span class="card-icon">💰</span><div class="card-title">Budgeting Tools</div><div class="card-desc">Rocket Money and Empower, for getting a clear picture of your finances.</div></div>
+    <div class="card"><span class="card-icon">📚</span><div class="card-title">Free E-Books</div><div class="card-desc">Thousands of free titles via Project Gutenberg.</div></div>
+    <div class="card"><span class="card-icon">📰</span><div class="card-title">Magazine &amp; Press</div><div class="card-desc">Free community journalism and SDG storytelling from global citizens everywhere.</div></div>
+    <div class="card"><span class="card-icon">🍽️</span><div class="card-title">Food Support</div><div class="card-desc">Lemontree Food Helpline, for finding food assistance near you.</div></div>
+  </div>
+
+  <div class="section-title">🤝 Sponsors</div>
+  <div class="section-sub">GCCC sponsor programs and partner links.</div>
+  <div class="resources">
+    <div class="card">
+      <span class="card-icon">🤝</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">DAC — Recruiting Page for New Agents</div>
+      <div class="card-desc">Interested in becoming a David Allen Capital agent? Start here.</div>
+      <a class="card-link" href="https://davidallencapital.com/partner/102692561" target="_blank" rel="noopener">Visit Recruiting Page ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💊</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">FlatFeeRx Membership</div>
+      <div class="card-desc">A flat-fee prescription membership program through DAC Healthcare.</div>
+      <a class="card-link" href="https://dachealthcare.com/Rx/102692561" target="_blank" rel="noopener">View FlatFeeRx ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🎗️</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">DAC Healthcare Fundraiser</div>
+      <div class="card-desc">A fundraiser program offered through DAC Healthcare.</div>
+      <a class="card-link" href="https://dachealthcare.com/fundraiser/102692561" target="_blank" rel="noopener">View Fundraiser ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💼</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">Business Funding</div>
+      <div class="card-desc">David Allen Capital funding options: Bigger Funding, Gig Micro-Funding, and Line of Credit.</div>
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <a class="card-link" href="https://davidallencapital.com/business-capital/102692561" target="_blank" rel="noopener">Bigger Funding ↗</a>
+        <a class="card-link" href="https://davidallencapital.com/gigfunding/102692561" target="_blank" rel="noopener">Gig Micro-Funding ↗</a>
+        <a class="card-link" href="https://davidallencapital.com/line-of-credit/102692561" target="_blank" rel="noopener">Line of Credit ↗</a>
+      </div>
+    </div>
+    <div class="card">
+      <span class="card-icon">💳</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">Payment Processing</div>
+      <div class="card-desc">Payment processing services through David Allen Capital.</div>
+      <a class="card-link" href="https://davidallencapital.com/payment-processing/102692561" target="_blank" rel="noopener">Get Started ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏥</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">DAC Healthcare</div>
+      <div class="card-desc">DAC Healthcare's main portal.</div>
+      <a class="card-link" href="https://dachealthcare.com/102692561" target="_blank" rel="noopener">Visit DAC Healthcare ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">💵</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">Rellevate — Free Employee Advance Pay</div>
+      <div class="card-desc">Free earned-wage advance pay for employees, through David Allen Capital.</div>
+      <a class="card-link" href="https://davidallencapital.com/rellevate/102692561" target="_blank" rel="noopener">Learn More ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🛡️</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">DAC Protect</div>
+      <div class="card-desc">Consumer identity theft protection and credit monitoring.</div>
+      <a class="card-link" href="https://davidallencapital.com/dac-protect/102692561" target="_blank" rel="noopener">View DAC Protect ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌹</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">Join Rose</div>
+      <div class="card-desc">A GCCC sponsor link.</div>
+      <a class="card-link" href="https://joinrose.com" target="_blank" rel="noopener">Visit Join Rose ↗</a>
+    </div>
+    <div class="card">
+      <span class="card-icon">🧾</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">Gusto Payroll</div>
+      <div class="card-desc">Payroll and HR tools through Gusto — sponsor referral links.</div>
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <a class="card-link" href="https://gusto.com/r/rose848" target="_blank" rel="noopener">Link 1 ↗</a>
+        <a class="card-link" href="https://gusto.com/r/rose46" target="_blank" rel="noopener">Link 2 ↗</a>
+        <a class="card-link" href="https://gusto.com/partners/r/rose2604" target="_blank" rel="noopener">Partners ↗</a>
+        <a class="card-link" href="https://gusto.com/credits/r/rosed391" target="_blank" rel="noopener">Credits ↗</a>
+      </div>
+    </div>
+    <div class="card">
+      <span class="card-icon">🏦</span>
+      <div class="card-tag">GCCC Sponsor</div>
+      <div class="card-title">One Global Financing</div>
+      <div class="card-desc">A GCCC sponsor link.</div>
+      <a class="card-link" href="https://oneglobalfinancing.com/" target="_blank" rel="noopener">Visit One Global Financing ↗</a>
+    </div>
+  </div>
+
+  <div class="section-title">🎁 Refer a Friend</div>
+  <div class="section-sub">Share the GlowBag with someone who could use it. We'll generate a referral link and code for you automatically.</div>
+  <div class="refer">
+    <div class="refer-row">
+      <div class="refer-field">
+        <label for="referYourName">Your name (member)</label>
+        <input type="text" id="referYourName" placeholder="e.g. Jamie Rivera" autocomplete="name">
+      </div>
+      <div class="refer-field">
+        <label for="referFriendName">Friend's name</label>
+        <input type="text" id="referFriendName" placeholder="e.g. Alex Chen" autocomplete="off">
+      </div>
+    </div>
+    <button class="refer-btn" id="referGenerateBtn" onclick="generateReferral()">✨ Generate Referral Link</button>
+
+    <div class="refer-result" id="referResult">
+      <div class="refer-result-label">Referral Code</div>
+      <div class="refer-code-row">
+        <input type="text" id="referCodeOutput" readonly>
+        <button class="refer-copy" id="referCodeCopyBtn" onclick="copyReferField('referCodeOutput','referCodeCopyBtn')">Copy</button>
+      </div>
+      <div class="refer-result-label">Referral Link</div>
+      <div class="refer-link-row">
+        <input type="text" id="referLinkOutput" readonly>
+        <button class="refer-copy" id="referLinkCopyBtn" onclick="copyReferField('referLinkOutput','referLinkCopyBtn')">Copy</button>
+      </div>
+      <div class="refer-result-label">Message to Send</div>
+      <textarea class="refer-msg" id="referMsgOutput" readonly></textarea>
+      <button class="refer-copy" id="referMsgCopyBtn" onclick="copyReferField('referMsgOutput','referMsgCopyBtn')" style="width:100%;padding:10px;">Copy Message</button>
+      <p class="refer-note">This code is generated on your device for sharing — it isn't saved anywhere yet, so copy the link or message before you close this page.</p>
+    </div>
+  </div>
+
+  <p class="note">This Virtual GlowBag is a digital sample of what's inside a real GCCC GlowBag — emergency swag bags filled with donated goods, gift cards, and services, given free to people in crisis. <a href="index.html#glowbags">See how physical GlowBags work →</a></p>
+
+  <p class="cta-heading">Ready to do more?</p>
+  <div class="cta-row">
+    <a href="membership-intake.html?tier=sponsor" class="btn-primary">💝 Donate Items or Sponsor a Bag</a>
+    <a href="membership-intake.html?tier=volunteer" class="btn-gold">🙌 Sign Up to Volunteer</a>
+    <a href="membership-intake.html" class="btn-outline">🎟️ Sign Up for Free Membership</a>
+  </div>
+
+  <div class="cta-row">
+    <a href="dashboard.html" class="btn-primary">Continue to My Dashboard →</a>
+    <a href="index.html" class="btn-gold">Explore GCCC</a>
+  </div>
+
+</div>
+
+<div class="confetti" id="confetti"></div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const box = document.getElementById('box');
+  const bagWrap = document.getElementById('bagWrap');
+  const hint = document.getElementById('hint');
+  const confettiLayer = document.getElementById('confetti');
+  const buttons = document.querySelectorAll('.toggle button');
+  let opened = false;
+  let currentType = 'his';
+
+  const TYPE_TO_ITEMSET = { his: 'adult', her: 'adult', kids: 'kids', pet: 'pet' };
+  const allItemSets = ['items-adult', 'items-kids', 'items-pet'];
+
+  function setType(type){
+    currentType = type;
+    bagWrap.classList.remove('mode-his','mode-her','mode-kids','mode-pet');
+    bagWrap.classList.add('mode-' + type);
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.type === type));
+
+    const targetSet = 'items-' + TYPE_TO_ITEMSET[type];
+    allItemSets.forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('active');
+      if (opened) el.classList.remove('show');
+    });
+    document.getElementById(targetSet).classList.add('active');
+    if (opened) {
+      requestAnimationFrame(() => document.getElementById(targetSet).classList.add('show'));
+    }
+  }
+
+  function spawnConfetti(){
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    const colors = ['#4fd8c4','#FFD166','#2a8f80','#d9a53f'];
+    for (let i = 0; i < 44; i++){
+      const bit = document.createElement('div');
+      bit.className = 'spark';
+      bit.style.left = (Math.random() * 100) + 'vw';
+      bit.style.background = colors[i % colors.length];
+      const dur = 2.2 + Math.random() * 1.8;
+      const delay = Math.random() * 0.4;
+      bit.style.animationDuration = dur + 's';
+      bit.style.animationDelay = delay + 's';
+      bit.style.borderRadius = (i % 2 === 0) ? '2px' : '50%';
+      confettiLayer.appendChild(bit);
+      setTimeout(() => bit.remove(), (dur + delay) * 1000 + 200);
+    }
+  }
+
+  function openBox(){
+    if (opened) return;
+    opened = true;
+    stage.classList.add('opening');
+    hint.style.opacity = '0';
+    setTimeout(() => { hint.textContent = '🎉 Enjoy your free gifts below!'; hint.style.opacity = '1'; }, 450);
+    setTimeout(spawnConfetti, 550);
+    setTimeout(() => {
+      const targetSet = 'items-' + TYPE_TO_ITEMSET[currentType];
+      const el = document.getElementById(targetSet);
+      el.classList.add('show');
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 850);
+  }
+
+  box.addEventListener('click', openBox);
+  box.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openBox(); } });
+
+  if (new URLSearchParams(window.location.search).get('claim') === '1'){
+    window.addEventListener('DOMContentLoaded', () => setTimeout(openBox, 500));
+  }
+
+  // --- Refer a Friend ---
+  function slugifyName(name){
+    return name.trim().toUpperCase().replace(/[^A-Z0-9]+/g, '').slice(0, 6) || 'GCCC';
+  }
+
+  function randomSuffix(len){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous chars
+    let out = '';
+    for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return out;
+  }
+
+  function generateReferral(){
+    const yourNameInput = document.getElementById('referYourName');
+    const friendNameInput = document.getElementById('referFriendName');
+    const yourName = yourNameInput.value.trim();
+    const friendName = friendNameInput.value.trim();
+
+    if (!yourName || !friendName){
+      (yourName ? friendNameInput : yourNameInput).focus();
+      (yourName ? friendNameInput : yourNameInput).style.borderColor = 'var(--coral)';
+      setTimeout(() => { yourNameInput.style.borderColor = ''; friendNameInput.style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    const code = `${slugifyName(yourName)}-${randomSuffix(5)}`;
+    const baseUrl = window.location.origin + window.location.pathname.replace(/virtual-glowbag[^/]*\.html$/, '') + 'membership-intake.html';
+    const link = `${baseUrl}?ref=${encodeURIComponent(code)}&friend=${encodeURIComponent(friendName)}`;
+    const message = `Hey ${friendName}! I'm a member of GCCC (Global Citizens Community Center) and thought of you. They give out a free Virtual GlowBag — genuinely free tools, resources, and gifts — to anyone who signs up. Use my referral link to grab yours: ${link}`;
+
+    document.getElementById('referCodeOutput').value = code;
+    document.getElementById('referLinkOutput').value = link;
+    document.getElementById('referMsgOutput').value = message;
+
+    ['referCodeCopyBtn','referLinkCopyBtn','referMsgCopyBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      btn.textContent = btn.id === 'referMsgCopyBtn' ? 'Copy Message' : 'Copy';
+      btn.classList.remove('copied');
+    });
+
+    document.getElementById('referResult').classList.add('show');
+    document.getElementById('referResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function copyReferField(fieldId, btnId){
+    const field = document.getElementById(fieldId);
+    const btn = document.getElementById(btnId);
+    const finish = () => {
+      const original = btn.id === 'referMsgCopyBtn' ? 'Copy Message' : 'Copy';
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(field.value).then(finish).catch(() => {
+        field.select();
+        document.execCommand('copy');
+        finish();
+      });
+    } else {
+      field.select();
+      document.execCommand('copy');
+      finish();
+    }
+  }
+</script>
+</body>
+</html>  

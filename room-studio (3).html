@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Studio — GCCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Serif+Display&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="gccc.css"/>
+<style>:root{--accent:#FB923C;}</style>
+</head>
+<body><nav id="site-nav">
+  <a class="nav-logo-word" href="index.html">
+    <span class="nav-logo-globe">🌍</span>
+    GCCC
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#rooms">Rooms</a></li>
+    <li><a href="index.html#goals">Global Goals</a></li>
+    <li><a href="index.html#campaigns">Take Action</a></li>
+    <li><a href="index.html#membership">Membership</a></li>
+    <li><a href="dashboard.html">My Dashboard</a></li>
+    <li><a href="login.html" class="nav-cta">Sign In</a></li>
+  </ul>
+  <div class="nav-hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<main>
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-inner" style="max-width:1200px;margin:0 auto;">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span>/</span>
+        <a href="index.html#rooms">Rooms</a><span>/</span>
+        Studio
+      </div>
+      <div class="page-hero-label">Creative Production Space</div>
+      <h1>🎤 <em>Studio</em></h1>
+      <p class="page-hero-desc">Creative production space for podcasts, video, and multimedia storytelling. Where community voices are recorded, edited, and amplified to the world.</p>
+      <a class="btn-primary" href="#offerings">Enter the Studio</a>
+      &nbsp;&nbsp;
+      <a class="btn-outline" href="index.html#rooms">All Rooms</a>
+    </div>
+    <div class="page-hero-accent">🎤</div>
+  </div>
+
+  <section class="section" style="background:var(--navy2);" id="country-explorer-section">
+    <div class="section-inner">
+      <div class="section-label">Explore Globally</div>
+      <h2 class="section-title">Browse by UN Member State</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Find local partners, SDG progress snapshots, and points of contact for the Studio across all 193 UN member states.</p>
+      <div class="country-explorer-search-row">
+        <input type="text" class="country-explorer-search" id="country-explorer-search" placeholder="Search countries…" autocomplete="off"/>
+        <div class="country-explorer-count" id="country-explorer-count"></div>
+      </div>
+      <div class="country-explorer-grid" id="country-explorer-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--navy);" id="offerings">
+    <div class="section-inner">
+      <div class="section-label">What We Offer</div>
+      <h2 class="section-title">Inside the Studio</h2>
+      <div class="divider"></div>
+      <p class="section-sub">The GCCC Studio is a full creative production hub — built for community voices. Whether you're launching a podcast, producing a documentary, or amplifying your advocacy through video, the Studio has the tools and the team to make it happen.</p>
+      <div class="feature-grid"><div class="feature-card" style="--accent:#FB923C;">
+      <div class="feature-icon">🎙️</div>
+      <div class="feature-title">Podcast Production</div>
+      <div class="feature-desc">Full podcast production support — from concept to distribution. Recording guides, editing resources, and distribution setup across all major platforms.</div>
+    </div><div class="feature-card" style="--accent:#FB923C;">
+      <div class="feature-icon">🎬</div>
+      <div class="feature-title">Video & Multimedia</div>
+      <div class="feature-desc">Video recording setups, editing tools, and production guidance for YouTube content, documentary shorts, and social media campaigns.</div>
+    </div><div class="feature-card" style="--accent:#FB923C;">
+      <div class="feature-icon">📻</div>
+      <div class="feature-title">Live Streaming</div>
+      <div class="feature-desc">Community live streams, town halls, panel discussions, and virtual events — broadcast to the GCCC network and beyond.</div>
+    </div><div class="feature-card" style="--accent:#FB923C;">
+      <div class="feature-icon">🎵</div>
+      <div class="feature-title">Music & Spoken Word</div>
+      <div class="feature-desc">Recording sessions for musicians, poets, spoken word artists, and community performers who want to share their art globally.</div>
+    </div><div class="feature-card" style="--accent:#FB923C;">
+      <div class="feature-icon">🌐</div>
+      <div class="feature-title">Multilingual Production</div>
+      <div class="feature-desc">Dubbing, subtitling, and translation support to ensure community stories reach audiences in every language.</div>
+    </div><div class="feature-card" style="--accent:#FB923C;">
+      <div class="feature-icon">📡</div>
+      <div class="feature-title">Distribution & Amplification</div>
+      <div class="feature-desc">Help getting your content seen — social media strategy, SEO, press release templates, and cross-promotion within the GCCC network.</div>
+    </div></div>
+      
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--navy2);">
+    <div class="section-inner">
+      <div class="section-label">Resources &amp; Access</div>
+      <h2 class="section-title">Get Started</h2>
+      <div class="divider"></div>
+      <div class="resource-list"><a class="resource-item" href="#offerings">
+      <div class="resource-item-icon">🎤</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">Studio Portal</div>
+        <div class="resource-item-desc">Book a session and access production resources</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="room-magazine.html" target="_blank" rel="noopener">
+      <div class="resource-item-icon">📰</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">GCM Magazine</div>
+        <div class="resource-item-desc">Publish your audio or video as part of the magazine</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="https://podcasters.spotify.com" target="_blank" rel="noopener">
+      <div class="resource-item-icon">🎙️</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">Anchor / Spotify for Podcasters</div>
+        <div class="resource-item-desc">Free podcast hosting and distribution</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a><a class="resource-item" href="https://blackmagicdesign.com/products/davinciresolve" target="_blank" rel="noopener">
+      <div class="resource-item-icon">🎬</div>
+      <div class="resource-item-text">
+        <div class="resource-item-title">DaVinci Resolve</div>
+        <div class="resource-item-desc">Free professional video editing software</div>
+      </div>
+      <div class="resource-item-arrow">→</div>
+    </a></div>
+    </div>
+  </section>
+
+  <section style="background:var(--slate);padding:64px 48px;text-align:center;">
+    <div style="max-width:600px;margin:0 auto;">
+      <div class="section-label" style="justify-content:center;display:block;">Ready to Enter?</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,48px);letter-spacing:.03em;color:var(--chalk);margin-bottom:14px;">Join the Studio</h2>
+      <p style="font-size:15px;color:var(--mist);margin-bottom:28px;line-height:1.7;">Membership is free to start. Sign in or create your GCCC account to access all room features and resources.</p>
+      <a class="btn-primary" href="membership-intake.html" style="margin-right:12px;">Join Now</a>
+      <a class="btn-outline" href="login.html">Sign In</a>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-word">GCCC</div>
+      <div class="footer-tagline">Global Citizens Community Center — building bridges across 193 nations through education, community, and action.</div>
+    </div>
+    <div class="footer-col">
+      <h4>Rooms</h4>
+      <a href="room-learning-center.html">Learning Center</a>
+      <a href="room-business-lounge.html">Business Lounge</a>
+      <a href="room-global-cafe.html">Global Cafe</a>
+      <a href="room-freedom-cove.html">Freedom Cove</a>
+      <a href="room-health-spa.html">Health &amp; Wellness</a>
+      <a href="room-dev-dojo.html">Dev Dojo</a>
+    </div>
+    <div class="footer-col">
+      <h4>More Rooms</h4>
+      <a href="room-emergency-services.html">Emergency Services</a>
+      <a href="room-magazine.html">Magazine &amp; Press</a>
+      <a href="room-studio.html">Studio</a>
+      <a href="room-global-counsel.html">Global Counsel</a>
+      <a href="room-glomart.html">GloMart</a>
+      <a href="room-global-exchange.html">Global Exchange</a>
+      <a href="room-ministry.html">Ministry</a>
+    </div>
+    <div class="footer-col">
+      <h4>Community</h4>
+      <a href="login.html">Sign In</a>
+      <a href="membership-intake.html">Join Free</a>
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="index.html#membership">Membership Levels</a>
+      <a href="index.html#summit">Global Summit</a>
+      <a href="index.html#donate">Donate</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Global Citizens Community Center. All rights reserved.</div>
+    <div class="footer-sdg-badge">Aligned with all 17 UN SDGs</div>
+  </div>
+</footer>
+<div class="country-modal-overlay" id="country-modal">
+  <div class="country-modal">
+    <button class="country-modal-close" id="country-modal-close" aria-label="Close">✕</button>
+    <div class="country-modal-flag" id="country-modal-flag"></div>
+    <div class="country-modal-name" id="country-modal-name"></div>
+    <div class="country-modal-section">
+      <h4>Local Partners</h4>
+      <p id="country-modal-partners"></p>
+    </div>
+    <div class="country-modal-section">
+      <h4>SDG Stats</h4>
+      <p id="country-modal-stats"></p>
+    </div>
+    <div class="country-modal-section">
+      <h4>Local Contacts</h4>
+      <p id="country-modal-contacts"></p>
+    </div>
+  </div>
+</div>
+<script>
+  window.ROOM_NAME = "Studio";
+  // Fill in per-country overrides here, keyed by ISO 3166-1 alpha-2 code:
+  // window.ROOM_COUNTRY_DATA = { AF: { partners:"...", stats:"...", contacts:"..." } };
+  window.ROOM_COUNTRY_DATA = {};
+</script>
+<script src="countries-data.js"></script>
+<script src="country-explorer.js"></script>
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('site-nav').classList.toggle('scrolled',window.scrollY>40);
+});
+</script>
+</body>
+</html>
