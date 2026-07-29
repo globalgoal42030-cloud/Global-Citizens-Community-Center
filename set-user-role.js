@@ -12,9 +12,9 @@
           export GOOGLE_APPLICATION_CREDENTIALS="/path/to/serviceAccountKey.json"
 
    USAGE:
-     node set-user-role.js someone@gccc.org admin
-     node set-user-role.js someone@gccc.org staff
-     node set-user-role.js someone@gccc.org security
+     node set-user-role.js rmwrosewilliams@gmail.com admin
+     node set-user-role.js rosewilliams@sffeep.org staff
+     node set-user-role.js globalcitizenscommunitycenter@gmail.com security
      node set-user-role.js someone@gccc.org --remove   (clears the role claim)
 
    After running this, the user must sign out and back in (or wait for their
