@@ -8,10 +8,11 @@
    (see auth.js) and by your Firestore/Storage security rules, not by hiding
    this config. */
 export const firebaseConfig = {
-  apiKey: "REPLACE_WITH_YOUR_API_KEY",
-  authDomain: "REPLACE_WITH_YOUR_PROJECT.firebaseapp.com",
-  projectId: "REPLACE_WITH_YOUR_PROJECT_ID",
-  storageBucket: "REPLACE_WITH_YOUR_PROJECT.appspot.com",
-  messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
-  appId: "REPLACE_WITH_YOUR_APP_ID"
-};
+    apiKey: "AIzaSyBqXeNiek9jFMrNnIfbB83y21f8mRirhIU",
+    authDomain: "gccc-production.firebaseapp.com",
+    projectId: "gccc-production",
+    storageBucket: "gccc-production.firebasestorage.app",
+    messagingSenderId: "285079792511",
+    appId: "1:285079792511:web:753c7acc80425d118e884a",
+    measurementId: "G-4B40SHKKCT"
+  };
